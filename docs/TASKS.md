@@ -31,7 +31,7 @@ Approval gate: explicit approval of all seven documents is required before Phase
 - [x] Add and configure shadcn/ui tokens, base typography, responsive shell colors, and core primitives used by login/shell/forms.
 - [x] Configure ESLint strict rules, Prettier, import ordering, and package scripts for format/lint/typecheck/build.
 - [x] Configure Vitest, React Testing Library, jsdom setup, coverage thresholds, and one passing smoke test.
-- [ ] Configure Playwright projects, web-server lifecycle, trace-on-retry, and a test-only environment contract.
+- [x] Configure Playwright projects, web-server lifecycle, trace-on-retry, and a test-only environment contract.
 - [ ] Add Husky and lint-staged pre-commit checks for supported staged files.
 - [ ] Add CI workflow for install, format, lint, typecheck, unit/component tests, integration tests, build, and Playwright.
 - [ ] Add Zod-validated server/public environment modules, required seller identity fields, and `.env.example` without secrets.

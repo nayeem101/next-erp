@@ -4,9 +4,9 @@
 
 - Last updated: 2026-07-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Fourth Phase 1 task complete; awaiting review
+- Status: Fifth Phase 1 task complete; awaiting review
 - Active task: None
-- Next eligible task: Configure Playwright projects, web-server lifecycle, trace-on-retry, and a test-only environment contract
+- Next eligible task: Add Husky and lint-staged pre-commit checks for supported staged files
 - Blocker: User review before the next task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,14 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-07-22 — Playwright test foundation completed
+
+- Added Playwright with desktop Chromium and Pixel 7 mobile Chromium projects.
+- Configured Playwright-owned local Next.js server lifecycle and external preview/deployment targeting through a validated environment contract.
+- Added CI-safe retries, single-worker execution, focused-test protection, trace-on-first-retry, and failure screenshots/videos.
+- Added package scripts, ignored generated artifacts, documented test-only variables, and added a passing application-shell browser smoke test.
+- Checks passed: two Playwright project tests, Prettier, ESLint, strict typecheck, unit tests, production build, and IDE diagnostics.
 
 ### 2026-07-22 — Unit and component test foundation completed
 
@@ -78,6 +86,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-07-22: Desktop and mobile Chromium Playwright smoke tests passed with managed Next.js startup and shutdown.
 - 2026-07-22: Vitest smoke test and coverage execution passed alongside lint, strict typecheck, and production build.
 - 2026-07-22: Code quality formatting, strict lint, strict typecheck, and production build passed.
 - 2026-07-22: shadcn/ui foundation lint, strict typecheck, and production build passed.
