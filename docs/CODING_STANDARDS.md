@@ -32,22 +32,22 @@
 
 ## Naming
 
-| Item | Convention | Example |
-| --- | --- | --- |
-| React components | PascalCase | `ProductForm` |
-| Component files | kebab-case | `product-form.tsx` |
-| Functions/variables | camelCase | `confirmOrder` |
-| Constants | camelCase; SCREAMING_SNAKE_CASE only for true process constants | `defaultPageSize`, `MAX_ORDER_LINES` |
-| Types/interfaces | PascalCase; no `I` prefix | `OrderSummary` |
-| Zod schemas | camelCase ending `Schema` | `createProductSchema` |
-| Server Actions | verb-first camelCase | `adjustStock` |
-| Server queries | `get`, `list`, or domain verb | `listProducts` |
-| Database tables/columns | snake_case plural tables | `order_line_items` |
-| Drizzle table objects | camelCase plural | `orderLineItems` |
-| Route segments | kebab-case nouns | `/stock-movements` |
-| Test files | source name + `.test`/`.integration.test` | `confirm-order.integration.test.ts` |
-| Audit actions | lower-case dotted past-tense event | `order.confirmed` |
-| Cache tags | lower-case colon-scoped | `product:<uuid>` |
+| Item                    | Convention                                                      | Example                              |
+| ----------------------- | --------------------------------------------------------------- | ------------------------------------ |
+| React components        | PascalCase                                                      | `ProductForm`                        |
+| Component files         | kebab-case                                                      | `product-form.tsx`                   |
+| Functions/variables     | camelCase                                                       | `confirmOrder`                       |
+| Constants               | camelCase; SCREAMING_SNAKE_CASE only for true process constants | `defaultPageSize`, `MAX_ORDER_LINES` |
+| Types/interfaces        | PascalCase; no `I` prefix                                       | `OrderSummary`                       |
+| Zod schemas             | camelCase ending `Schema`                                       | `createProductSchema`                |
+| Server Actions          | verb-first camelCase                                            | `adjustStock`                        |
+| Server queries          | `get`, `list`, or domain verb                                   | `listProducts`                       |
+| Database tables/columns | snake_case plural tables                                        | `order_line_items`                   |
+| Drizzle table objects   | camelCase plural                                                | `orderLineItems`                     |
+| Route segments          | kebab-case nouns                                                | `/stock-movements`                   |
+| Test files              | source name + `.test`/`.integration.test`                       | `confirm-order.integration.test.ts`  |
+| Audit actions           | lower-case dotted past-tense event                              | `order.confirmed`                    |
+| Cache tags              | lower-case colon-scoped                                         | `product:<uuid>`                     |
 
 Use domain language consistently: “customer,” not “client”; “order line,” not alternating “item”; “stock on hand,” not “inventory count”; “archive,” not “delete,” for master data.
 
@@ -115,12 +115,14 @@ Each form has one canonical input schema in `features/<feature>/schemas.ts`.
 
 ```ts
 // schemas.ts — safe in browser and server
-export const createProductSchema = z.object({
-  categoryId: z.string().uuid(),
-  sku: z.string().trim().min(1).max(64),
-  unitPrice: positiveMoneySchema,
-  // ...
-}).strict();
+export const createProductSchema = z
+  .object({
+    categoryId: z.string().uuid(),
+    sku: z.string().trim().min(1).max(64),
+    unitPrice: positiveMoneySchema,
+    // ...
+  })
+  .strict();
 
 export type CreateProductInput = z.input<typeof createProductSchema>;
 export type CreateProductData = z.output<typeof createProductSchema>;
@@ -331,4 +333,3 @@ pnpm build
 - Keep one focused task per commit using Conventional Commit prefixes: `feat:`, `fix:`, `test:`, `docs:`, `refactor:`, `chore:`.
 - Do not combine formatting or unrelated cleanup with feature behavior.
 - Never commit `.env*`, Supabase keys, test credentials, generated PDFs, Playwright traces, or local database artifacts.
-

@@ -29,7 +29,7 @@ Approval gate: explicit approval of all seven documents is required before Phase
 
 - [x] Scaffold Next.js 16.x App Router with React 19.2+, Cache Components, strict TypeScript, `src/`, Tailwind, pnpm, Node LTS pin, and import aliases.
 - [x] Add and configure shadcn/ui tokens, base typography, responsive shell colors, and core primitives used by login/shell/forms.
-- [ ] Configure ESLint strict rules, Prettier, import ordering, and package scripts for format/lint/typecheck/build.
+- [x] Configure ESLint strict rules, Prettier, import ordering, and package scripts for format/lint/typecheck/build.
 - [ ] Configure Vitest, React Testing Library, jsdom setup, coverage thresholds, and one passing smoke test.
 - [ ] Configure Playwright projects, web-server lifecycle, trace-on-retry, and a test-only environment contract.
 - [ ] Add Husky and lint-staged pre-commit checks for supported staged files.
@@ -312,4 +312,3 @@ Every item below is optional and blocked until explicit post-MVP approval.
 Stretch gate:
 
 - [ ] **[STRETCH]** Run full MVP regression, new feature tests, build, accessibility/security review, and preview deployment before each stretch release.
-

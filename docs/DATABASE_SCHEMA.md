@@ -29,11 +29,11 @@ customers 1────────< orders 1────────< order_lin
                         │                         │                 ├────1 categories
                         │                         │                 │
                         │                         └─────────────────┤
-                        │                                          
-                        ├────0..1 invoices                          
-                        │         │                                
-                        ├─────────┴────< ledger_entries            
-                        │                                          
+                        │
+                        ├────0..1 invoices
+                        │         │
+                        ├─────────┴────< ledger_entries
+                        │
                         └──────────────< stock_movements >──── products
 
 users 1────────< audit_log (polymorphic entity_type + entity_id)
@@ -94,11 +94,7 @@ export const authUsers = authSchema.table("users", {
   id: uuid("id").primaryKey(),
 });
 
-export const roleKey = pgEnum("role_key", [
-  "admin",
-  "sales",
-  "inventory",
-]);
+export const roleKey = pgEnum("role_key", ["admin", "sales", "inventory"]);
 export const orderStatus = pgEnum("order_status", [
   "draft",
   "confirmed",
@@ -117,10 +113,7 @@ export const ledgerAccount = pgEnum("ledger_account", [
   "sales_revenue",
 ]);
 export const ledgerSide = pgEnum("ledger_side", ["debit", "credit"]);
-export const journalType = pgEnum("journal_type", [
-  "sale",
-  "sale_reversal",
-]);
+export const journalType = pgEnum("journal_type", ["sale", "sale_reversal"]);
 
 export const orderNumberSequence = pgSequence("order_number_seq", {
   startWith: 1000,
@@ -211,9 +204,7 @@ export const customers = pgTable(
     ...timestamps,
   },
   (table) => [
-    uniqueIndex("customers_email_lower_unique").on(
-      sql`lower(${table.email})`,
-    ),
+    uniqueIndex("customers_email_lower_unique").on(sql`lower(${table.email})`),
     index("customers_name_idx").on(table.name),
     index("customers_active_idx").on(table.isActive),
   ],
@@ -236,9 +227,7 @@ export const categories = pgTable(
     ...timestamps,
   },
   (table) => [
-    uniqueIndex("categories_name_lower_unique").on(
-      sql`lower(${table.name})`,
-    ),
+    uniqueIndex("categories_name_lower_unique").on(sql`lower(${table.name})`),
     unique("categories_slug_unique").on(table.slug),
     index("categories_active_idx").on(table.isActive),
   ],
@@ -276,7 +265,10 @@ export const products = pgTable(
       .where(sql`${table.isActive} = true`),
     check("products_price_positive", sql`${table.unitPriceCents} > 0`),
     check("products_stock_nonnegative", sql`${table.stockOnHand} >= 0`),
-    check("products_reorder_level_nonnegative", sql`${table.reorderLevel} >= 0`),
+    check(
+      "products_reorder_level_nonnegative",
+      sql`${table.reorderLevel} >= 0`,
+    ),
   ],
 );
 
@@ -295,9 +287,7 @@ export const orders = pgTable(
     currencyCode: varchar("currency_code", { length: 3 })
       .default("USD")
       .notNull(),
-    totalCents: bigint("total_cents", { mode: "bigint" })
-      .default(0n)
-      .notNull(),
+    totalCents: bigint("total_cents", { mode: "bigint" }).default(0n).notNull(),
     notes: text("notes"),
     cancellationReason: text("cancellation_reason"),
     createdBy: uuid("created_by")
@@ -476,10 +466,7 @@ export const stockMovements = pgTable(
       table.createdAt,
     ),
     index("stock_movements_order_id_idx").on(table.orderId),
-    check(
-      "stock_movements_quantity_nonzero",
-      sql`${table.quantityDelta} <> 0`,
-    ),
+    check("stock_movements_quantity_nonzero", sql`${table.quantityDelta} <> 0`),
     check(
       "stock_movements_result_nonnegative",
       sql`${table.resultingStock} >= 0`,
@@ -692,4 +679,3 @@ The development/demo seed is idempotent and, once the Phase 5 workflows exist, c
 - A mix of draft, confirmed, fulfilled, and cancelled orders created through the same domain services used by the application so invoices, movements, ledger entries, and audit rows are internally consistent. Seed data is added incrementally after each owning service exists: base roles/users in Phase 1, inventory in Phase 2, customers in Phase 3, and transactional orders in Phase 5.
 
 No production password, access token, or service-role key is committed.
-

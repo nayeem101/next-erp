@@ -185,4 +185,3 @@ These are deliberately excluded from MVP and may begin only after explicit appro
 - Order confirmation email through Resend or a similar provider.
 - Global `cmd+k` navigation/search command palette.
 - CSV product import with validation and an error report.
-

@@ -475,4 +475,3 @@ States: empty/filter/loading/error states; no mutation affordances.
 - Toasts supplement, not replace, persistent field/page errors.
 - Destructive actions are not represented by icon-only controls without accessible names.
 - Automated axe checks cover login, product list/form, customer form, order wizard, invoice, and dashboard; critical flows receive keyboard smoke tests.
-

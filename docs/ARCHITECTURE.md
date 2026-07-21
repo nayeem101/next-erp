@@ -294,24 +294,24 @@ The root `/` is a server redirect: authenticated users go to `/dashboard`; all o
 
 ### Cache tags
 
-| Tag | Data |
-| --- | --- |
-| `products` | active product catalog and product lists |
-| `product:{id}` | one product |
-| `categories` | category options/lists |
-| `customers` | customer lists/options |
-| `customer:{id}` | customer detail/order summary |
-| `orders` | order lists and recent-order aggregate |
-| `order:{id}` | one order aggregate |
-| `invoices` | invoice lists |
-| `invoice:{id}` | invoice detail |
-| `ledger` | ledger list/aggregates |
-| `dashboard:revenue` | revenue series |
-| `dashboard:top-products` | top products |
-| `dashboard:low-stock` | low-stock widget |
-| `dashboard:recent-orders` | recent orders |
-| `audit-log` | audit list |
-| `users` | application user/role list |
+| Tag                       | Data                                     |
+| ------------------------- | ---------------------------------------- |
+| `products`                | active product catalog and product lists |
+| `product:{id}`            | one product                              |
+| `categories`              | category options/lists                   |
+| `customers`               | customer lists/options                   |
+| `customer:{id}`           | customer detail/order summary            |
+| `orders`                  | order lists and recent-order aggregate   |
+| `order:{id}`              | one order aggregate                      |
+| `invoices`                | invoice lists                            |
+| `invoice:{id}`            | invoice detail                           |
+| `ledger`                  | ledger list/aggregates                   |
+| `dashboard:revenue`       | revenue series                           |
+| `dashboard:top-products`  | top products                             |
+| `dashboard:low-stock`     | low-stock widget                         |
+| `dashboard:recent-orders` | recent orders                            |
+| `audit-log`               | audit list                               |
+| `users`                   | application user/role list               |
 
 ### Mutation revalidation matrix
 
@@ -351,4 +351,3 @@ For each Server Action, the tags listed above are expired with `updateTag`, and 
 - Database integration tests run against an isolated Postgres/Supabase-compatible test database and cover transaction invariants.
 - Playwright covers login and the complete create/confirm order flow; tests use deterministic seeded users/data.
 - PDF tests validate authorization, headers, and key rendered content without brittle byte-for-byte snapshots.
-

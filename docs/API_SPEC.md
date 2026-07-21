@@ -58,11 +58,7 @@ const positiveMoneySchema = moneySchema.refine(
   "Amount must be greater than zero",
 );
 const quantitySchema = z.coerce.number().int().positive().max(1_000_000);
-const nonnegativeQuantitySchema = z.coerce
-  .number()
-  .int()
-  .min(0)
-  .max(1_000_000);
+const nonnegativeQuantitySchema = z.coerce.number().int().min(0).max(1_000_000);
 const versionSchema = z.coerce.number().int().positive();
 const roleKeySchema = z.enum(["admin", "sales", "inventory"]);
 ```
@@ -71,20 +67,20 @@ Input schemas use `.strict()` at their object boundary. Text is trimmed, blank o
 
 ## Permission summary
 
-| Domain/action | Admin | Sales | Inventory |
-| --- | :---: | :---: | :---: |
-| Login/logout | Yes | Yes | Yes |
-| Assign roles / enable users | Yes | No | No |
-| Maintain categories/products | Yes | No | Yes |
-| Adjust stock | Yes | No | Yes |
-| Maintain customers | Yes | Yes | No |
-| Create/update drafts and confirm orders | Yes | Yes | No |
-| Cancel draft or confirmed (never fulfilled) orders | Yes | Yes | No |
-| View operational orders | Yes | Yes | Yes |
-| Fulfill confirmed order | Yes | No | Yes |
-| View/download invoices | Yes | Yes | No |
-| View ledger | Yes | No | No |
-| View audit log | Yes | No | No |
+| Domain/action                                      | Admin | Sales | Inventory |
+| -------------------------------------------------- | :---: | :---: | :-------: |
+| Login/logout                                       |  Yes  |  Yes  |    Yes    |
+| Assign roles / enable users                        |  Yes  |  No   |    No     |
+| Maintain categories/products                       |  Yes  |  No   |    Yes    |
+| Adjust stock                                       |  Yes  |  No   |    Yes    |
+| Maintain customers                                 |  Yes  |  Yes  |    No     |
+| Create/update drafts and confirm orders            |  Yes  |  Yes  |    No     |
+| Cancel draft or confirmed (never fulfilled) orders |  Yes  |  Yes  |    No     |
+| View operational orders                            |  Yes  |  Yes  |    Yes    |
+| Fulfill confirmed order                            |  Yes  |  No   |    Yes    |
+| View/download invoices                             |  Yes  |  Yes  |    No     |
+| View ledger                                        |  Yes  |  No   |    No     |
+| View audit log                                     |  Yes  |  No   |    No     |
 
 Admin and Sales can act on any draft order in this single-company MVP. `created_by` is still retained for accountability.
 
@@ -165,7 +161,11 @@ const setUserRolesSchema = z
   .strict()
   .superRefine((value, ctx) => {
     if (new Set(value.roles).size !== value.roles.length) {
-      ctx.addIssue({ code: "custom", path: ["roles"], message: "Roles must be unique" });
+      ctx.addIssue({
+        code: "custom",
+        path: ["roles"],
+        message: "Roles must be unique",
+      });
     }
   });
 ```
@@ -328,7 +328,11 @@ const customerFields = {
   city: requiredText(100),
   region: optionalText(100),
   postalCode: requiredText(24),
-  countryCode: z.string().trim().length(2).transform((value) => value.toUpperCase()),
+  countryCode: z
+    .string()
+    .trim()
+    .length(2)
+    .transform((value) => value.toUpperCase()),
   notes: optionalText(2000),
 };
 
@@ -581,4 +585,3 @@ ledger.sale_reversed
 The fixed `entity_type` vocabulary is `auth_session`, `user`, `category`, `product`, `customer`, `order`, `invoice`, and `ledger_journal`. `entity_id` is the relevant UUID (the journal ID for `ledger_journal`); sign-in events may use the user UUID with `auth_session`.
 
 Sensitive values are excluded. Metadata records IDs, business numbers, changed field names, safe before/after values, totals, reasons, and correlation context.
-

@@ -4,9 +4,9 @@
 
 - Last updated: 2026-07-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Second Phase 1 task complete; awaiting review
+- Status: Third Phase 1 task complete; awaiting review
 - Active task: None
-- Next eligible task: Configure ESLint strict rules, Prettier, import ordering, and package scripts for format/lint/typecheck/build
+- Next eligible task: Configure Vitest, React Testing Library, jsdom setup, coverage thresholds, and one passing smoke test
 - Blocker: User review before the next task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -36,6 +36,14 @@ After every completed task from `docs/TASKS.md`:
 
 ## Execution log
 
+### 2026-07-22 — Code quality tooling completed
+
+- Added type-aware strict and stylistic TypeScript ESLint rules on top of the Next.js Core Web Vitals configuration.
+- Enforced deterministic import groups, type-only imports, duplicate prevention, and zero-warning lint runs.
+- Added Prettier with Tailwind CSS class sorting, repository-wide formatting scripts, and a clean formatting baseline.
+- Added explicit `format`, `format:check`, `lint`, `lint:fix`, and `typecheck` package scripts.
+- Checks passed: Prettier, ESLint, strict typecheck, production build, and IDE diagnostics.
+
 ### 2026-07-22 — shadcn/ui foundation completed
 
 - Initialized the current shadcn/ui `base-nova` preset for Tailwind CSS 4, React 19, RSC, Base UI, and Lucide icons.
@@ -62,6 +70,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-07-22: Code quality formatting, strict lint, strict typecheck, and production build passed.
 - 2026-07-22: shadcn/ui foundation lint, strict typecheck, and production build passed.
 - 2026-07-22: Scaffold lint, strict typecheck, and Next.js production build passed.
 - 2026-07-22: Phase 0 documentation and Cursor rules checked; no linter diagnostics.
@@ -69,4 +78,3 @@ After every completed task from `docs/TASKS.md`:
 ## Approved deviations
 
 - None.
-
