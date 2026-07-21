@@ -1,0 +1,20 @@
+---
+description: Strict TypeScript, validation, and error-handling rules
+globs: **/*.{ts,tsx}
+alwaysApply: false
+---
+
+# TypeScript
+
+- Keep `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, and `noImplicitOverride` enabled.
+- Do not use `any`; narrow `unknown` at boundaries.
+- Infer runtime-backed types from Zod and Drizzle. Avoid TypeScript enums and duplicate interfaces.
+- Keep one browser-safe Zod schema per form/input and validate it again in the Server Action.
+- Use `z.input` for raw form values and `z.output` after normalization.
+- Model workflow and result states with discriminated unions; keep switches exhaustive with `never`.
+- Return typed `ActionResult` for expected action failures. Log unexpected errors with a correlation ID and never expose internals.
+- Do not accept client-supplied actors, roles, prices, totals, or lifecycle status when the server can derive them.
+- Use `bigint` cents for money and integer quantities; serialize bigint as strings across server/client boundaries.
+- Avoid non-null assertions, unsafe casts, floating-point money, and swallowed errors.
+- Export minimal types and import concrete modules instead of broad barrel files that hide server/client boundaries.
+- Test schema boundaries, permission branches, domain invariants, and expected failure paths.

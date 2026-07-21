@@ -1,0 +1,18 @@
+---
+description: Core NextERP stack and delivery constraints
+alwaysApply: true
+---
+
+# NextERP Stack
+
+- Follow `/docs` as the source of truth; implement `docs/TASKS.md` in order.
+- After each completed task, check it off and update `docs/PROJECT_PROGRESS.md` with status and verification evidence.
+- Use Next.js 16.x App Router, React 19.2+, and strict TypeScript.
+- Use Supabase Auth/Postgres, Drizzle ORM, Server Actions for mutations, and route handlers only when technically required.
+- Use shadcn/ui + Tailwind, TanStack Table for grids, React Hook Form + shared Zod schemas for forms, Recharts for charts, and `@react-pdf/renderer` for PDFs.
+- Prefer server/URL state. Use Zustand only for unsaved order-wizard UI state and TanStack Query only for data that genuinely cannot be server-rendered.
+- Enforce RBAC at route/layout, query, and action/handler boundaries; never trust client-supplied actor, role, status, price, or total.
+- Keep cross-module writes transactional and audit business mutations in the same transaction.
+- Use Vitest + React Testing Library and focused Playwright critical-path tests.
+- Do not implement `[STRETCH]` tasks before MVP completion and explicit approval.
+- If implementation conflicts with a spec, stop and propose the documentation change before improvising.

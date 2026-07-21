@@ -1,0 +1,20 @@
+---
+description: Next.js 16 App Router and server-first conventions
+globs: src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Next.js Application
+
+- Use App Router only; never add `pages/`.
+- Default to Server Components. Add `"use client"` only for hooks, event handlers, browser APIs, or client-only libraries, at the lowest practical boundary.
+- Await Next.js 16 `params`, `searchParams`, cookies, and headers APIs.
+- Use `proxy.ts` for session refresh and coarse redirects; final authorization belongs in layouts/pages, queries, Server Actions, and route handlers.
+- Read through server-only Drizzle query functions; never call the app's own HTTP routes from an RSC.
+- Mutate through thin Server Actions: authenticate, authorize, parse shared Zod input, call a transactional service, return typed `ActionResult`.
+- Use route handlers only for binary/HTTP boundaries such as authenticated PDF streaming or future webhooks.
+- Keep auth, database, environment, query, and service modules `server-only`; pass minimal serializable view models to client islands.
+- Keep dynamic reads uncached by default. Use `"use cache"` with `cacheLife`/`cacheTag` only for safe shared data.
+- After a successful action commit, use `updateTag` for read-your-writes and `revalidatePath` for affected routes; never use deprecated `unstable_*` cache APIs.
+- Stream independent dashboard widgets with separate Suspense and error boundaries.
+- Keep shareable table filters, sorting, and pagination in validated URL search parameters.
