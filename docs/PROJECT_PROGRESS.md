@@ -3,18 +3,18 @@
 ## Current status
 
 - Last updated: 2026-07-22
-- Current phase: Phase 0 — Specification
-- Status: Documentation complete; explicit approval required before Phase 1
+- Current phase: Phase 1 — Foundation, database, authentication, and RBAC
+- Status: First Phase 1 task complete; awaiting review
 - Active task: None
-- Next eligible task: Scaffold Next.js 16.x App Router with React 19.2+, Cache Components, strict TypeScript, `src/`, Tailwind, pnpm, Node LTS pin, and import aliases
-- Blocker: Phase 0 approval gate
+- Next eligible task: Add and configure shadcn/ui tokens, base typography, responsive shell colors, and core primitives used by login/shell/forms
+- Blocker: User review before the next task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
 
 ## Phase status
 
-- Phase 0 — Specification: Complete; awaiting approval
-- Phase 1 — Foundation, database, authentication, and RBAC: Not started
+- Phase 0 — Specification: Complete and approved
+- Phase 1 — Foundation, database, authentication, and RBAC: In progress
 - Phase 2 — Inventory: Not started
 - Phase 3 — Customers: Not started
 - Phase 4 — Sales order drafts and wizard: Not started
@@ -36,6 +36,14 @@ After every completed task from `docs/TASKS.md`:
 
 ## Execution log
 
+### 2026-07-22 — Next.js 16 scaffold completed
+
+- Created the Next.js 16.2.11 App Router project with React 19.2.4, Tailwind CSS 4, ESLint 9, TypeScript 5.9, and `src/` layout.
+- Enabled Cache Components and strict TypeScript options.
+- Pinned Node.js 24 and pnpm 11.15.1; generated a compatible lockfile and approved only required dependency build scripts.
+- Verified the `@/*` import alias and Turbopack production build.
+- Checks passed: ESLint, `tsc --noEmit`, production build, and IDE diagnostics. Test tooling is scheduled later in Phase 1, so no test script exists yet.
+
 ### 2026-07-22 — Phase 0 specification completed
 
 - Produced the seven required specification documents.
@@ -46,6 +54,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-07-22: Scaffold lint, strict typecheck, and Next.js production build passed.
 - 2026-07-22: Phase 0 documentation and Cursor rules checked; no linter diagnostics.
 
 ## Approved deviations

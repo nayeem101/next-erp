@@ -27,7 +27,7 @@ Approval gate: explicit approval of all seven documents is required before Phase
 
 ### Project scaffold and quality tooling
 
-- [ ] Scaffold Next.js 16.x App Router with React 19.2+, Cache Components, strict TypeScript, `src/`, Tailwind, pnpm, Node LTS pin, and import aliases.
+- [x] Scaffold Next.js 16.x App Router with React 19.2+, Cache Components, strict TypeScript, `src/`, Tailwind, pnpm, Node LTS pin, and import aliases.
 - [ ] Add and configure shadcn/ui tokens, base typography, responsive shell colors, and core primitives used by login/shell/forms.
 - [ ] Configure ESLint strict rules, Prettier, import ordering, and package scripts for format/lint/typecheck/build.
 - [ ] Configure Vitest, React Testing Library, jsdom setup, coverage thresholds, and one passing smoke test.
