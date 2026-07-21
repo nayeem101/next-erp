@@ -8,6 +8,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      "server-only": fileURLToPath(
+        new URL("./src/test/stubs/server-only.ts", import.meta.url),
+      ),
     },
   },
   test: {

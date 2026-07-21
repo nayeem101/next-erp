@@ -34,7 +34,7 @@ Approval gate: explicit approval of all seven documents is required before Phase
 - [x] Configure Playwright projects, web-server lifecycle, trace-on-retry, and a test-only environment contract.
 - [x] Add Husky and lint-staged pre-commit checks for supported staged files.
 - [x] Add CI workflow for install, format, lint, typecheck, unit/component tests, integration tests, build, and Playwright.
-- [ ] Add Zod-validated server/public environment modules, required seller identity fields, and `.env.example` without secrets.
+- [x] Add Zod-validated server/public environment modules, required seller identity fields, and `.env.example` without secrets.
 - [ ] Add root `.cursorignore` exclusions for secrets, dependencies, build/test artifacts, lockfile, and generated PDFs.
 - [ ] Add security headers, safe redirect helper, request correlation IDs, and structured server logging.
 

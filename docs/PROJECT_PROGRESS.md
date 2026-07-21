@@ -4,9 +4,9 @@
 
 - Last updated: 2026-07-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Seventh Phase 1 task complete; awaiting review
+- Status: Eighth Phase 1 task complete; awaiting review
 - Active task: None
-- Next eligible task: Add Zod-validated server/public environment modules, required seller identity fields, and `.env.example` without secrets
+- Next eligible task: Add root `.cursorignore` exclusions for secrets, dependencies, build/test artifacts, lockfile, and generated PDFs
 - Blocker: User review before the next task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,14 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-07-22 — Environment validation modules completed
+
+- Added Zod schemas for public Supabase values, server credentials, and required seller identity fields with optional address/region normalization.
+- Added browser-safe `getPublicEnv`, server-only `getServerEnv`/`getSellerIdentity`, and invoice-shaped seller snapshot mapping.
+- Added `.env.example` with placeholders only and allowed that file through `.gitignore` while still ignoring real env files.
+- Added unit coverage for valid/invalid boundaries, caching, and incomplete-server failures; stubbed `server-only` for Vitest.
+- Checks passed: Prettier, ESLint, strict typecheck, unit tests, Playwright smoke tests, production build, and IDE diagnostics.
 
 ### 2026-07-22 — CI workflow completed
 
@@ -103,6 +111,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-07-22: Environment schema/accessor unit tests passed with format, lint, typecheck, build, and Playwright.
 - 2026-07-22: Local CI gate passed for format, lint, typecheck, unit, integration (empty), build, and Playwright.
 - 2026-07-22: Husky prepare lifecycle and pre-commit entrypoint passed; lint-staged loaded successfully with no staged files.
 - 2026-07-22: Desktop and mobile Chromium Playwright smoke tests passed with managed Next.js startup and shutdown.
