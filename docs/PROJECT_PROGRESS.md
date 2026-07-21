@@ -4,9 +4,9 @@
 
 - Last updated: 2026-07-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Third Phase 1 task complete; awaiting review
+- Status: Fourth Phase 1 task complete; awaiting review
 - Active task: None
-- Next eligible task: Configure Vitest, React Testing Library, jsdom setup, coverage thresholds, and one passing smoke test
+- Next eligible task: Configure Playwright projects, web-server lifecycle, trace-on-retry, and a test-only environment contract
 - Blocker: User review before the next task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,14 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-07-22 — Unit and component test foundation completed
+
+- Added Vitest 4 with the V8 coverage provider, React Testing Library, jest-dom matchers, user-event, and jsdom.
+- Configured the `@/*` alias, React transformation, deterministic mock cleanup, and shared DOM test setup.
+- Added the documented coverage floor for future `src/features/**` code: 80% lines/functions and 75% branches.
+- Added `test`, `test:watch`, and `test:coverage` scripts plus a passing accessible-interaction smoke test.
+- Checks passed: Vitest, coverage execution, ESLint, strict typecheck, production build, and IDE diagnostics.
 
 ### 2026-07-22 — Code quality tooling completed
 
@@ -70,6 +78,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-07-22: Vitest smoke test and coverage execution passed alongside lint, strict typecheck, and production build.
 - 2026-07-22: Code quality formatting, strict lint, strict typecheck, and production build passed.
 - 2026-07-22: shadcn/ui foundation lint, strict typecheck, and production build passed.
 - 2026-07-22: Scaffold lint, strict typecheck, and Next.js production build passed.
