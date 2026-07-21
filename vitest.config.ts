@@ -13,7 +13,11 @@ export default defineConfig({
   test: {
     clearMocks: true,
     environment: "jsdom",
-    exclude: [...configDefaults.exclude, "e2e/**"],
+    exclude: [
+      ...configDefaults.exclude,
+      "e2e/**",
+      "**/*.integration.test.{ts,tsx}",
+    ],
     restoreMocks: true,
     setupFiles: ["./src/test/setup.ts"],
     coverage: {

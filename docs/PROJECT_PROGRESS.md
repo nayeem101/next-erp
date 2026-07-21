@@ -4,9 +4,9 @@
 
 - Last updated: 2026-07-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Sixth Phase 1 task complete; awaiting review
+- Status: Seventh Phase 1 task complete; awaiting review
 - Active task: None
-- Next eligible task: Add CI workflow for install, format, lint, typecheck, unit/component tests, integration tests, build, and Playwright
+- Next eligible task: Add Zod-validated server/public environment modules, required seller identity fields, and `.env.example` without secrets
 - Blocker: User review before the next task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,15 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-07-22 — CI workflow completed
+
+- Added a GitHub Actions pull-request and `main` workflow with Quality and Playwright jobs.
+- Quality runs frozen install, format check, lint, typecheck, unit/component tests, integration tests, and production build.
+- Playwright installs Chromium with OS dependencies, runs the browser suite under `CI`, and uploads failure artifacts.
+- Added `test:integration` with a Node Vitest config that passes with no suites until database integration tests exist, and excluded those suites from the unit runner.
+- Disabled Husky in CI and pinned Node from `.nvmrc` with pnpm caching.
+- Checks passed: Prettier, ESLint, strict typecheck, unit tests, empty integration suite, Playwright smoke tests, production build, and IDE diagnostics.
 
 ### 2026-07-22 — Pre-commit quality checks completed
 
@@ -94,6 +103,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-07-22: Local CI gate passed for format, lint, typecheck, unit, integration (empty), build, and Playwright.
 - 2026-07-22: Husky prepare lifecycle and pre-commit entrypoint passed; lint-staged loaded successfully with no staged files.
 - 2026-07-22: Desktop and mobile Chromium Playwright smoke tests passed with managed Next.js startup and shutdown.
 - 2026-07-22: Vitest smoke test and coverage execution passed alongside lint, strict typecheck, and production build.
