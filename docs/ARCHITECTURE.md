@@ -22,7 +22,7 @@ Supabase Auth is the cleaner fit for this application:
 - A hardened Auth trigger mirrors newly provisioned identities into `public.users` without assigning access; Admin role assignment is still required.
 - Role membership remains application-owned in Drizzle-managed Postgres tables and is checked server-side.
 
-The browser client is used only for authentication operations that require it in future and for stretch Realtime. MVP data never travels directly from the browser to Postgres. The Supabase service-role key is not used by application pages or actions. Server-only Drizzle connects through Supabase's pooler with a restricted application database credential and `prepare: false`.
+The browser client is used only for authentication operations that require it in future and for stretch Realtime. MVP data never travels directly from the browser to Postgres. The Supabase secret key is not used by application pages or actions. Server-only Drizzle connects through Supabase's pooler with a restricted application database credential and `prepare: false`.
 
 ## High-level architecture
 
@@ -171,7 +171,7 @@ Authorization is defense in depth:
 - Application tables have RLS enabled as a fallback against accidental browser access.
 - Supabase browser roles have no application-table read or write policies in MVP.
 - The non-owner server runtime role has explicit least-privilege RLS policies/grants and no ability to alter schema or bypass RLS.
-- Migration credentials and Supabase service-role credentials exist only in local/CI/Vercel server environments.
+- Migration credentials and Supabase secret credentials exist only in local/CI/Vercel server environments.
 - Constraints and transactions remain authoritative for invariants even if an application check is missed.
 
 ## Route and folder structure
@@ -339,7 +339,7 @@ For each Server Action, the tags listed above are expired with `updateTag`, and 
 
 - Server logs are structured and include correlation ID, action/route name, user ID when known, and normalized error code; they exclude passwords, tokens, and full customer payloads.
 - Audit logs are business/security records, not diagnostic logs.
-- Environment variables are parsed once with Zod in a server-only module. Only explicitly public Supabase URL/anon key values use `NEXT_PUBLIC_`.
+- Environment variables are parsed once with Zod in a server-only module. Only explicitly public Supabase URL and publishable key values use `NEXT_PUBLIC_`. Server code uses a secret key (`SUPABASE_SECRET_KEY`), not a browser-exposed credential.
 - Security headers include CSP suitable for Supabase/Vercel, `X-Content-Type-Options`, `Referrer-Policy`, and frame restrictions.
 - Redirect targets are restricted to same-origin relative paths.
 - Forms rely on same-site cookies and Next.js Server Action origin checks; mutations also authenticate and authorize every call.

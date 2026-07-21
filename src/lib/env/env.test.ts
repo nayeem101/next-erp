@@ -15,7 +15,7 @@ import {
 
 const validPublicEnv = {
   NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co",
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: "public-anon-key",
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_test_key",
 } as const;
 
 const validCompanyEnv = {
@@ -32,7 +32,7 @@ const validCompanyEnv = {
 const validServerEnv = {
   ...validPublicEnv,
   DATABASE_URL: "postgresql://postgres:password@127.0.0.1:5432/postgres",
-  SUPABASE_SERVICE_ROLE_KEY: "service-role-key",
+  SUPABASE_SECRET_KEY: "sb_secret_test_key",
   ...validCompanyEnv,
 } as const;
 
@@ -50,10 +50,10 @@ describe("publicEnvSchema", () => {
     expect(publicEnvSchema.parse(validPublicEnv)).toEqual(validPublicEnv);
   });
 
-  test("rejects a missing anon key", () => {
+  test("rejects a missing publishable key", () => {
     const result = publicEnvSchema.safeParse({
       NEXT_PUBLIC_SUPABASE_URL: validPublicEnv.NEXT_PUBLIC_SUPABASE_URL,
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: "",
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "",
     });
 
     expect(result.success).toBe(false);
@@ -84,10 +84,10 @@ describe("companyEnvSchema", () => {
 });
 
 describe("serverEnvSchema", () => {
-  test("requires database and service-role credentials with seller identity", () => {
+  test("requires database and secret credentials with seller identity", () => {
     expect(serverEnvSchema.parse(validServerEnv)).toMatchObject({
       DATABASE_URL: validServerEnv.DATABASE_URL,
-      SUPABASE_SERVICE_ROLE_KEY: validServerEnv.SUPABASE_SERVICE_ROLE_KEY,
+      SUPABASE_SECRET_KEY: validServerEnv.SUPABASE_SECRET_KEY,
       COMPANY_NAME: validServerEnv.COMPANY_NAME,
       COMPANY_COUNTRY_CODE: "US",
     });
@@ -112,11 +112,13 @@ describe("environment accessors", () => {
     Object.assign(process.env, validPublicEnv);
 
     const first = getPublicEnv();
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "changed";
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "changed";
     const second = getPublicEnv();
 
     expect(first).toBe(second);
-    expect(second.NEXT_PUBLIC_SUPABASE_ANON_KEY).toBe("public-anon-key");
+    expect(second.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY).toBe(
+      "sb_publishable_test_key",
+    );
   });
 
   test("exposes seller identity from the validated server environment", () => {

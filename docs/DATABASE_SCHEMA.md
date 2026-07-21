@@ -678,4 +678,4 @@ The development/demo seed is idempotent and, once the Phase 5 workflows exist, c
 - At least four categories, twenty products with varied stock/reorder levels, ten customers, and orders distributed over recent months.
 - A mix of draft, confirmed, fulfilled, and cancelled orders created through the same domain services used by the application so invoices, movements, ledger entries, and audit rows are internally consistent. Seed data is added incrementally after each owning service exists: base roles/users in Phase 1, inventory in Phase 2, customers in Phase 3, and transactional orders in Phase 5.
 
-No production password, access token, or service-role key is committed.
+No production password, access token, or secret key is committed.

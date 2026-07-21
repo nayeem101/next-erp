@@ -17,7 +17,7 @@ const optionalTrimmedString = (max: number) =>
 
 export const publicEnvSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.preprocess(emptyToUndefined, z.url()),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: requiredTrimmedString(2048),
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: requiredTrimmedString(2048),
 });
 
 export const companyEnvSchema = z.object({
@@ -42,7 +42,7 @@ export const companyEnvSchema = z.object({
 export const serverEnvSchema = publicEnvSchema
   .extend({
     DATABASE_URL: z.preprocess(emptyToUndefined, z.url()),
-    SUPABASE_SERVICE_ROLE_KEY: requiredTrimmedString(2048),
+    SUPABASE_SECRET_KEY: requiredTrimmedString(2048),
   })
   .extend(companyEnvSchema.shape);
 

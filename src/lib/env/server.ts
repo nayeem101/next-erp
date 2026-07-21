@@ -13,9 +13,10 @@ let cachedServerEnv: ServerEnv | undefined;
 function readServerEnvSource(): Record<string, string | undefined> {
   return {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     DATABASE_URL: process.env.DATABASE_URL,
-    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    SUPABASE_SECRET_KEY: process.env.SUPABASE_SECRET_KEY,
     COMPANY_NAME: process.env.COMPANY_NAME,
     COMPANY_EMAIL: process.env.COMPANY_EMAIL,
     COMPANY_ADDRESS_LINE_1: process.env.COMPANY_ADDRESS_LINE_1,

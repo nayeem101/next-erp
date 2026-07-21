@@ -39,6 +39,7 @@ After every completed task from `docs/TASKS.md`:
 ### 2026-07-22 — Environment validation modules completed
 
 - Added Zod schemas for public Supabase values, server credentials, and required seller identity fields with optional address/region normalization.
+- Adopted current Supabase API key env names: `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and server-only `SUPABASE_SECRET_KEY`.
 - Added browser-safe `getPublicEnv`, server-only `getServerEnv`/`getSellerIdentity`, and invoice-shaped seller snapshot mapping.
 - Added `.env.example` with placeholders only and allowed that file through `.gitignore` while still ignoring real env files.
 - Added unit coverage for valid/invalid boundaries, caching, and incomplete-server failures; stubbed `server-only` for Vitest.
@@ -123,4 +124,4 @@ After every completed task from `docs/TASKS.md`:
 
 ## Approved deviations
 
-- None.
+- 2026-07-22: Supabase public/server credentials use the current publishable/secret API key names (`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`) instead of legacy `anon` / `service_role` env names.
