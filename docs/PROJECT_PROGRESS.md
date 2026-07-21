@@ -4,9 +4,9 @@
 
 - Last updated: 2026-07-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: First Phase 1 task complete; awaiting review
+- Status: Second Phase 1 task complete; awaiting review
 - Active task: None
-- Next eligible task: Add and configure shadcn/ui tokens, base typography, responsive shell colors, and core primitives used by login/shell/forms
+- Next eligible task: Configure ESLint strict rules, Prettier, import ordering, and package scripts for format/lint/typecheck/build
 - Blocker: User review before the next task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -36,6 +36,14 @@ After every completed task from `docs/TASKS.md`:
 
 ## Execution log
 
+### 2026-07-22 — shadcn/ui foundation completed
+
+- Initialized the current shadcn/ui `base-nova` preset for Tailwind CSS 4, React 19, RSC, Base UI, and Lucide icons.
+- Added owned primitives for buttons, cards, fields, alerts, avatar, breadcrumbs, dropdowns, separators, sheets, skeletons, and tooltips.
+- Added accessible light/dark OKLCH tokens for application, sidebar, charts, and success/warning/info states.
+- Corrected Geist typography tokens, added root tooltip context, and replaced generated metadata with NextERP metadata.
+- Checks passed: ESLint, `tsc --noEmit`, production build, and IDE diagnostics.
+
 ### 2026-07-22 — Next.js 16 scaffold completed
 
 - Created the Next.js 16.2.11 App Router project with React 19.2.4, Tailwind CSS 4, ESLint 9, TypeScript 5.9, and `src/` layout.
@@ -54,6 +62,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-07-22: shadcn/ui foundation lint, strict typecheck, and production build passed.
 - 2026-07-22: Scaffold lint, strict typecheck, and Next.js production build passed.
 - 2026-07-22: Phase 0 documentation and Cursor rules checked; no linter diagnostics.
 
