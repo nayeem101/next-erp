@@ -93,7 +93,7 @@ Rules:
 
 ### Client Components
 
-- Add `"use client"` only for hooks, event handlers, browser APIs, React Hook Form, Zustand, TanStack Table interaction, or Recharts rendering.
+- Add `"use client"` only for hooks, event handlers, browser APIs, TanStack Form, Zustand, TanStack Table interaction, or Recharts rendering.
 - Keep the boundary as low in the tree as practical.
 - Receive minimal serialized props; do not send entire database records when a view model is sufficient.
 - Do not copy server data into Zustand. The order wizard store contains only unsaved workflow state.
@@ -128,7 +128,7 @@ export type CreateProductInput = z.input<typeof createProductSchema>;
 export type CreateProductData = z.output<typeof createProductSchema>;
 ```
 
-- React Hook Form uses `zodResolver(createProductSchema)` for immediate feedback.
+- TanStack Form uses the Zod validator adapter with `createProductSchema` for immediate feedback.
 - The Server Action calls `createProductSchema.safeParse(input)` again. Client validation is never trusted.
 - Use `z.input` for raw form values and `z.output` after normalization/transforms.
 - Cross-field rules use `superRefine` in the same schema.

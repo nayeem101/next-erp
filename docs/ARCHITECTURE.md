@@ -7,6 +7,7 @@
 - Supabase Postgres accessed only from server code through Drizzle ORM.
 - React Server Components (RSC) for pages, reads, and composition; small Client Component islands for interaction.
 - Server Actions for mutations; one PDF route handler for streamed binary output.
+- TanStack Form (`@tanstack/react-form`) for type-safe client form state and validation orchestration.
 - Feature-oriented code organization with schemas, queries, services, actions, and UI kept near their domain.
 - PostgreSQL transactions enforce cross-module workflows.
 - URL search parameters own shareable table state; Zustand is limited to unsaved order-wizard state.
@@ -70,7 +71,7 @@ Concrete RSC examples:
 Concrete Client Component examples:
 
 1. `DataTable` uses TanStack Table for column visibility, interactive sorting controls, row selection, and filter inputs. Data loading remains server-owned; table controls update URL search parameters and trigger navigation.
-2. `ProductForm` and `CustomerForm` use React Hook Form, a shared Zod resolver, pending state, and accessible field errors. They invoke Server Actions but do not query the database.
+2. `ProductForm` and `CustomerForm` use TanStack Form, a shared Zod validator adapter, pending state, and accessible field errors. They invoke Server Actions but do not query the database.
 3. `OrderWizard` uses Zustand for unsaved, cross-step selections and line items. Its store is created per mounted wizard, is not persisted globally, and is cleared after a successful save/confirm. Server validation and current prices/stock remain authoritative.
 
 `"use client"` is placed at the smallest practical boundary. A client component does not make all imported visual children client components unless those imports cross that boundary, so server-fetched data is passed as plain props to focused interactive components.
@@ -94,7 +95,7 @@ Feature queries never accept a user ID or role supplied by the browser. Authoriz
 ### Mutation flow
 
 ```text
-React Hook Form
+TanStack Form
   → shared Zod schema (fast client feedback)
   → Server Action(form/input)
   → requireUser() + requireRole() (never trust hidden fields)

@@ -4,7 +4,7 @@
 
 - Application mutations use Next.js Server Actions. There is no parallel REST API.
 - Actions live in the owning feature, are marked `"use server"`, and accept one explicit input object.
-- Inputs are parsed on the server with the same Zod schema used by React Hook Form.
+- Inputs are parsed on the server with the same Zod schema used by TanStack Form.
 - Authentication and authorization are derived from the server session, never from action input.
 - Expected failures are returned as a discriminated `ActionResult`; actions do not throw expected validation, permission, state, or uniqueness errors.
 - Unexpected exceptions are logged and returned as `INTERNAL_ERROR`. Only redirects/not-found control flow from Next.js may escape an action.

@@ -63,7 +63,7 @@ Key components:
 Boundary:
 
 - Server page redirects already-authenticated users.
-- Client `LoginForm` uses React Hook Form, shared `signInSchema`, and `signIn`.
+- Client `LoginForm` uses TanStack Form, shared `signInSchema`, and `signIn`.
 
 States:
 
@@ -235,7 +235,7 @@ Purpose: Create a customer.
 
 Key components: `CustomerForm` grouped into identity, contact, address, and notes sections.
 
-Boundary: server page; client React Hook Form using `createCustomerSchema`.
+Boundary: server page; client TanStack Form using `createCustomerSchema`.
 
 States: field errors, duplicate-email error attached to email, pending and success navigation.
 
@@ -296,7 +296,7 @@ Boundary:
 
 - Server page loads only initial selector data needed for the MVP-sized demo dataset; searchable selectors can submit URL-backed server queries if the dataset grows.
 - Client wizard owns transient steps and line selections in a per-instance Zustand store.
-- React Hook Form owns each step's field state; shared schemas validate.
+- TanStack Form owns each step's field state; shared schemas validate.
 - Server actions re-read customer/product price and availability.
 
 States:
