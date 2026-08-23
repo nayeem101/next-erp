@@ -6,4 +6,18 @@ Playwright owns the local Next.js development-server lifecycle by default.
 - `PLAYWRIGHT_BASE_URL` targets an already-running local, preview, or deployed HTTP(S) server. When set, Playwright does not start or stop a server.
 - `CI` enables two retries, one worker, the GitHub reporter, and forbids committed focused tests.
 
-Test credentials and seeded actor IDs will use dedicated `E2E_*` variables when authentication is implemented. They must remain outside Git and must never reuse production credentials.
+## Authentication coverage
+
+`e2e/auth.spec.ts` exercises the login experience. Anonymous flows (protected-route
+redirects, `next` encoding, invalid-credential messaging) always run against the
+configured Supabase project.
+
+Authenticated flows require a seeded identity in the target project:
+
+- `E2E_ADMIN_EMAIL` + `E2E_ADMIN_PASSWORD`: an active admin account provisioned in
+  Supabase Auth with the `admin` role assigned.
+
+When both variables are set, the suite covers sign-in success, deep-link return via
+`next`, account-menu identity, sign-out re-protection, and the authenticated bounce
+away from `/login`. When absent, those tests skip so fresh checkouts stay green.
+Credentials must remain outside Git and must never reuse production accounts.

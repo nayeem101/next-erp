@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Login experience complete; starting Playwright auth coverage
+- Status: Playwright auth coverage complete; starting Admin user administration
 - Active task: None
-- Next eligible task: Add Playwright login/logout and protected-route redirect coverage
+- Next eligible task: Implement user list query with role/status/search/pagination and Admin-only query tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,14 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-22 — Playwright authentication coverage completed
+
+- Extended the e2e environment contract with optional `E2E_ADMIN_EMAIL`/`E2E_ADMIN_PASSWORD` (both-or-neither validation); authenticated flows skip when absent.
+- Added `e2e/auth.spec.ts`: anonymous protection redirects for `/dashboard` and deep links (`next=%2Finventory%2Fproducts%3Fpage%3D2`), generic invalid-credential messaging with preserved input, and — when seeded admin credentials are provided — sign-in success, primary-navigation role assertion, account-menu identity, deep-link return through `next`, sign-out re-protection, and authenticated bounce away from `/login`.
+- Updated the smoke spec for the new root behavior (anonymous `/` → `/login`) and replaced the template-era heading assertion; login page title is now a real `h1`.
+- Verified live against the configured Supabase project: 8 passed (desktop + mobile Chromium), 8 skipped pending seeded credentials; documented the contract in `e2e/README.md`.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (146 passing), integration tests (92 passing).
 
 ### 2026-08-22 — Login page and form completed
 
@@ -294,6 +302,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-22: Live Playwright run against the configured Supabase project: 8 passed, 8 skipped (no seeded admin); format, lint, strict typecheck, 146 unit and 92 integration tests green.
 - 2026-08-22: Login form component suite passed (146 unit, 92 integration total) with format, lint, strict typecheck, and Partial-Prerender build green.
 - 2026-08-22: Sign-in integration suite passed against the disposable database (92 integration, 139 unit total) with format, lint, strict typecheck, and production build green.
 - 2026-08-22: Shell and error-UI component suites passed (134 unit tests total) with format, lint, strict typecheck, and Partial-Prerender production build green.

@@ -6,7 +6,6 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { LoginForm } from "@/features/auth/components/login-form";
 import { getCurrentUser } from "@/lib/auth/current-user";
@@ -51,7 +50,7 @@ async function LoginContent({
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle className="text-xl">Sign in to NextERP</CardTitle>
+        <h1 className="text-xl font-semibold">Sign in to NextERP</h1>
         <CardDescription>
           Use your operator account to reach the console.
         </CardDescription>

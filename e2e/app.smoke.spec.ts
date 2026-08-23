@@ -1,13 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-test("serves the application shell", async ({ page }) => {
+test("redirects anonymous visitors from the root to the login page", async ({
+  page,
+}) => {
   await page.goto("/");
 
-  await expect(page).toHaveTitle("NextERP");
+  await expect(page).toHaveURL(/\/login$/);
   await expect(
-    page.getByRole("heading", {
-      level: 1,
-      name: "To get started, edit the page.tsx file.",
-    }),
+    page.getByRole("heading", { name: "Sign in to NextERP" }),
   ).toBeVisible();
 });

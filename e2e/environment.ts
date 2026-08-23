@@ -1,9 +1,42 @@
 const defaultPort = 3100;
 
+export interface E2EAdminAccount {
+  email: string;
+  password: string;
+}
+
 export interface E2ETestEnvironment {
+  admin?: E2EAdminAccount | undefined;
   baseURL: string;
   externalServer: boolean;
   port: number;
+}
+
+/**
+ * Reads optional seeded-admin credentials. When both are present the
+ * authenticated Playwright flows run against the provisioned identity;
+ * otherwise those tests skip so the suite stays green on fresh checkouts.
+ */
+function readAdminAccount(
+  email: string | undefined,
+  password: string | undefined,
+): E2EAdminAccount | undefined {
+  if ((email === undefined) !== (password === undefined)) {
+    throw new Error(
+      "Set both E2E_ADMIN_EMAIL and E2E_ADMIN_PASSWORD to exercise authenticated flows.",
+    );
+  }
+
+  if (
+    email === undefined ||
+    password === undefined ||
+    email === "" ||
+    password === ""
+  ) {
+    return undefined;
+  }
+
+  return { email, password };
 }
 
 function readPort(rawPort: string | undefined): number {
@@ -56,6 +89,10 @@ export function readE2ETestEnvironment(
   const externalBaseURL = readExternalBaseURL(environment.PLAYWRIGHT_BASE_URL);
 
   return {
+    admin: readAdminAccount(
+      environment.E2E_ADMIN_EMAIL,
+      environment.E2E_ADMIN_PASSWORD,
+    ),
     baseURL: externalBaseURL ?? `http://127.0.0.1:${String(port)}`,
     externalServer: externalBaseURL !== undefined,
     port,
