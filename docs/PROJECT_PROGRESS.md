@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Phase 1 "Supabase and Drizzle" section complete (all nineteen checklist items)
+- Status: Shell and shared error UI complete; starting authentication actions and login
 - Active task: None
-- Next eligible task: Add root `.cursorignore` exclusions for secrets, dependencies, build/test artifacts, lockfile, and generated PDFs
+- Next eligible task: Implement shared sign-in schema and `signIn`/`signOut` actions with safe errors, active-user checks, audit writes, and tests
 - Blocker: User review before the next task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,61 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-22 — Application shell and shared error UI completed
+
+- Completed the responsive accessible shell: sticky header with skip link, server-rendered desktop navigation, a client `MobileNav` Sheet island (hidden md+) sharing the same role-filtered links, and an initials `UserMenu` dropdown exposing identity plus a working sign-out through a new minimal `signOut` Server Action (`src/features/auth/actions.ts`, full auth actions arrive with the login task).
+- Added the accessible `Breadcrumbs` component (landmark labeling, `aria-current` terminal entry, link-safe middle entries) for page-level trails, and a `(dashboard)/loading.tsx` route skeleton; the shell already streams a skeleton fallback under Suspense.
+- Added shared error surfaces: root `not-found.tsx` (dual not-found/or-no-access copy), client `error.tsx` with digest reference and retry, `global-error.tsx` owning the document, the existing `ForbiddenAccess` 403 presentation, and a typed `ActionErrorAlert` that renders an `ActionError` message with field-error lists while never surfacing raw codes.
+- Component tests cover breadcrumbs structure/landmarks, alert variants including code suppression, and user-menu semantics (initials derivation, accessible trigger); Base UI ignores synthetic pointer events in jsdom, so opened-menu flows are deferred to the Playwright suite.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (134 passing), production build with Partial Prerender shells.
+
+### 2026-08-22 — Protected dashboard layout and module guards completed
+
+- Added the pure role-aware navigation model (`src/lib/auth/navigation.ts`) with per-module role requirements and a `visibleNavItems()` filter; covered by an eight-subset visibility matrix test plus href/label integrity checks.
+- Restructured `(dashboard)/layout.tsx` around a Suspense-wrapped authenticated shell (Cache Components requirement): skeleton fallback streams instantly, verified users receive the filtered nav, unauthenticated requests redirect to login, and inactive/unprovisioned users get the shared forbidden UI. Correlation-ID generation now occurs only after request-data access, fixing a prerender-order constraint from Next 16.
+- Added guarded module layouts for inventory `[admin|inventory]`, customers `[admin|sales]`, sales `[all]`, invoices `[admin|sales]`, ledger `[admin]`, and admin `[admin]`; page-level Admin/Sales guards on `/sales/orders/new` and edit routes; shared `ForbiddenAccess` component; auth-aware root redirect moved into the Proxy so no static root page exists.
+- Verified on a production server: anonymous `/` → `/login`, protected routes → `/login?next=<encoded>`, build emits Partial-Prerender shells for all dashboard routes.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (125 passing), integration tests (84 passing), production build.
+
+### 2026-08-22 — Proxy session refresh and route protection completed
+
+- Extended `src/proxy.ts`: unauthenticated requests to protected prefixes (`/dashboard`, `/inventory`, `/customers`, `/sales`, `/accounting`, `/admin`) redirect to `/login?next=<sanitized path+query>`; authenticated users hitting `/login` redirect to `/dashboard`; all other paths pass through. Redirect responses carry refreshed auth cookies so token renewals survive navigation, and every passthrough response propagates the `x-correlation-id`.
+- Hardened the shared Proxy client's `setAll` against an absent headers argument.
+- Added twelve Proxy unit tests under a Node environment using real `NextRequest`/`NextResponse` objects: protected-prefix coverage, public-path passthrough, login bounce for authenticated users, safe-next encoding and scheme-relative-host rejection, cookie propagation onto redirects, and correlation-ID generation/reuse.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (114 passing), production build.
+
+### 2026-08-22 — Permission guards and RBAC matrix completed
+
+- Added browser-safe role helpers under `src/lib/auth/roles.ts` (`hasAnyRole`) plus the documented `MODULE_ROLE_REQUIREMENTS` table covering inventory, customers, orders, order authoring, invoices, ledger, and administration.
+- Added server-only guards under `src/lib/auth/guards.ts`: `requireUser()` maps unauthenticated/inactive/unprovisioned states to typed `UNAUTHENTICATED`/`FORBIDDEN` failures with fresh correlation IDs; `requireAnyRole()` authorizes verified users against a requirement; `getActionContext(allowed?)` chains both into the documented action-boundary pattern.
+- Added an exhaustive permission-matrix test asserting, for all eight role subsets against every module, exactly the grants/denials derived from `ARCHITECTURE.md`; plus guard tests for each rejected caller state, correlation-ID issuance, chained context checks, and empty-requirement edge cases.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (102 passing), integration tests (84 passing).
+
+### 2026-08-22 — Verified current-user context completed
+
+- Added server-only `getCurrentUser()` under `src/lib/auth/current-user.ts`: identity verified through `supabase.auth.getUser()` (never cookie contents alone), profile loaded via Drizzle, disabled users reported as `inactive`, identities without an application row as `unprovisioned`, and role membership returned sorted by enum order; wrapped in React `cache()` so every layout/page/widget in one render pass shares a single verification round-trip.
+- Exported the `RoleKey` union and `CurrentUser`/`CurrentUserResult` types for downstream permission guards.
+- Added six integration tests using a mocked Supabase client (network boundary only) against the real disposable database: no session, Auth verification failure, unprovisioned identity, disabled user, full multi-role profile, and roleless-but-active member.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (85 passing), integration tests (84 passing).
+
+### 2026-08-22 — Action results, error mapping, and money helpers completed
+
+- Added the browser-safe `ActionResult` contract under `src/lib/errors/action-result.ts` with the nine-code vocabulary from `API_SPEC.md`, success/failure builders, `DomainError` for expected service failures, and Zod `flattenError`-based validation flattening into `fieldErrors`.
+- Added server-only `mapActionError()` under `src/lib/errors/map-action-error.ts`: rethrows Next.js redirect/not-found control flow untouched, passes domain errors through with attachments, maps PostgreSQL unique/foreign-key/check/retry codes to stable messages without leaking constraint names or SQL text, and logs unexpected failures with a correlation ID while returning a generic internal error.
+- Added exact money helpers under `src/lib/money.ts`: regex-constrained decimal parsing to `bigint` cents with rounding rejection and a 99,999,999,999.99 ceiling, canonical decimal-string serialization for RSC boundaries (including negative defense), and bigint wire-string bridges.
+- Raised the TypeScript target to ES2020 for BigInt literal support.
+- Added 29 unit tests across the three modules covering every code path, boundary values, round-trip exactness, control-flow rethrow, and leak prevention.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (83 passing), production build.
+
+### 2026-08-22 — Security headers, redirects, correlation, and logging completed
+
+- Added root `.cursorignore` excluding secrets/env files, dependencies and lockfile, build/test artifacts, generated PDFs, OS noise, and debug logs.
+- Added `buildSecurityHeaders()` under `src/lib/security/headers.ts` wired through `next.config.ts`: CSP scoped to self plus the project's Supabase HTTPS/WSS endpoints (eval permitted only in development), `X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy`, and `Permissions-Policy`.
+- Added `sanitizeRedirectPath()`/`isSameOriginRelativePath()` under `src/lib/auth/safe-redirect.ts`, rejecting absolute URLs, scheme-relative hosts, backslash tricks, embedded control characters, and oversized targets with a safe fallback.
+- Added a server-only structured logger under `src/lib/errors/logging.ts`: single-line JSON records with operation, correlation ID, user ID, error code, and deep redaction of sensitive keys plus Supabase key-material masking; the Proxy now propagates an `x-correlation-id` on every response.
+- Verified headers and correlation ID on a real production server response; added unit tests for redirect sanitization, header/CSP composition, log formatting, redaction, and correlation IDs.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (54 passing), production build.
 
 ### 2026-08-22 — Development seed infrastructure completed
 
@@ -222,6 +277,13 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-22: Shell and error-UI component suites passed (134 unit tests total) with format, lint, strict typecheck, and Partial-Prerender production build green.
+- 2026-08-22: Protected-shell task verified with navigation matrix tests, live redirect checks on `next start`, Partial-Prerender build, 125 unit + 84 integration tests, lint and strict typecheck green.
+- 2026-08-22: Proxy protection suites passed (114 unit tests total) with format, lint, strict typecheck, and production build green.
+- 2026-08-22: Permission-matrix and guard suites passed (102 unit, 84 integration total) with format, lint, and strict typecheck green.
+- 2026-08-22: Current-user integration tests passed with mocked Auth boundary and real database (84 integration, 85 unit total), alongside format, lint, and strict typecheck.
+- 2026-08-22: Action-result, error-mapping, and money unit suites passed (83 unit tests total) with format, lint, strict typecheck, and production build green.
+- 2026-08-22: Security headers and correlation ID confirmed on a live `next start` response; redirect/logger/header unit suites passed (54 total) with format, lint, strict typecheck, and production build green.
 - 2026-08-22: Seed CLI verified twice against the disposable database and seed integration tests passed (78 total), with format, lint, strict typecheck, 28 unit tests, and production build green.
 - 2026-08-22: Factory integration tests passed (74 total), with format, lint, strict typecheck, and 28 unit tests green.
 - 2026-08-22: Relations/barrel task verified with barrel unit tests (28 total), no-op regeneration diff check, full 68-test integration suite, format, lint, and strict typecheck.

@@ -35,8 +35,8 @@ Approval gate: explicit approval of all seven documents is required before Phase
 - [x] Add Husky and lint-staged pre-commit checks for supported staged files.
 - [x] Add CI workflow for install, format, lint, typecheck, unit/component tests, integration tests, build, and Playwright.
 - [x] Add Zod-validated server/public environment modules, required seller identity fields, and `.env.example` without secrets.
-- [ ] Add root `.cursorignore` exclusions for secrets, dependencies, build/test artifacts, lockfile, and generated PDFs.
-- [ ] Add security headers, safe redirect helper, request correlation IDs, and structured server logging.
+- [x] Add root `.cursorignore` exclusions for secrets, dependencies, build/test artifacts, lockfile, and generated PDFs.
+- [x] Add security headers, safe redirect helper, request correlation IDs, and structured server logging.
 
 ### Supabase and Drizzle
 
@@ -61,14 +61,14 @@ Approval gate: explicit approval of all seven documents is required before Phase
 
 ### Shared server contracts and RBAC
 
-- [ ] Implement `ActionResult`, error-code schema, validation flattening, safe PostgreSQL/domain error mapping, and unit tests.
-- [ ] Implement exact money parsing/format serialization helpers and boundary/rounding-rejection tests.
-- [ ] Implement verified `getCurrentUser`, inactive/unprovisioned handling, and request-scoped role loading.
-- [ ] Implement `requireUser`/`requireAnyRole` helpers and exhaustive Admin/Sales/Inventory permission tests.
-- [ ] Implement Next.js 16 `proxy.ts` session refresh, protected/public redirects, safe `next` handling, and Proxy tests.
-- [ ] Implement protected dashboard layout, role-aware navigation model, and module layout guards.
-- [ ] Build the responsive accessible application shell, breadcrumbs, user menu, skip link, and route skeletons.
-- [ ] Implement shared 403, 404, route error, global error, and typed action-error UI.
+- [x] Implement `ActionResult`, error-code schema, validation flattening, safe PostgreSQL/domain error mapping, and unit tests.
+- [x] Implement exact money parsing/format serialization helpers and boundary/rounding-rejection tests.
+- [x] Implement verified `getCurrentUser`, inactive/unprovisioned handling, and request-scoped role loading.
+- [x] Implement `requireUser`/`requireAnyRole` helpers and exhaustive Admin/Sales/Inventory permission tests.
+- [x] Implement Next.js 16 `proxy.ts` session refresh, protected/public redirects, safe `next` handling, and Proxy tests.
+- [x] Implement protected dashboard layout, role-aware navigation model, and module layout guards.
+- [x] Build the responsive accessible application shell, breadcrumbs, user menu, skip link, and route skeletons.
+- [x] Implement shared 403, 404, route error, global error, and typed action-error UI.
 
 ### Authentication and user administration
 

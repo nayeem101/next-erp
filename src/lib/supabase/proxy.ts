@@ -15,7 +15,7 @@ export function createProxyClient(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet, headers) {
+        setAll(cookiesToSet, headers = {}) {
           for (const { name, value } of cookiesToSet) {
             request.cookies.set(name, value);
           }
