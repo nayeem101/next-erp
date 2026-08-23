@@ -72,7 +72,7 @@ Approval gate: explicit approval of all seven documents is required before Phase
 
 ### Authentication and user administration
 
-- [ ] Implement shared sign-in schema and `signIn`/`signOut` actions with safe errors, active-user checks, audit writes, and tests.
+- [x] Implement shared sign-in schema and `signIn`/`signOut` actions with safe errors, active-user checks, audit writes, and tests.
 - [ ] Build accessible login page/form with pending, invalid-credential, inactive-user, and redirect states.
 - [ ] Add Playwright login/logout and protected-route redirect coverage.
 - [ ] Implement user list query with role/status/search/pagination and Admin-only query tests.

@@ -4,10 +4,10 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Shell and shared error UI complete; starting authentication actions and login
+- Status: Sign-in/sign-out actions complete; starting the login experience
 - Active task: None
-- Next eligible task: Implement shared sign-in schema and `signIn`/`signOut` actions with safe errors, active-user checks, audit writes, and tests
-- Blocker: User review before the next task
+- Next eligible task: Build accessible login page/form with pending, invalid-credential, inactive-user, and redirect states
+- Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
 
@@ -35,6 +35,15 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-22 — Sign-in/sign-out actions completed
+
+- Added the browser-safe `signInSchema` (`src/features/auth/schemas.ts`): trimmed lowercase email, 8–128 char password, optional `next`, strict object boundary.
+- Implemented the `signIn` workflow (`src/features/auth/service.ts`): Supabase `signInWithPassword`, admission check requiring an active application user with at least one role (rejections also clear the fresh session), `last_signed_in_at` stamp plus `auth.signed_in` audit event in one transaction, and same-origin-sanitized redirect target.
+- Reworked `src/features/auth/actions.ts`: public `signIn` action returning typed results with validation flattening and generic credential failures; `signOut` now returns `{ redirectTo: "/login" }` per the API contract, treating a missing session as success; `UserMenu` navigates on the result.
+- Added the shared server-only audit writer (`src/lib/audit/writer.ts`) used inside caller transactions.
+- Added schema unit tests and eight action integration tests against the disposable database (success, safe `next`, audit/last-signed-in writes, generic invalid credentials without message leakage, disabled account, roleless account, unprovisioned identity, validation short-circuit).
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (139 passing), integration tests (92 passing), production build.
 
 ### 2026-08-22 — Application shell and shared error UI completed
 
@@ -277,6 +286,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-22: Sign-in integration suite passed against the disposable database (92 integration, 139 unit total) with format, lint, strict typecheck, and production build green.
 - 2026-08-22: Shell and error-UI component suites passed (134 unit tests total) with format, lint, strict typecheck, and Partial-Prerender production build green.
 - 2026-08-22: Protected-shell task verified with navigation matrix tests, live redirect checks on `next start`, Partial-Prerender build, 125 unit + 84 integration tests, lint and strict typecheck green.
 - 2026-08-22: Proxy protection suites passed (114 unit tests total) with format, lint, strict typecheck, and production build green.

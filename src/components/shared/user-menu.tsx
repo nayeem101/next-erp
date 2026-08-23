@@ -31,6 +31,15 @@ function initialsOf(name: string): string {
 export function UserMenu({ displayName, email }: UserMenuProps) {
   const [isPending, startTransition] = useTransition();
 
+  const handleSignOut = () => {
+    startTransition(async () => {
+      const result = await signOut();
+
+      // A full navigation guarantees every cached RSC payload is discarded.
+      window.location.assign(result.ok ? result.data.redirectTo : "/login");
+    });
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -48,13 +57,7 @@ export function UserMenu({ displayName, email }: UserMenuProps) {
           <p className="text-xs font-normal text-muted-foreground">{email}</p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onSelect={() => {
-            startTransition(() => {
-              void signOut().catch(() => undefined);
-            });
-          }}
-        >
+        <DropdownMenuItem onSelect={handleSignOut}>
           <LogOut aria-hidden="true" />
           Sign out
         </DropdownMenuItem>
