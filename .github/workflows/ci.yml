@@ -19,6 +19,22 @@ jobs:
     name: Quality
     runs-on: ubuntu-latest
     timeout-minutes: 20
+
+    services:
+      postgres-test:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: nexterp_test
+        ports:
+          - 54329:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d nexterp_test"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 15
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -49,6 +65,8 @@ jobs:
 
       - name: Integration tests
         run: pnpm test:integration
+        env:
+          INTEGRATION_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54329/nexterp_test
 
       - name: Build
         run: pnpm build

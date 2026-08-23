@@ -40,24 +40,24 @@ Approval gate: explicit approval of all seven documents is required before Phase
 
 ### Supabase and Drizzle
 
-- [ ] Configure browser/server/Proxy Supabase clients with `@supabase/ssr` cookie handling and tests for cookie adaptation.
-- [ ] Configure server-only Drizzle with the Supabase pooler, restricted runtime credentials, `prepare: false`, and connection smoke test.
-- [ ] Configure Drizzle Kit, public-schema migration output, migration scripts, and disposable integration-test database setup.
-- [ ] Create role enums, roles/users/user_roles Drizzle schema and migration, including the external `auth.users` foreign key.
-- [ ] Add hardened Supabase Auth identity synchronization trigger with no default role and integration tests for metadata/permission edge cases.
-- [ ] Create categories/products Drizzle schema and migration with case-normalized uniqueness, stock/price constraints, and indexes.
-- [ ] Create customers Drizzle schema and migration with normalized email uniqueness and indexes.
-- [ ] Create orders/order_line_items Drizzle schema and migration with sequence, snapshots, versions, totals, and indexes.
-- [ ] Create invoices Drizzle schema and migration with sequence, seller/bill-to snapshots, one-invoice-per-order, amount/status constraints, and indexes.
-- [ ] Create stock_movements Drizzle schema and migration with reference/type checks and indexes.
-- [ ] Create ledger_entries Drizzle schema and migration with account/side rules, journal uniqueness, and indexes.
-- [ ] Create audit_log Drizzle schema and migration with structured metadata and query indexes.
-- [ ] Add migration SQL for `updated_at`, legal order transitions, immutable order/customer/total/lines after confirmation, balanced deferred journals, and append-only tables.
-- [ ] Add RLS enablement, no-browser-access policies, least-privilege non-owner runtime policies/grants, and migration tests for denied/append-only operations.
-- [ ] Add inferred Drizzle relations and schema barrel exports without crossing server/client boundaries.
-- [ ] Implement deterministic test factories and per-test transaction/reset helpers for every table.
-- [ ] Implement idempotent development seed infrastructure with provisioned auth-ID mapping and fixed role rows.
-- [ ] Seed only mapped base users/roles in Phase 1; leave transactional demo records to their owning feature phases.
+- [x] Configure browser/server/Proxy Supabase clients with `@supabase/ssr` cookie handling and tests for cookie adaptation.
+- [x] Configure server-only Drizzle with the Supabase pooler, restricted runtime credentials, `prepare: false`, and connection smoke test.
+- [x] Configure Drizzle Kit, public-schema migration output, migration scripts, and disposable integration-test database setup.
+- [x] Create role enums, roles/users/user_roles Drizzle schema and migration, including the external `auth.users` foreign key.
+- [x] Add hardened Supabase Auth identity synchronization trigger with no default role and integration tests for metadata/permission edge cases.
+- [x] Create categories/products Drizzle schema and migration with case-normalized uniqueness, stock/price constraints, and indexes.
+- [x] Create customers Drizzle schema and migration with normalized email uniqueness and indexes.
+- [x] Create orders/order_line_items Drizzle schema and migration with sequence, snapshots, versions, totals, and indexes.
+- [x] Create invoices Drizzle schema and migration with sequence, seller/bill-to snapshots, one-invoice-per-order, amount/status constraints, and indexes.
+- [x] Create stock_movements Drizzle schema and migration with reference/type checks and indexes.
+- [x] Create ledger_entries Drizzle schema and migration with account/side rules, journal uniqueness, and indexes.
+- [x] Create audit_log Drizzle schema and migration with structured metadata and query indexes.
+- [x] Add migration SQL for `updated_at`, legal order transitions, immutable order/customer/total/lines after confirmation, balanced deferred journals, and append-only tables.
+- [x] Add RLS enablement, no-browser-access policies, least-privilege non-owner runtime policies/grants, and migration tests for denied/append-only operations.
+- [x] Add inferred Drizzle relations and schema barrel exports without crossing server/client boundaries.
+- [x] Implement deterministic test factories and per-test transaction/reset helpers for every table.
+- [x] Implement idempotent development seed infrastructure with provisioned auth-ID mapping and fixed role rows.
+- [x] Seed only mapped base users/roles in Phase 1; leave transactional demo records to their owning feature phases.
 
 ### Shared server contracts and RBAC
 
