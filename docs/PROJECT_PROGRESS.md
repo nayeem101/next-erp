@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Sign-in/sign-out actions complete; starting the login experience
+- Status: Login experience complete; starting Playwright auth coverage
 - Active task: None
-- Next eligible task: Build accessible login page/form with pending, invalid-credential, inactive-user, and redirect states
+- Next eligible task: Add Playwright login/logout and protected-route redirect coverage
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,14 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-22 — Login page and form completed
+
+- Added `/login` as a Partial-Prerender route: the static card shell streams instantly while a Suspense-gated content component verifies the session (redirecting authenticated users) and sanitizes the `next` parameter before rendering the form.
+- Built `LoginForm` with TanStack Form: Standard-Schema validation through a form-local extension of the shared `signInSchema` (blank `next` normalizes to absent), labeled email/password fields, show/hide password toggle with `aria-pressed`, per-field errors linked via `aria-describedby`, focus moved to the first invalid field after failed validation (fields stay enabled during validation so focusing works), pending "Signing in…" state with disabled controls during the action call, and full `window.location.assign` navigation to the server-provided redirect target on success.
+- Errors render through the shared `ActionErrorAlert`: generic invalid credentials, disabled account, unprovisioned account, and unexpected failures with correlation IDs.
+- Added seven component tests covering labels, toggle behavior, field-error presentation/focus, both failure messages with input preservation, pending label/disabling, and success navigation; fixed along the way by switching to `useSelector` for store reads.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (146 passing), integration tests (92 passing), production build.
 
 ### 2026-08-22 — Sign-in/sign-out actions completed
 
@@ -286,6 +294,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-22: Login form component suite passed (146 unit, 92 integration total) with format, lint, strict typecheck, and Partial-Prerender build green.
 - 2026-08-22: Sign-in integration suite passed against the disposable database (92 integration, 139 unit total) with format, lint, strict typecheck, and production build green.
 - 2026-08-22: Shell and error-UI component suites passed (134 unit tests total) with format, lint, strict typecheck, and Partial-Prerender production build green.
 - 2026-08-22: Protected-shell task verified with navigation matrix tests, live redirect checks on `next start`, Partial-Prerender build, 125 unit + 84 integration tests, lint and strict typecheck green.
