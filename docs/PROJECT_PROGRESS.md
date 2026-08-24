@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Playwright auth coverage complete; starting Admin user administration
+- Status: User list query complete; next is setUserRoles service/action with last-Admin protection
 - Active task: None
-- Next eligible task: Implement user list query with role/status/search/pagination and Admin-only query tests
+- Next eligible task: Implement setUserRoles service/action with transactional last-Admin protection, audit event, and concurrency tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,15 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Admin user-list query completed
+
+- Moved the canonical `ROLE_KEYS`/`RoleKey` vocabulary into browser-safe `lib/auth/roles.ts`; `current-user.ts` re-exports for compatibility so schemas and UI can share it without touching server-only modules.
+- Added `features/users/schemas.ts`: `userListQuerySchema` with trimmed optional search (max 100), role/status enums, coerced page/pageSize bounds (page >= 1, pageSize 5-100), plus serialized `UserListRow`/`UserListPage` contracts (ISO date strings) for client components.
+- Added `features/users/queries.ts`: two round-trip listing — paginated profiles ordered by case-insensitive email (matching the unique lower-email index), then role memberships for exactly that page grouped in memory in canonical admin/sales/inventory order; search uses LIKE-escaped case-insensitive matching across email and display name, role filter via `exists()` subquery, status via boolean equality, and a parallel count with the same predicate.
+- Added `listUsersAction` (Admin-only through `getActionContext(["admin"])`) returning the shared ActionResult shape.
+- Tests: six schema unit tests; eleven integration tests covering ordering, role grouping/ordering, dual-field case-insensitive search, literal treatment of LIKE metacharacters (`%`), role/status/combination filters, deterministic pagination with totals, empty results, and the authorization matrix (unauthenticated/non-Admin/Admin/validation order). Fixtures use per-test unique tokens instead of truncation so the suite coexists with concurrently running integration files.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (152 passing), integration tests (103 passing), production build with `/login` still Partial-Prerender.
 
 ### 2026-08-22 — Playwright authentication coverage completed
 
@@ -302,6 +311,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-24: Users feature suites green: 152 unit, 103 integration; lint, strict typecheck, format, and Partial-Prerender build all pass.
 - 2026-08-22: Live Playwright run against the configured Supabase project: 8 passed, 8 skipped (no seeded admin); format, lint, strict typecheck, 146 unit and 92 integration tests green.
 - 2026-08-22: Login form component suite passed (146 unit, 92 integration total) with format, lint, strict typecheck, and Partial-Prerender build green.
 - 2026-08-22: Sign-in integration suite passed against the disposable database (92 integration, 139 unit total) with format, lint, strict typecheck, and production build green.

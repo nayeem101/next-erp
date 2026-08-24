@@ -5,6 +5,7 @@ import { cache } from "react";
 
 import { getDb } from "@/db";
 import { roles, userRoles, users } from "@/db/schema";
+import { ROLE_KEYS, type RoleKey } from "@/lib/auth/roles";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -15,9 +16,8 @@ import { createClient } from "@/lib/supabase/server";
  * Drizzle-managed application tables.
  */
 
-export const ROLE_KEYS = ["admin", "sales", "inventory"] as const;
-
-export type RoleKey = (typeof ROLE_KEYS)[number];
+export { ROLE_KEYS };
+export type { RoleKey };
 
 export interface CurrentUser {
   id: string;

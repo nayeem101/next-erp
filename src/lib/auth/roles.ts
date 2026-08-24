@@ -1,4 +1,7 @@
-import type { RoleKey } from "@/lib/auth/current-user";
+/** Canonical role vocabulary, browser-safe for schemas and UI gating. */
+export const ROLE_KEYS = ["admin", "sales", "inventory"] as const;
+
+export type RoleKey = (typeof ROLE_KEYS)[number];
 
 /**
  * Pure role-membership checks shared by action guards and UI gating.
