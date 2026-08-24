@@ -36,6 +36,17 @@ After every completed task from `docs/TASKS.md`:
 
 ## Execution log
 
+### 2026-08-25 — Customers schemas, queries, and write services completed
+
+- Schemas (17 unit tests): strict create/update/setActive contracts with lowercase-normalized emails (zod v4 `z.email()` accepts `a@b` per HTML5 rules — tested), two-letter uppercase country codes, blank-optional→undefined mapping; list query defaults/coercion; order-history query contracts.
+- Queries (6 integration tests): paginated directory with correlated order aggregates (`orderCount`, confirmed+fulfilled `confirmedSalesCents`), escaped search across name/email/company, lifecycle filter; detail row adds address fields, `openDraftCount`, `lastOrderAt`; per-customer order history with status filter/sorts.
+  - Key fix: drizzle renders BARE column names inside raw `sql` templates, so a correlated subquery `(select count(*) from orders o where o.customer_id = customers.id)` written via template columns silently bound `"id"` to the inner table and always returned 0. Correlated aggregates are now fully schema-qualified literal SQL.
+  - postgres.js returns bigint aggregates/scalars as strings — raw fields typed `sql<string>` and converted at the boundary.
+- Services/actions (20 integration tests incl. RBAC): createCustomer (+`customer.created`, case-insensitive UNIQUE_CONFLICT via cause-chain 23505 walk), updateCustomer (diff-only audit, no-op skips audit entirely), setCustomerActive (archive/restore actions, idempotent). Five guarded actions on Admin/Sales; Inventory FORBIDDEN on all reads/writes (TASKS line 143 satisfied inside customers.service.integration.test.ts).
+  - Gotchas: audit_log.correlation_id is UUID — tests pass randomUUID(); action failures carry code at `result.error.code`, not top-level.
+
+### 2026-08-24 — Phase 2 gate PASSED
+
 ### 2026-08-24 — Phase 2 gate PASSED
 
 - **Full battery**: Prettier clean; ESLint zero warnings; strict TypeScript typecheck clean; 300 unit/component/a11y tests passing; 64 inventory integration tests passing (categories + products).
