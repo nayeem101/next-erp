@@ -12,6 +12,8 @@ import type { ActionError } from "@/lib/errors/action-result";
 
 import { setProductActiveAction } from "../actions";
 
+import { StockAdjustmentDialog } from "./stock-adjustment-dialog";
+
 import type { ProductListRow } from "../schemas";
 
 /**
@@ -28,6 +30,7 @@ export function ProductStatusActions({
 }) {
   const router = useRouter();
   const [confirmOpen, setConfirmOpen] = React.useState(false);
+  const [adjustOpen, setAdjustOpen] = React.useState(false);
   const [submissionError, setSubmissionError] = React.useState<
     ActionError | undefined
   >(undefined);
@@ -65,6 +68,14 @@ export function ProductStatusActions({
   return (
     <>
       <div className="flex gap-2">
+        <button
+          className={buttonVariants({ variant: "outline", size: "sm" })}
+          onClick={() => {
+            setAdjustOpen(true);
+          }}
+        >
+          Adjust stock
+        </button>
         <a
           className={buttonVariants({ variant: "outline", size: "sm" })}
           href={`/inventory/products/${product.id}/edit`}
@@ -84,6 +95,16 @@ export function ProductStatusActions({
           {product.isActive ? "Archive" : "Restore"}
         </button>
       </div>
+
+      {adjustOpen && (
+        <StockAdjustmentDialog
+          productId={product.id}
+          productName={product.name}
+          currentStock={product.stockOnHand}
+          open
+          onOpenChange={setAdjustOpen}
+        />
+      )}
 
       {confirmOpen && (
         <ConfirmationDialog

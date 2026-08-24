@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Product detail page done; next is stock-adjustment dialog
+- Status: Stock-adjustment dialog done; next is cross-product Stock Movements page/grid
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,15 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Stock adjustment dialog completed
+
+- Added `features/products/components/stock-adjustment-dialog.tsx`: reasoned delta/reason form with client validation mirroring the shared contract (non-zero integer within +/-1M, required trimmed reason). Success closes, resets the draft, and refreshes. Rejected adjustments — including INSUFFICIENT_STOCK — keep the dialog open, preserve the draft, surface the error alert, and keep the live balance visible in the description so a corrected delta can be submitted immediately. Pending state disables resubmission.
+- Wired an "Adjust stock" trigger into `ProductStatusActions` on the detail page (Admin/Inventory only).
+- Component tests (4): current-balance echo in description, zero-delta/blank-reason blocking without server calls, parsed integer + trimmed reason on success with refresh, insufficient-stock recovery keeping dialog/draft/balance.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, 290 unit + 23 product integration tests.
+
+### 2026-08-24 — Product detail page completed
 
 ### 2026-08-24 — Product detail page completed
 

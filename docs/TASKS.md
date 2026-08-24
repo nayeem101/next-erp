@@ -119,7 +119,7 @@ Phase 1 gate:
 - [x] Build Products page and TanStack grid with stock/low-stock presentation, URL controls, row actions, and component tests.
 - [x] Build Product create/edit forms with active-category options, currency/quantity fields, prerequisite state, and component tests.
 - [x] Build Product detail page with summary, status actions, and paginated movement table.
-- [ ] Build stock-adjustment dialog with required reason, negative-result recovery, pending state, and component tests.
+- [x] Build stock-adjustment dialog with required reason, negative-result recovery, pending state, and component tests.
 - [ ] Build cross-product Stock Movements page/grid with filters, entity links, and append-only presentation.
 - [ ] Add idempotent demo category/product/opening-movement seed data through the completed inventory services.
 - [ ] Add RBAC integration tests proving Sales cannot administer inventory or invoke inventory actions.
