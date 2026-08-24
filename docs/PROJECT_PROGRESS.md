@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: createCategory done; next is updateCategory service/action with changed-field audit
+- Status: updateCategory done; next is setCategoryActive with active-product conflict
 - Active task: None
-- Next eligible task: Implement updateCategory service/action with changed-field audit metadata, revalidation, and tests
+- Next eligible task: Implement setCategoryActive with active-product conflict, restore behavior, audit events, and tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,13 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — updateCategory completed
+
+- Extended `features/categories/service.ts` with `updateCategory`: NOT_FOUND on missing rows; derives the new slug and diffs name/slug/description against stored state; uniqueness pre-check excludes the row itself (re-submitting one's own name passes) while drifted slugs resync deterministically to slugify(name); updates stamp updatedBy and write `category.updated` with before/after maps containing ONLY changed fields; concurrent 23505 races map to UNIQUE_CONFLICT.
+- Added `updateCategoryAction` (Admin/Inventory guard) with categories + audit-log tag invalidation.
+- Integration tests (6): rename diff audit with actor restamp, drifted-slug resync, NOT_FOUND, normalized-name collision into another category, self-name re-submission allowed, sales FORBIDDEN without mutation.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck.
 
 ### 2026-08-24 — createCategory completed
 

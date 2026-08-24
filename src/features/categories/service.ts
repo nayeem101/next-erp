@@ -1,6 +1,6 @@
 import "server-only";
 
-import { eq, ilike, or, sql } from "drizzle-orm";
+import { and, eq, ilike, ne, or, sql } from "drizzle-orm";
 
 import { getDb } from "@/db";
 import { categories } from "@/db/schema";
@@ -8,7 +8,12 @@ import { slugify } from "@/features/categories/schemas";
 import { writeAuditEvent } from "@/lib/audit/writer";
 import { DomainError } from "@/lib/errors/action-result";
 
-import type { CreateCategoryInput, CreateCategoryResult } from "./schemas";
+import type {
+  CreateCategoryInput,
+  CreateCategoryResult,
+  UpdateCategoryInput,
+  UpdateCategoryResult,
+} from "./schemas";
 
 /**
  * Category creation workflow.
@@ -92,6 +97,126 @@ export async function createCategory(
       (error as { code?: unknown }).code === "23505"
     ) {
       throw new DomainError("UNIQUE_CONFLICT", SLUG_CONFLICT_MESSAGE);
+    }
+
+    throw error;
+  }
+}
+
+/**
+ * Category rename/redescription workflow.
+ *
+ * The audit event carries only the fields that actually changed so the log
+ * reads as a diff, not a snapshot echo.
+ */
+export async function updateCategory(
+  input: UpdateCategoryInput,
+  actorUserId: string,
+  correlationId: string,
+): Promise<UpdateCategoryResult> {
+  const db = getDb();
+  const nextSlug = slugify(input.name);
+
+  const existingRows = await db
+    .select({
+      id: categories.id,
+      name: categories.name,
+      slug: categories.slug,
+      description: categories.description,
+    })
+    .from(categories)
+    .where(eq(categories.id, input.categoryId))
+    .limit(1);
+
+  const existing = existingRows[0];
+
+  if (!existing) {
+    throw new DomainError("NOT_FOUND", "That category no longer exists.");
+  }
+
+  const nameChanged = existing.name !== input.name;
+  const descriptionChanged =
+    (existing.description ?? undefined) !== input.description;
+  const slugChanged = existing.slug !== nextSlug;
+
+  if (nameChanged || slugChanged) {
+    const conflicts = await db
+      .select({ id: categories.id })
+      .from(categories)
+      .where(
+        and(
+          ne(categories.id, input.categoryId),
+          or(
+            sql`lower(${categories.name}) = lower(${input.name})`,
+            eq(categories.slug, nextSlug),
+          ),
+        ),
+      )
+      .limit(1);
+
+    if (conflicts.length > 0) {
+      throw new DomainError(
+        "UNIQUE_CONFLICT",
+        NAME_CONFLICT_MESSAGE.replace(
+          "already exists. Choose a different name.",
+          "is already taken by another category.",
+        ),
+      );
+    }
+  }
+
+  try {
+    return await db.transaction(async (tx) => {
+      await tx
+        .update(categories)
+        .set({
+          ...(nameChanged ? { name: input.name } : {}),
+          ...(slugChanged ? { slug: nextSlug } : {}),
+          ...(descriptionChanged
+            ? { description: input.description ?? null }
+            : {}),
+          updatedBy: actorUserId,
+        })
+        .where(eq(categories.id, input.categoryId));
+
+      const before: Record<string, unknown> = {};
+      const after: Record<string, unknown> = {};
+
+      if (nameChanged) {
+        before.name = existing.name;
+        after.name = input.name;
+      }
+      if (slugChanged) {
+        before.slug = existing.slug;
+        after.slug = nextSlug;
+      }
+      if (descriptionChanged) {
+        before.description = existing.description ?? null;
+        after.description = input.description ?? null;
+      }
+
+      await writeAuditEvent(tx, {
+        actorUserId,
+        action: "category.updated",
+        entityType: "category",
+        entityId: input.categoryId,
+        metadata: { before, after },
+        correlationId,
+      });
+
+      return { categoryId: input.categoryId };
+    });
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code?: unknown }).code === "23505"
+    ) {
+      throw new DomainError(
+        "UNIQUE_CONFLICT",
+        "Another category already uses this name or slug.",
+      );
     }
 
     throw error;

@@ -14,13 +14,16 @@ import { mapActionError } from "@/lib/errors/map-action-error";
 import { listCategories } from "./queries";
 import {
   createCategorySchema,
+  updateCategorySchema,
   listCategoriesQuerySchema,
   type CategoryListPage,
   type CreateCategoryArgs,
   type CreateCategoryResult,
+  type UpdateCategoryInput,
+  type UpdateCategoryResult,
   type ListCategoriesQueryInput,
 } from "./schemas";
-import { createCategory } from "./service";
+import { createCategory, updateCategory } from "./service";
 
 /**
  * Paginated category directory for the inventory grid. Admin and Inventory
@@ -68,6 +71,37 @@ export async function createCategoryAction(
 
   try {
     const result = await createCategory(
+      parsed.data,
+      context.user.id,
+      context.correlationId,
+    );
+
+    invalidateTags(CACHE_TAGS.categories, CACHE_TAGS.auditLog);
+
+    return actionSuccess(result);
+  } catch (error) {
+    return mapActionError(error, context.correlationId);
+  }
+}
+
+/** Admin/Inventory category update with diff-based audit. */
+export async function updateCategoryAction(
+  input: UpdateCategoryInput,
+): Promise<ActionResult<UpdateCategoryResult>> {
+  const parsed = updateCategorySchema.safeParse(input);
+
+  if (!parsed.success) {
+    return validationFailure(parsed.error);
+  }
+
+  const context = await getActionContext(MODULE_ROLE_REQUIREMENTS.inventory);
+
+  if (!context.ok) {
+    return context;
+  }
+
+  try {
+    const result = await updateCategory(
       parsed.data,
       context.user.id,
       context.correlationId,
