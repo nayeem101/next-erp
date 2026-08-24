@@ -102,6 +102,58 @@ export type ListCustomersQueryOutput = z.output<
   typeof listCustomersQuerySchema
 >;
 
+// ---------------------------------------------------------------------------
+// Customer order history contracts
+// ---------------------------------------------------------------------------
+
+export const CUSTOMER_ORDER_SORT_OPTIONS = [
+  "newest",
+  "oldest",
+  "total_asc",
+  "total_desc",
+] as const;
+
+export const customerOrderStatusFilter = z.enum([
+  "all",
+  "draft",
+  "confirmed",
+  "fulfilled",
+  "cancelled",
+]);
+
+export const listCustomerOrdersQuerySchema = z.object({
+  status: customerOrderStatusFilter.default("all"),
+  sort: z.enum(CUSTOMER_ORDER_SORT_OPTIONS).default("newest"),
+  page: z.coerce.number().int().min(1).max(10_000).default(1),
+  pageSize: z.coerce.number().int().min(4).max(100).default(10),
+});
+
+export type ListCustomerOrdersQuery = z.infer<
+  typeof listCustomerOrdersQuerySchema
+>;
+export type ListCustomerOrdersQueryInput = z.input<
+  typeof listCustomerOrdersQuerySchema
+>;
+
+export interface CustomerOrderRow {
+  id: string;
+  orderNumber: string;
+  status: "draft" | "confirmed" | "fulfilled" | "cancelled";
+  version: number;
+  totalCents: number;
+  currencyCode: string;
+  createdAt: string;
+  confirmedAt: string | null;
+}
+
+export interface CustomerOrderPage {
+  rows: CustomerOrderRow[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
 export interface CustomerListRow {
   id: string;
   name: string;
@@ -123,6 +175,15 @@ export interface CustomerListPage {
   page: number;
   pageSize: number;
   totalPages: number;
+}
+
+export interface CustomerDetailRow extends CustomerListRow {
+  addressLine1: string;
+  addressLine2: string | null;
+  postalCode: string;
+  notes: string | null;
+  openDraftCount: number;
+  lastOrderAt: string | null;
 }
 
 export interface CreateCustomerResult {
