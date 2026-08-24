@@ -36,6 +36,15 @@ After every completed task from `docs/TASKS.md`:
 
 ## Execution log
 
+### 2026-08-24 — Demo inventory seed completed (Products section finished)
+
+- Added `features/products/demo-seed.ts`: fixed catalog of 4 categories and 20 products with varied prices, stock, and reorder levels — deliberately including five low-stock rows and one zero-stock row so grid treatments have data. `seedDemoInventoryCatalog(actorId)` checks existence by derived slug / normalized SKU and delegates all creation to the production `createCategory`/`createProduct` services, so validation, audit events, and opening movements are identical to application writes.
+- Integration tests (3): first run creates 4/20/19-opening-movements with matching audit counts; second run is a complete no-op returning the same id map; a pre-seeded subset is absorbed without duplication.
+- CLI wiring into `db:seed` is deferred until the customers/orders phases complete the transactional seed per DATABASE_SCHEMA.md.
+- Products section is now fully complete: schemas, queries (catalog + movements), write services, actions, grid/forms/detail/dialog UI, RBAC proofs, and demo seed.
+
+### 2026-08-24 — Inventory RBAC integration tests completed
+
 ### 2026-08-24 — Inventory RBAC integration tests completed
 
 - Added `features/products/products.rbac.integration.test.ts` (6): sales callers receive FORBIDDEN on all five product actions; mutation attempts prove no side effects (no rows created, names untouched, active flags unchanged, balances and movement tables empty); inventory role retains catalog read access; a missing session fails closed with an auth-code rather than leaking data.
