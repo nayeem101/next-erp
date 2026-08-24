@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Form controls complete; next is the server-fed searchable combobox
+- Status: Combobox complete; next is cache helpers configuration
 - Active task: None
-- Next eligible task: Build server-fed searchable combobox with keyboard and empty-state tests
+- Next eligible task: Configure `"use cache"`, `cacheLife`, `cacheTag`, `updateTag`, and `revalidatePath` helpers/tests without deprecated single-argument `revalidateTag` or `unstable_*` APIs
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,12 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Searchable combobox completed
+
+- Added `components/shared/searchable-combobox.tsx`: WAI-ARIA combobox pattern over the shared Input — debounced server-side loading (`loadOptions(query)` receives raw trimmed queries; no client filtering), `aria-expanded`/`aria-controls`/`aria-activedescendant` wiring, ArrowDown/ArrowUp/Enter/Escape keyboard support with clamped highlight indices, mousedown-before-blur selection commit, "Searching…" polite status while in flight, explicit empty-state message, external canonical value reseeding via render-time reset, and null reporting when the field clears.
+- Tests (6): debounce collapses keystrokes into one fetch with final query, keyboard highlight + Enter selection payload and closed state, Escape closes without selecting, empty-state rendering without options, in-flight status resolution to listed options, and clear-to-null semantics.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (216 passing).
 
 ### 2026-08-24 — Shared form controls completed
 
@@ -370,6 +376,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-24: combobox suites green: 216 unit; lint, strict typecheck, format pass.
 - 2026-08-24: form-control suites green: 210 unit, 121 integration; lint, strict typecheck, format, build pass.
 - 2026-08-24: display component suites green: 200 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: data-table suites green: 189 unit, 121 integration; lint, strict typecheck, format pass.

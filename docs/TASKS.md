@@ -86,7 +86,7 @@ Approval gate: explicit approval of all seven documents is required before Phase
 - [x] Build reusable TanStack `DataTable`, toolbar, sorting, visibility, and server-pagination controls with accessibility tests.
 - [x] Build shared table skeleton, unfiltered/filtered empty states, status badge, local date, and money display components.
 - [x] Build shared form error summary, action error alert, submit button, confirmation dialog, currency input, and quantity input.
-- [ ] Build server-fed searchable combobox with keyboard and empty-state tests.
+- [x] Build server-fed searchable combobox with keyboard and empty-state tests.
 - [ ] Configure `"use cache"`, `cacheLife`, `cacheTag`, `updateTag`, and `revalidatePath` helpers/tests without deprecated single-argument `revalidateTag` or `unstable_*` APIs.
 
 Phase 1 gate:
