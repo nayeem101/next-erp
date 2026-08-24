@@ -101,7 +101,13 @@ export const listCategoriesQuerySchema = z.object({
   pageSize: z.coerce.number().int().min(5).max(100).default(20),
 });
 
+/** Parsed output consumed by the query layer. */
 export type ListCategoriesQuery = z.infer<typeof listCategoriesQuerySchema>;
+
+/** Raw caller input; defaults fill omitted fields. */
+export type ListCategoriesQueryInput = z.input<
+  typeof listCategoriesQuerySchema
+>;
 
 /** Serialized row for the categories grid (client-safe). */
 export interface CategoryListRow {

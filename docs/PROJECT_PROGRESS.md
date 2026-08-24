@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Category schemas done; next is the paginated category list query with product counts
+- Status: Category list query done; next is createCategory service/action with audit and revalidation
 - Active task: None
-- Next eligible task: Implement paginated category queries with product counts, filters, sorting allowlist, and query integration tests
+- Next eligible task: Implement createCategory service/action with role check, uniqueness mapping, audit event, revalidation, and tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,13 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Category list query completed
+
+- Added `features/categories/queries.ts`: `listCategories` runs a joined page query (left join restricted to active products so empty categories survive with count 0) grouped per category, plus a parallel total count sharing the same predicate; search is escaped case-insensitive name matching; status filter defaults to active; the four-entry sort allowlist maps to lower(name) asc/desc, newest, and most_products (aggregate ordering only on the joined query, tie-broken by name).
+- Added `listCategoriesAction` guarded by the inventory module matrix (Admin + Inventory); input type uses zod's input shape so defaulted fields stay optional at the boundary.
+- Integration tests (11): default active-only name sort with exact active-product counts, archived/all universes, escaped search incl. literal `%` typed by users matching only true owners, name_desc, most_products ranking, deterministic pagination across two pages, unauthenticated/sales FORBIDDEN, inventory-allowed, validation-order on the sort allowlist. The suite truncates its owned tables per test — safe under serialized integration files.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (237 passing), integration tests (132 passing).
 
 ### 2026-08-24 — Category schemas completed
 
@@ -398,6 +405,7 @@ Phase 1 is complete. Phase 2 (Inventory: categories → products) is next.
 
 ## Verification history
 
+- 2026-08-24: categories suites green: 237 unit, 132 integration; lint, strict typecheck, format pass.
 - 2026-08-24 PHASE 1 GATE: clean-DB migrations x3 stable, 225 unit + 121 integration + 8 live e2e passing, lint/typecheck/format clean, Partial-Prerender build ok, client-bundle secret scan CLEAN.
 - 2026-08-24: cache helper suites green: 225 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: combobox suites green: 216 unit; lint, strict typecheck, format pass.
