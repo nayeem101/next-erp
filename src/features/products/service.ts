@@ -409,11 +409,26 @@ export async function adjustStock(
   return { productId: input.productId, stockOnHand: newStock };
 }
 
+/**
+ * Drizzle rethrows driver errors wrapped as generic failures with the
+ * original PostgresError on `cause`; walk the chain for the 23505 code.
+ */
 function isUniqueViolation(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    (error as { code?: unknown }).code === "23505"
-  );
+  let current: unknown = error;
+
+  for (
+    let depth = 0;
+    typeof current === "object" && current !== null && depth < 5;
+    depth += 1
+  ) {
+    const candidate = current as { code?: unknown; cause?: unknown };
+
+    if (candidate.code === "23505") {
+      return true;
+    }
+
+    current = candidate.cause;
+  }
+
+  return false;
 }

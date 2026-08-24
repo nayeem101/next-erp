@@ -36,6 +36,14 @@ After every completed task from `docs/TASKS.md`:
 
 ## Execution log
 
+### 2026-08-24 — updateProduct tests completed (Products section fully closed)
+
+- Integration tests (3): full-field update verifies normalized SKU, cents conversion, and a diff-only `product.updated` audit (five changed fields tracked before/after with string-serialized cents) while stock stays untouched and no movement rows appear; case-insensitive SKU collisions map to UNIQUE_CONFLICT; inactive/missing target categories yield CONFLICT/NOT_FOUND and unknown products fail closed.
+- Fixed `isUniqueViolation` to walk drizzle's error `cause` chain — wrapped 23505 codes from constraint violations now surface as domain conflicts instead of INTERNAL_ERROR.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, 296 unit + 35 product integration tests.
+
+### 2026-08-24 — Demo inventory seed completed (Products section finished)
+
 ### 2026-08-24 — Demo inventory seed completed (Products section finished)
 
 - Added `features/products/demo-seed.ts`: fixed catalog of 4 categories and 20 products with varied prices, stock, and reorder levels — deliberately including five low-stock rows and one zero-stock row so grid treatments have data. `seedDemoInventoryCatalog(actorId)` checks existence by derived slug / normalized SKU and delegates all creation to the production `createCategory`/`createProduct` services, so validation, audit events, and opening movements are identical to application writes.
