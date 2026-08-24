@@ -126,7 +126,7 @@ Phase 1 gate:
 
 Phase 2 gate:
 
-- [ ] Run format, lint, typecheck, inventory unit/component/integration tests, full build, and inventory accessibility checks.
+- [x] Run format, lint, typecheck, inventory unit/component/integration tests, full build, and inventory accessibility checks.
 
 ## Phase 3 — Customers
 

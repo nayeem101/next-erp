@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Inventory RBAC tests done; next is idempotent demo seed data
+- Status: PHASE 2 COMPLETE. Next: Phase 3 customer schemas
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,16 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Phase 2 gate PASSED
+
+- **Full battery**: Prettier clean; ESLint zero warnings; strict TypeScript typecheck clean; 300 unit/component/a11y tests passing; 64 inventory integration tests passing (categories + products).
+- **Accessibility harness**: added dev-only `jest-axe` + `axe-core` and four axe scans over the products grid (data + empty) and stock movement table (data + empty) — zero violations.
+- **Production build**: compiles cleanly with eight Partial-Prerender routes including every inventory page. Fixed `/inventory/products/new` failing prerender: the route reads no dynamic APIs, so cacheComponents executed its DB call at build time despite the Suspense boundary — resolved by awaiting `connection()` from `next/server` inside the deferred form component (per Next 16 caching docs).
+
+Phase 2 (Inventory) is complete. Phase 3 (Customers) is next.
+
+### 2026-08-24 — updateProduct tests completed (Products section fully closed)
 
 ### 2026-08-24 — updateProduct tests completed (Products section fully closed)
 
