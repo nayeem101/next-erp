@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Categories section COMPLETE; next is Products schemas
+- Status: Product schemas done; next is product list queries with stock projections
 - Active task: None
-- Next eligible task: Implement product Zod schemas, SKU normalization, money/quantity contracts, and valid/invalid unit tests
+- Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,12 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Product schemas completed
+
+- Added `features/products/schemas.ts`: strict create/update/setProductActive/adjustStock contracts per API spec — SKU trimmed+uppercased (matching the upper() unique index), money as decimal strings validated to <=2 places and convertible to positive bigint cents with magnitude caps, quantities coerced integers bounded [0, 1M], zero-delta stock adjustments rejected via refine, reason required. List query schema adds category filter, low-stock status enum, seven-entry sort allowlist; serialized grid rows carry integer cents.
+- Tests (12): SKU case-collision identity, money edge cases (zero/negative/over-precision/absurd), integer coercion incl. numeric-string stock, strict keys, update-vs-create shape differences (no openingStock on updates), adjustStock delta bounds + zero rejection, list defaults/coercion/allowlists.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck.
 
 ### 2026-08-24 — Category form dialog completed (Categories section finished)
 
