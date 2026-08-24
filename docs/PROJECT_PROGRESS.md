@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: DataTable infrastructure complete; next is shared display components
+- Status: Display components complete; next is shared form controls
 - Active task: None
-- Next eligible task: Build shared table skeleton, unfiltered/filtered empty states, status badge, local date, and money display components
+- Next eligible task: Build shared form error summary, action error alert, submit button, confirmation dialog, currency input, and quantity input
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,14 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Shared display components completed
+
+- Added `components/shared/data-table-skeleton.tsx`: column-aware loading placeholder that keeps header labels visible, sizes pulsing cells deterministically, and marks the region `aria-busy`.
+- Added `components/shared/display.tsx`: `EmptyState` (unfiltered vs filtered copy — filtered explains narrowing filters rather than implying missing data), `LocalDateTime` (locale rendering with machine-readable `dateTime` and exact UTC tooltip for auditors), and `Money` (exact Intl formatting from serialized integer cents, string-safe, currency parameter).
+- Added `components/shared/status-badge.tsx`: exhaustive typed mappings — OrderStatusBadge (draft/confirmed/fulfilled/cancelled), InvoiceStatusBadge (issued/void), EntityActiveBadge (active/archived), StockLevelBadge (in/low/out) — plus a neutral `StatusBadge` base; adding an enum value without extending the map is now a compile error.
+- Tests (11): full status-map coverage, datetime/UTC tooltip attributes, exact cents formatting incl. string payloads and EUR, unfiltered/filtered copy divergence, skeleton busy-state with header/placeholder counts.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (200 passing), integration tests (121 passing).
 
 ### 2026-08-24 — Reusable DataTable infrastructure completed
 
@@ -353,6 +361,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-24: display component suites green: 200 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: data-table suites green: 189 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: list-query suites green: 181 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: Admin Users grid suites green: 163 unit, 121 integration; lint, strict typecheck, format, build pass.
