@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: PHASE 1 GATE PASSED — all foundation phases complete; starting Phase 2 Inventory (category schemas)
+- Status: Category schemas done; next is the paginated category list query with product counts
 - Active task: None
-- Next eligible task: Implement category Zod schemas, slug normalization, and valid/invalid/duplicate-shape unit tests
+- Next eligible task: Implement paginated category queries with product counts, filters, sorting allowlist, and query integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,12 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Category schemas completed
+
+- Added `features/categories/schemas.ts`: strict create/update/setCategoryActive contracts per API spec (requiredText(100) name, optionalText(1000) description collapsing blanks to undefined, uuid ids); `slugify()` — NFKD accent transliteration, `&`→"and", symbol stripping, dash collapsing, deterministic output so duplicate detection can compare slugs directly; list query schema with status (default active) and a four-entry sort allowlist; serialized grid row/page types.
+- Tests (12): slug determinism across casing/spacing variants, transliteration, boundary dashes; valid/invalid create shapes incl. length caps and unknown-key rejection; update/create duplicate-shape guarantee; boolean strictness on setCategoryActive; list defaults/allowlist/coercion.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck.
 
 ### 2026-08-24 — Phase 1 gate PASSED
 

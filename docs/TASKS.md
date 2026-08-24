@@ -99,7 +99,7 @@ Phase 1 gate:
 
 ### Categories
 
-- [ ] Implement category Zod schemas, slug normalization, and valid/invalid/duplicate-shape unit tests.
+- [x] Implement category Zod schemas, slug normalization, and valid/invalid/duplicate-shape unit tests.
 - [ ] Implement paginated category queries with product counts, filters, sorting allowlist, and query integration tests.
 - [ ] Implement `createCategory` service/action with role check, uniqueness mapping, audit event, revalidation, and tests.
 - [ ] Implement `updateCategory` service/action with changed-field audit metadata, revalidation, and tests.
