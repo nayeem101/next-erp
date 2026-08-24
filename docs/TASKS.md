@@ -91,9 +91,9 @@ Approval gate: explicit approval of all seven documents is required before Phase
 
 Phase 1 gate:
 
-- [ ] Run migrations against a clean database and verify every schema constraint/trigger test.
-- [ ] Run format, lint, typecheck, unit/component tests, integration tests, build, and auth Playwright tests.
-- [ ] Verify no privileged Supabase/database credential appears in the client bundle.
+- [x] Run migrations against a clean database and verify every schema constraint/trigger test.
+- [x] Run format, lint, typecheck, unit/component tests, integration tests, build, and auth Playwright tests.
+- [x] Verify no privileged Supabase/database credential appears in the client bundle.
 
 ## Phase 2 — Inventory
 

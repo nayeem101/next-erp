@@ -76,12 +76,10 @@ beforeEach(() => {
   mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
 });
 
-afterEach(async () => {
-  // Recreate the connection so React's cache() cannot leak identity state
-  // between tests.
-  await destroyTestDatabase();
-  sql = await initializeTestDatabase();
-
+afterEach(() => {
+  // Identity isolation comes from per-call vi.resetModules() inside
+  // listViaAction (fresh getCurrentUser cache), so no connection churn is
+  // needed here — churning would re-run bootstrap.sql mid-suite.
   for (const key of Object.keys(serverEnv)) {
     Reflect.deleteProperty(process.env, key);
   }

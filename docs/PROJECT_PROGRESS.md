@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Shared UI infrastructure section COMPLETE; next is Phase 1 gate verification
+- Status: PHASE 1 GATE PASSED — all foundation phases complete; starting Phase 2 Inventory (category schemas)
 - Active task: None
-- Next eligible tasks: Phase 1 gate — clean-database migration/constraint verification, full format/lint/typecheck/unit/integration/build/Playwright pass, and client-bundle secret scan
+- Next eligible task: Implement category Zod schemas, slug normalization, and valid/invalid/duplicate-shape unit tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,14 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Phase 1 gate PASSED
+
+- **Clean-database migrations**: recreated `nexterp-pg-test` from scratch (`docker compose down -v` + up), then bootstrap.sql + all migrations applied through the suite harness. Full integration suite passed three consecutive times on the fresh volume; a nondeterministic cross-file race was eliminated by removing connection churn from the users suite afterEach (per-call `vi.resetModules()` already isolates React cache state).
+- **Full battery**: Prettier clean; ESLint zero warnings on strict config; strict TypeScript typecheck clean; 225 unit/component tests passing across 34 files; 121 integration tests passing across 18 files (schema constraints, triggers, services, actions); production build compiles with six Partial-Prerender routes (/login, /dashboard, order edit/new among them); Playwright ran desktop + mobile Chromium against the live Supabase project — 8 anonymous/invalid-credential flows passed, 8 authenticated flows skipped pending seeded E2E admin credentials.
+- **Secret scan**: scripted sweep of `.next/static`, `.next/server/client-reference`, and `.next/server/app` for `sb_secret_*`, `SUPABASE_SECRET_KEY`, `service_role`, `DATABASE_URL`, and postgres connection strings — zero hits; only publishable keys reach client-reachable output.
+
+Phase 1 is complete. Phase 2 (Inventory: categories → products) is next.
 
 ### 2026-08-24 — Cache helpers completed (Shared UI infrastructure section finished)
 
@@ -384,6 +392,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-24 PHASE 1 GATE: clean-DB migrations x3 stable, 225 unit + 121 integration + 8 live e2e passing, lint/typecheck/format clean, Partial-Prerender build ok, client-bundle secret scan CLEAN.
 - 2026-08-24: cache helper suites green: 225 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: combobox suites green: 216 unit; lint, strict typecheck, format pass.
 - 2026-08-24: form-control suites green: 210 unit, 121 integration; lint, strict typecheck, format, build pass.
