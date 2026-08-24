@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: List-query infrastructure complete; next is the reusable TanStack DataTable
+- Status: DataTable infrastructure complete; next is shared display components
 - Active task: None
-- Next eligible task: Build reusable TanStack DataTable, toolbar, sorting, visibility, and server-pagination controls with accessibility tests
+- Next eligible task: Build shared table skeleton, unfiltered/filtered empty states, status badge, local date, and money display components
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,14 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Reusable DataTable infrastructure completed
+
+- Added `components/shared/data-table/data-table.tsx`: generic server-fed grid on a module-level TanStack Table v9 hook (core + sorting features); exports `createDataTableColumnHelper` so consumer columns stay type-checked against their rows. Sorting is fully controlled (`manualSorting`) — header buttons emit `{id, desc}` descriptors via `onSortChange`, headers carry `aria-sort`, and sort indicators render inside accessible buttons.
+- Added `data-table-toolbar.tsx`: debounced search (timer cleanup verified), faceted-filter slot, column-visibility menu over canonical `columns` CSV values, and a Reset control that appears only with active state and preserves pageSize; every navigation goes through `listQueryHref`.
+- Added `data-table-pagination.tsx`: labelled nav landmark with live "Showing X–Y of Z" count, page-size menu, prev/next icon buttons with dynamic aria-labels and boundary disabling; hrefs omit default-equal values.
+- Tests (8): header scope/aria-sort contract, controlled sort descriptor emission, empty-state swap-in, result-count line and boundary-disabled pagination hrefs (default omission proven by bare-path push), toolbar labelling/menu trigger/debounced single-navigation (fake timers + fireEvent) /reset semantics.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (189 passing), integration tests (121 passing).
 
 ### 2026-08-24 — Shared list-query infrastructure completed
 
@@ -345,6 +353,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-24: data-table suites green: 189 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: list-query suites green: 181 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: Admin Users grid suites green: 163 unit, 121 integration; lint, strict typecheck, format, build pass.
 - 2026-08-24: setUserActive suites green: 156 unit, 121 integration; lint, strict typecheck, format pass.
