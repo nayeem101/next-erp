@@ -19,7 +19,7 @@ import {
   type CategoryListPage,
   type CreateCategoryArgs,
   type CreateCategoryResult,
-  type UpdateCategoryInput,
+  type UpdateCategoryArgs,
   type UpdateCategoryResult,
   type ListCategoriesQueryInput,
 } from "./schemas";
@@ -86,7 +86,7 @@ export async function createCategoryAction(
 
 /** Admin/Inventory category update with diff-based audit. */
 export async function updateCategoryAction(
-  input: UpdateCategoryInput,
+  input: UpdateCategoryArgs,
 ): Promise<ActionResult<UpdateCategoryResult>> {
   const parsed = updateCategorySchema.safeParse(input);
 
