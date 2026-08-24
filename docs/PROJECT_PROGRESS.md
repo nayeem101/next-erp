@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Stock Movements page done; next is demo seed data through inventory services
+- Status: Inventory RBAC tests done; next is idempotent demo seed data
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,13 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Inventory RBAC integration tests completed
+
+- Added `features/products/products.rbac.integration.test.ts` (6): sales callers receive FORBIDDEN on all five product actions; mutation attempts prove no side effects (no rows created, names untouched, active flags unchanged, balances and movement tables empty); inventory role retains catalog read access; a missing session fails closed with an auth-code rather than leaking data.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, 296 unit + 29 product integration tests.
+
+### 2026-08-24 — Stock Movements page completed (cross-product audit trail)
 
 ### 2026-08-24 — Stock Movements page completed (cross-product audit trail)
 

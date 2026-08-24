@@ -122,7 +122,7 @@ Phase 1 gate:
 - [x] Build stock-adjustment dialog with required reason, negative-result recovery, pending state, and component tests.
 - [x] Build cross-product Stock Movements page/grid with filters, entity links, and append-only presentation.
 - [ ] Add idempotent demo category/product/opening-movement seed data through the completed inventory services.
-- [ ] Add RBAC integration tests proving Sales cannot administer inventory or invoke inventory actions.
+- [x] Add RBAC integration tests proving Sales cannot administer inventory or invoke inventory actions.
 
 Phase 2 gate:
 
