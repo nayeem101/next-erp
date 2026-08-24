@@ -26,6 +26,8 @@ import {
 
 import { setCategoryActiveAction } from "../actions";
 
+import { CategoryFormDialog } from "./category-form-dialog";
+
 import type { CategoryListPage, CategoryListRow } from "../schemas";
 
 const columnHelper = createDataTableColumnHelper<CategoryListRow>();
@@ -45,8 +47,16 @@ const DEFAULTS: CanonicalDefaults = {
   status: "active",
 };
 
-type ArchiveTarget =
-  { id: string; name: string; nextActive: boolean } | undefined;
+interface ArchiveTarget {
+  id: string;
+  name: string;
+  nextActive: boolean;
+}
+
+interface FormTarget {
+  mode: "create" | "edit";
+  category?: CategoryListRow;
+}
 
 /**
  * Categories grid bound to URL state. Sorting and pagination navigate to
@@ -65,6 +75,9 @@ export function CategoriesGrid({
 }) {
   const router = useRouter();
   const [archiveTarget, setArchiveTarget] = React.useState<ArchiveTarget>();
+  const [formTarget, setFormTarget] = React.useState<FormTarget | undefined>(
+    undefined,
+  );
   const [submissionError, setSubmissionError] = React.useState<
     ActionError | undefined
   >(undefined);
@@ -161,20 +174,32 @@ export function CategoriesGrid({
             }
 
             return (
-              <Button
-                variant={row.isActive ? "destructive" : "outline"}
-                size="sm"
-                onClick={() => {
-                  setSubmissionError(undefined);
-                  setArchiveTarget({
-                    id: row.id,
-                    name: row.name,
-                    nextActive: !row.isActive,
-                  });
-                }}
-              >
-                {row.isActive ? "Archive" : "Restore"}
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSubmissionError(undefined);
+                    setFormTarget({ mode: "edit", category: row });
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant={row.isActive ? "destructive" : "outline"}
+                  size="sm"
+                  onClick={() => {
+                    setSubmissionError(undefined);
+                    setArchiveTarget({
+                      id: row.id,
+                      name: row.name,
+                      nextActive: !row.isActive,
+                    });
+                  }}
+                >
+                  {row.isActive ? "Archive" : "Restore"}
+                </Button>
+              </div>
             );
           },
         }),
@@ -187,6 +212,19 @@ export function CategoriesGrid({
 
   return (
     <>
+      {canManage && (
+        <div className="flex justify-end">
+          <Button
+            onClick={() => {
+              setSubmissionError(undefined);
+              setFormTarget({ mode: "create" });
+            }}
+          >
+            New category
+          </Button>
+        </div>
+      )}
+
       <DataTableToolbar
         basePath={basePath}
         values={values}
@@ -218,6 +256,19 @@ export function CategoriesGrid({
         defaults={DEFAULTS}
         total={page.total}
       />
+
+      {formTarget !== undefined && (
+        <CategoryFormDialog
+          mode={formTarget.mode}
+          category={formTarget.category}
+          open
+          onOpenChange={(next) => {
+            if (!next) {
+              setFormTarget(undefined);
+            }
+          }}
+        />
+      )}
 
       {archiveTarget !== undefined && (
         <ConfirmationDialog

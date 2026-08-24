@@ -105,7 +105,7 @@ Phase 1 gate:
 - [x] Implement `updateCategory` service/action with changed-field audit metadata, revalidation, and tests.
 - [x] Implement `setCategoryActive` with active-product conflict, restore behavior, audit events, and tests.
 - [x] Build Categories page and TanStack grid with URL state, empty/loading/error states, and role-aware actions.
-- [ ] Build create/edit category dialog and archive/restore flow with validation/conflict/component tests.
+- [x] Build create/edit category dialog and archive/restore flow with validation/conflict/component tests.
 
 ### Products
 

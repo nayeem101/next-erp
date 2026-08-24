@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Categories grid done; next is the create/edit dialog with validation and conflict tests
+- Status: Categories section COMPLETE; next is Products schemas
 - Active task: None
-- Next eligible task: Build create/edit category dialog and archive/restore flow with validation/conflict/component tests
+- Next eligible task: Implement product Zod schemas, SKU normalization, money/quantity contracts, and valid/invalid unit tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,13 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Category form dialog completed (Categories section finished)
+
+- Added `CategoryFormDialog` covering both create and edit modes with one field contract: TanStack Form fields validate on change (name required/<=100, description <=1000), submit runs the shared schema server-side, VALIDATION_ERROR field errors merge into inline alerts, UNIQUE_CONFLICT renders via ActionErrorAlert without discarding the draft, success closes + refreshes.
+- Wired into `CategoriesGrid`: role-gated "New category" toolbar button, per-row Edit button, conditional mounting keeps drafts remount-fresh; archive/restore flow from the prior task composes with it.
+- Dialog tests (5): blank-name blocking with inline message, trimmed submission payload + close + refresh, conflict alert preserving input, edit prefill + categoryId payload, heading/entity anchoring.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (251 passing), integration tests (150 passing), build 7 Partial-Prerender routes.
 
 ### 2026-08-24 — Categories page and grid completed
 
