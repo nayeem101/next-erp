@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Stock movement list query done; next is Products page and TanStack grid
+- Status: Products page/grid done; next is Product create/edit forms
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,15 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Products page and grid completed
+
+- Added `app/(dashboard)/inventory/products/page.tsx`: server component parses canonical list query (malformed URLs degrade to defaults), fetches one page plus active-category options and the action context in parallel, and renders inside Suspense with a table skeleton.
+- Added `features/products/components/products-grid.tsx`: URL-bound grid with SKU (mono), name-over-category, exact Money cells, destructive low-stock treatment (icon + sr-only note when active stock is at/below reorder), reorder-at column, status badges, and role-gated actions — Edit links to `/inventory/products/[id]/edit`, Archive/Restore runs through a confirmed dialog that surfaces conflicts inline without closing. Toolbar filterSlot carries an aria-current segmented stock-status control (Active/Low stock/Archived/All) plus a category scope combobox; sort clicks map column order onto the server allowlist (`price` -> `price_asc/desc`, `stock` asc-only) and every control navigates canonical hrefs.
+- Component tests (10): cell rendering incl. money formatting, low-stock marker uniqueness and coloring, both empty states, sales-role read-only view, archive/restore confirmation flows with inline conflict alert, canonical href assertions for status segments, allowlist sort mapping, pagination totals.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, 273 unit + 23 product integration tests.
+
+### 2026-08-24 — Stock movement list query completed
 
 ### 2026-08-24 — Stock movement list query completed
 

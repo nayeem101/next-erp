@@ -116,7 +116,7 @@ Phase 1 gate:
 - [ ] Implement `updateProduct` without stock mutation, including SKU conflicts, inactive-category handling, audit diff, and tests.
 - [x] Implement `setProductActive` with category restore rules, audit events, revalidation, and tests.
 - [x] Implement `adjustStock` with conditional non-negative update, append-only movement/audit records, cache invalidation, and rollback tests.
-- [ ] Build Products page and TanStack grid with stock/low-stock presentation, URL controls, row actions, and component tests.
+- [x] Build Products page and TanStack grid with stock/low-stock presentation, URL controls, row actions, and component tests.
 - [ ] Build Product create/edit forms with active-category options, currency/quantity fields, prerequisite state, and component tests.
 - [ ] Build Product detail page with summary, status actions, and paginated movement table.
 - [ ] Build stock-adjustment dialog with required reason, negative-result recovery, pending state, and component tests.
