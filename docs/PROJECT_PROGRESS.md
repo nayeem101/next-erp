@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Display components complete; next is shared form controls
+- Status: Form controls complete; next is the server-fed searchable combobox
 - Active task: None
-- Next eligible task: Build shared form error summary, action error alert, submit button, confirmation dialog, currency input, and quantity input
+- Next eligible task: Build server-fed searchable combobox with keyboard and empty-state tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,15 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Shared form controls completed
+
+- Added `form-error-summary.tsx`: aggregates fieldErrors into a count headline ("Please fix N issues") with capitalized field/message list items; falls back to the summary message when no field errors exist.
+- Added `form-controls.tsx`: generic `ConfirmationDialog` (destructive variant, pending state, children slot for inline warnings/errors) and `SubmitButton` (pending disable + label swap).
+- Added `inputs.tsx`: `CurrencyInput` binds visible major-unit drafts to integer-cents callbacks through a strict decimal parser (no floats cross the boundary; invalid input is marked but never propagated; external canonical updates reseed via the React-blessed render-time reset pattern — no effect cascades) and `QuantityInput` (whole numbers ≥ min only; blur snaps invalid drafts back to committed value).
+- `ActionErrorAlert` already existed from the auth phase and is reused as-is.
+- Tests (10): summary list-item text and fallback, pending button states, confirm/cancel/children-slot flows, cent-exact typing (12.5 → 1250), invalid-input rejection + null on clear, canonical round-trip while unfocused, quantity propagation rules and blur restore.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (210 passing), integration tests (121 passing), production build.
 
 ### 2026-08-24 — Shared display components completed
 
@@ -361,6 +370,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-24: form-control suites green: 210 unit, 121 integration; lint, strict typecheck, format, build pass.
 - 2026-08-24: display component suites green: 200 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: data-table suites green: 189 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: list-query suites green: 181 unit, 121 integration; lint, strict typecheck, format pass.
