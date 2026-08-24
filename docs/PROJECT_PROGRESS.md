@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: setCategoryActive done; next is the Categories page and grid UI
+- Status: Categories grid done; next is the create/edit dialog with validation and conflict tests
 - Active task: None
-- Next eligible task: Build Categories page and TanStack grid with URL state, empty/loading/error states, and role-aware actions
+- Next eligible task: Build create/edit category dialog and archive/restore flow with validation/conflict/component tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,14 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Categories page and grid completed
+
+- Added `/inventory/categories` (inside the inventory module layout): server component parses searchParams through `parseListQuery` + the category query schema, fetches the page via the shared query, and streams inside Suspense with a `DataTableSkeleton` fallback; hostile URLs degrade to defaults.
+- Added `CategoriesGrid`: server-provided canonical URL values drive `DataTableToolbar`, controlled sorting (`name` <-> `name_desc` href swaps), and `DataTablePagination` with default-omitting hrefs; columns show name/slug, description, active-product counts, Active/Archived badges; unfiltered vs filtered empty states swap; archive/restore rows open the shared `ConfirmationDialog` wired to `setCategoryActiveAction`, surfacing CONFLICT rejections inline and refreshing on success. Action visibility is role-gated to Admin/Inventory.
+- Badge primitive gained a warning variant for archived states.
+- Component tests (9): rendering with badges/counts, both empty-state variants, role-hidden controls, archive/restore confirmation payloads + refresh, inline conflict alert without dialog dismissal, sort href toggling with default omission, pagination totals/navigation.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (246 passing), integration tests (150 passing), build now shows 7 Partial-Prerender routes.
 
 ### 2026-08-24 — setCategoryActive completed
 
