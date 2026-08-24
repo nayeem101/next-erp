@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Combobox complete; next is cache helpers configuration
+- Status: Shared UI infrastructure section COMPLETE; next is Phase 1 gate verification
 - Active task: None
-- Next eligible task: Configure `"use cache"`, `cacheLife`, `cacheTag`, `updateTag`, and `revalidatePath` helpers/tests without deprecated single-argument `revalidateTag` or `unstable_*` APIs
+- Next eligible tasks: Phase 1 gate — clean-database migration/constraint verification, full format/lint/typecheck/unit/integration/build/Playwright pass, and client-bundle secret scan
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,14 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Cache helpers completed (Shared UI infrastructure section finished)
+
+- Added `lib/cache/tags.ts`: central tag vocabulary (users, audit-log, categories, customers, invoices, orders, products) with an `entityTag()` composite builder and named `CACHE_LIFETIMES` profile objects (referenceData / operationalLists / volatile, seconds-based stale/revalidate/expire; volatile stays under the 5-minute short-lived threshold so it is excluded from prerenders).
+- Added `lib/cache/invalidate.ts`: `invalidateTags` (read-your-own-writes via Next 16 `updateTag`), `refreshStale` (stale-while-revalidate via two-argument `revalidateTag(tag, profile)` — the deprecated single-argument form can never be reached through this helper), and `invalidatePath`. No `unstable_*` APIs anywhere.
+- Wired invalidation into `setUserRolesAction`/`setUserActiveAction` success paths per the API spec ("Revalidates users and audit-log"); users integration suites mock `next/cache`.
+- Tests (9): kebab-case/uniqueness invariants on the tag registry, deterministic entity-tag composition, monotonic lifetime bounds, updateTag-vs-revalidateTag isolation, required-profile forwarding, and path delegation.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (225 passing), integration tests (121 passing).
 
 ### 2026-08-24 — Searchable combobox completed
 
@@ -376,6 +384,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-24: cache helper suites green: 225 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: combobox suites green: 216 unit; lint, strict typecheck, format pass.
 - 2026-08-24: form-control suites green: 210 unit, 121 integration; lint, strict typecheck, format, build pass.
 - 2026-08-24: display component suites green: 200 unit, 121 integration; lint, strict typecheck, format pass.

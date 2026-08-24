@@ -24,6 +24,12 @@ const mocks = vi.hoisted(() => ({
   getUser: vi.fn(),
 }));
 
+vi.mock("next/cache", () => ({
+  revalidatePath: vi.fn(),
+  revalidateTag: vi.fn(),
+  updateTag: vi.fn(),
+}));
+
 vi.mock("@/lib/supabase/server", () => ({
   createClient: vi.fn(() =>
     Promise.resolve({

@@ -21,6 +21,12 @@ import { assignRole, createAuthUser } from "@/test/factories/factories";
 import type { SetUserRolesResult } from "./schemas";
 import type postgres from "postgres";
 
+vi.mock("next/cache", () => ({
+  revalidatePath: vi.fn(),
+  revalidateTag: vi.fn(),
+  updateTag: vi.fn(),
+}));
+
 vi.mock("@/lib/supabase/server", () => ({
   createClient: vi.fn(() =>
     Promise.resolve({

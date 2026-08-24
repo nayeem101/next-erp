@@ -1,6 +1,8 @@
 "use server";
 
 import { getActionContext } from "@/lib/auth/guards";
+import { invalidateTags } from "@/lib/cache/invalidate";
+import { CACHE_TAGS } from "@/lib/cache/tags";
 import {
   actionSuccess,
   type ActionResult,
@@ -70,6 +72,8 @@ export async function setUserRolesAction(
       context.correlationId,
     );
 
+    invalidateTags(CACHE_TAGS.users, CACHE_TAGS.auditLog);
+
     return actionSuccess(result);
   } catch (error) {
     return mapActionError(error, context.correlationId);
@@ -98,6 +102,8 @@ export async function setUserActiveAction(
       context.user.id,
       context.correlationId,
     );
+
+    invalidateTags(CACHE_TAGS.users, CACHE_TAGS.auditLog);
 
     return actionSuccess(result);
   } catch (error) {
