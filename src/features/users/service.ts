@@ -8,7 +8,12 @@ import { writeAuditEvent } from "@/lib/audit/writer";
 import { ROLE_KEYS, type RoleKey } from "@/lib/auth/roles";
 import { DomainError } from "@/lib/errors/action-result";
 
-import type { SetUserRolesInput, SetUserRolesResult } from "./schemas";
+import type {
+  SetUserActiveInput,
+  SetUserActiveResult,
+  SetUserRolesInput,
+  SetUserRolesResult,
+} from "./schemas";
 
 /**
  * Role administration workflow.
@@ -109,5 +114,86 @@ export async function setUserRoles(
     });
 
     return { userId: input.userId, roles: after };
+  });
+}
+
+/**
+ * Enable/disable workflow.
+ *
+ * Shares the role-administration advisory lock because an admin's active
+ * flag participates in the last-active-Admin invariant.
+ */
+export async function setUserActive(
+  input: SetUserActiveInput,
+  actorUserId: string,
+  correlationId: string,
+): Promise<SetUserActiveResult> {
+  return getDb().transaction(async (tx) => {
+    await tx.execute(
+      sql`select pg_advisory_xact_lock(${ROLE_ADMINISTRATION_LOCK})`,
+    );
+
+    const targetRows = await tx
+      .select({ id: users.id, isActive: users.isActive })
+      .from(users)
+      .where(eq(users.id, input.userId))
+      .limit(1);
+
+    const target = targetRows[0];
+
+    if (!target) {
+      throw new DomainError("NOT_FOUND", "That user no longer exists.");
+    }
+
+    if (!input.isActive) {
+      // The caller is always an Admin (action guard), so self-disable is a
+      // special case of removing an active administrator and is covered by
+      // the same survivor count below.
+      const membershipRows = await tx
+        .select({ key: roles.key })
+        .from(userRoles)
+        .innerJoin(roles, eq(roles.id, userRoles.roleId))
+        .where(eq(userRoles.userId, input.userId));
+
+      const isAdmin = membershipRows.some((row) => row.key === "admin");
+
+      if (isAdmin) {
+        const otherAdmins = await tx
+          .select({ count: sql<number>`count(*)::int` })
+          .from(userRoles)
+          .innerJoin(roles, eq(roles.id, userRoles.roleId))
+          .innerJoin(users, eq(users.id, userRoles.userId))
+          .where(
+            and(
+              eq(roles.key, "admin"),
+              ne(userRoles.userId, input.userId),
+              eq(users.isActive, true),
+            ),
+          );
+
+        if ((otherAdmins[0]?.count ?? 0) === 0) {
+          throw new DomainError("LAST_ADMIN", LAST_ADMIN_MESSAGE);
+        }
+      }
+    }
+
+    await tx
+      .update(users)
+      .set({ isActive: input.isActive })
+      .where(eq(users.id, input.userId));
+
+    await writeAuditEvent(tx, {
+      actorUserId,
+      action: input.isActive ? "user.enabled" : "user.disabled",
+      entityType: "user",
+      entityId: input.userId,
+      metadata: {
+        before: { isActive: target.isActive },
+        after: { isActive: input.isActive },
+      },
+      correlationId,
+    });
+
+    return { userId: input.userId, isActive: input.isActive };
   });
 }

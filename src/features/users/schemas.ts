@@ -52,6 +52,20 @@ export interface SetUserRolesResult {
   roles: RoleKey[];
 }
 
+export const setUserActiveSchema = z
+  .object({
+    userId: z.uuid(),
+    isActive: z.boolean(),
+  })
+  .strict();
+
+export type SetUserActiveInput = z.infer<typeof setUserActiveSchema>;
+
+export interface SetUserActiveResult {
+  userId: string;
+  isActive: boolean;
+}
+
 /** Serialized list row; dates are ISO strings for client components. */
 export interface UserListRow {
   id: string;

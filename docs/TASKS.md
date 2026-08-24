@@ -77,7 +77,7 @@ Approval gate: explicit approval of all seven documents is required before Phase
 - [x] Add Playwright login/logout and protected-route redirect coverage.
 - [x] Implement user list query with role/status/search/pagination and Admin-only query tests.
 - [x] Implement `setUserRoles` service/action with transactional last-Admin protection, audit event, and concurrency tests.
-- [ ] Implement `setUserActive` service/action with last-Admin protection, audit event, and tests.
+- [x] Implement `setUserActive` service/action with last-Admin protection, audit event, and tests.
 - [ ] Build Admin Users TanStack grid, role dialog, enable/disable confirmation, and component tests.
 
 ### Shared UI infrastructure

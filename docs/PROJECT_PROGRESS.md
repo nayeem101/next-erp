@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: setUserRoles complete; next is setUserActive service/action with last-Admin protection
+- Status: setUserActive complete; next is the Admin Users grid UI
 - Active task: None
-- Next eligible task: Implement setUserActive service/action with last-Admin protection, audit event, and tests
+- Next eligible task: Build Admin Users TanStack grid, role dialog, enable/disable confirmation, and component tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,14 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — setUserActive service/action completed
+
+- Extended schemas with strict `setUserActiveSchema` (`userId: z.uuid()`, boolean `isActive`) and the serialized result contract.
+- Added `setUserActive` service sharing the role-administration advisory lock (an admin's active flag participates in the last-admin invariant): loads the target (NOT_FOUND on miss), and when disabling an admin counts other ACTIVE admins before flipping the flag; writes `user.enabled`/`user.disabled` with before/after isActive metadata in the same transaction.
+- Added `setUserActiveAction` with validation-before-authorization Admin guard.
+- Integration suite (10 tests): disable/enable round-trips with audit metadata, NOT_FOUND, LAST_ADMIN rejection leaving state and audit untouched, inactive admins excluded from survivors, allowed demotion when a second active admin exists, non-admin disable unaffected by admin counts; action-level FORBIDDEN-without-mutation, success, and strict-validation ordering.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (156 passing), integration tests (121 passing).
 
 ### 2026-08-24 — setUserRoles service/action completed
 
@@ -320,6 +328,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-24: setUserActive suites green: 156 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: setUserRoles suites green: 156 unit, 111 integration; lint, strict typecheck, format pass.
 - 2026-08-24: Users feature suites green: 152 unit, 103 integration; lint, strict typecheck, format, and Partial-Prerender build all pass.
 - 2026-08-22: Live Playwright run against the configured Supabase project: 8 passed, 8 skipped (no seeded admin); format, lint, strict typecheck, 146 unit and 92 integration tests green.
