@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Products page/grid done; next is Product create/edit forms
+- Status: Product forms done; next is Product detail page
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,16 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Product create/edit forms completed
+
+- Added `getProduct` single-row query (join categories, serialized cents) powering the edit route with `notFound()` for missing ids.
+- Added `features/products/components/product-form.tsx`: one TanStack form owns both modes. Category uses the searchable combobox; SKU auto-uppercases while typing; unit price validates as a decimal string > 0; reorder level and create-only opening stock are integer inputs. Create mode without active categories renders the prerequisite notice linking to Categories instead of the form. Server VALIDATION_ERROR field errors map back onto fields; UNIQUE_CONFLICT surfaces inline while preserving the draft; success navigates to the products grid. Edit mode seeds from `getProduct` (cents -> decimal string), shows read-only stock copy, and never submits stock fields.
+- Routes: `/inventory/products/new` and `/inventory/products/[productId]/edit`.
+- Component tests (6): prerequisite state, normalized submit incl. opening stock, client validation blocking, unique-SKU conflict draft preservation, edit seeding + no-stock submission, read-only stock.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, 279 unit + 23 product integration tests.
+
+### 2026-08-24 — Products page and grid completed
 
 ### 2026-08-24 — Products page and grid completed
 

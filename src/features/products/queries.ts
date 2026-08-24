@@ -138,3 +138,45 @@ export async function listProducts(
     totalPages: Math.max(1, Math.ceil(total / query.pageSize)),
   };
 }
+
+/**
+ * Single product lookup for the edit form and detail surfaces.  Returns
+ * null when the product does not exist; callers decide between 404 and
+ * domain errors.
+ */
+export async function getProduct(
+  productId: string,
+): Promise<ProductListRow | null> {
+  const db = getDb();
+
+  const rows = await db
+    .select({
+      id: products.id,
+      categoryId: products.categoryId,
+      categoryName: categories.name,
+      sku: products.sku,
+      name: products.name,
+      description: products.description,
+      unitPriceCents: products.unitPriceCents,
+      stockOnHand: products.stockOnHand,
+      reorderLevel: products.reorderLevel,
+      isActive: products.isActive,
+      createdAt: products.createdAt,
+    })
+    .from(products)
+    .innerJoin(categories, eq(categories.id, products.categoryId))
+    .where(eq(products.id, productId))
+    .limit(1);
+
+  const row = rows[0];
+
+  if (!row) {
+    return null;
+  }
+
+  return {
+    ...row,
+    unitPriceCents: Number(row.unitPriceCents),
+    createdAt: row.createdAt.toISOString(),
+  };
+}
