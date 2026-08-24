@@ -2,6 +2,8 @@
 
 import { getActionContext } from "@/lib/auth/guards";
 import { MODULE_ROLE_REQUIREMENTS } from "@/lib/auth/roles";
+import { invalidateTags } from "@/lib/cache/invalidate";
+import { CACHE_TAGS } from "@/lib/cache/tags";
 import {
   actionSuccess,
   type ActionResult,
@@ -11,10 +13,14 @@ import { mapActionError } from "@/lib/errors/map-action-error";
 
 import { listCategories } from "./queries";
 import {
+  createCategorySchema,
   listCategoriesQuerySchema,
   type CategoryListPage,
+  type CreateCategoryArgs,
+  type CreateCategoryResult,
   type ListCategoriesQueryInput,
 } from "./schemas";
+import { createCategory } from "./service";
 
 /**
  * Paginated category directory for the inventory grid. Admin and Inventory
@@ -39,6 +45,37 @@ export async function listCategoriesAction(
     const page = await listCategories(parsed.data);
 
     return actionSuccess(page);
+  } catch (error) {
+    return mapActionError(error, context.correlationId);
+  }
+}
+
+/** Admin/Inventory category creation with derived stable slug. */
+export async function createCategoryAction(
+  input: CreateCategoryArgs,
+): Promise<ActionResult<CreateCategoryResult>> {
+  const parsed = createCategorySchema.safeParse(input);
+
+  if (!parsed.success) {
+    return validationFailure(parsed.error);
+  }
+
+  const context = await getActionContext(MODULE_ROLE_REQUIREMENTS.inventory);
+
+  if (!context.ok) {
+    return context;
+  }
+
+  try {
+    const result = await createCategory(
+      parsed.data,
+      context.user.id,
+      context.correlationId,
+    );
+
+    invalidateTags(CACHE_TAGS.categories, CACHE_TAGS.auditLog);
+
+    return actionSuccess(result);
   } catch (error) {
     return mapActionError(error, context.correlationId);
   }

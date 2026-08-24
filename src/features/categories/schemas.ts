@@ -60,7 +60,11 @@ export const setCategoryActiveSchema = z
   })
   .strict();
 
+/** Parsed output consumed by the service layer. */
 export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
+
+/** Raw caller input; optional fields may be omitted entirely. */
+export type CreateCategoryArgs = z.input<typeof createCategorySchema>;
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
 export type SetCategoryActiveInput = z.infer<typeof setCategoryActiveSchema>;
 

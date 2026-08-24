@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Category list query done; next is createCategory service/action with audit and revalidation
+- Status: createCategory done; next is updateCategory service/action with changed-field audit
 - Active task: None
-- Next eligible task: Implement createCategory service/action with role check, uniqueness mapping, audit event, revalidation, and tests
+- Next eligible task: Implement updateCategory service/action with changed-field audit metadata, revalidation, and tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,13 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — createCategory completed
+
+- Added `features/categories/service.ts`: `createCategory` derives the stable slug via slugify, pre-checks case-normalized name and derived-slug conflicts for a precise UNIQUE_CONFLICT message, inserts with createdBy/updatedBy stamps inside a transaction, writes `category.created` audit metadata `{after:{name,slug}}`, and maps concurrent 23505 races to the same conflict vocabulary.
+- Added `createCategoryAction` (Admin/Inventory guard via module matrix) that invalidates the categories and audit-log tags on success per the spec.
+- Integration tests (6): full create assertions (slug derivation, actor stamps, audit row), case-insensitive duplicate name rejection, distinct-name/same-slug collision, sales FORBIDDEN leaving table untouched, inventory allowed without admin, strict validation before authorization.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck.
 
 ### 2026-08-24 — Category list query completed
 
