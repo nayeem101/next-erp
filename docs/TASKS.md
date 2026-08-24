@@ -118,7 +118,7 @@ Phase 1 gate:
 - [x] Implement `adjustStock` with conditional non-negative update, append-only movement/audit records, cache invalidation, and rollback tests.
 - [x] Build Products page and TanStack grid with stock/low-stock presentation, URL controls, row actions, and component tests.
 - [x] Build Product create/edit forms with active-category options, currency/quantity fields, prerequisite state, and component tests.
-- [ ] Build Product detail page with summary, status actions, and paginated movement table.
+- [x] Build Product detail page with summary, status actions, and paginated movement table.
 - [ ] Build stock-adjustment dialog with required reason, negative-result recovery, pending state, and component tests.
 - [ ] Build cross-product Stock Movements page/grid with filters, entity links, and append-only presentation.
 - [ ] Add idempotent demo category/product/opening-movement seed data through the completed inventory services.

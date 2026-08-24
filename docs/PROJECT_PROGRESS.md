@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Product forms done; next is Product detail page
+- Status: Product detail page done; next is stock-adjustment dialog
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,16 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Product detail page completed
+
+- Added `app/(dashboard)/inventory/products/[productId]/page.tsx`: server component 404s unknown products, renders summary cards (Money price, stock with destructive low-stock styling at/below reorder, reorder level, availability), status badges incl. low-stock indicator, description, and the movement section under Suspense. Movement URL state is scoped so product filters cannot poison history pagination.
+- Added `product-status-actions.tsx`: role-gated Edit link plus confirmed Archive/Restore dialog; restore conflicts (inactive category) surface inline without closing.
+- Added `stock-movement-table.tsx`: read-only append-only table with type badges, signed deltas (+/- with direction icon), resulting stock, order-number links into `/sales/orders/[id]`, reason, actor, and LocalDateTime timestamps; dedicated "No stock movements recorded." empty state; pagination bound to canonical hrefs on the product scope.
+- Component tests (7): row rendering incl. signed deltas and order reference links, em-dash placeholders for non-order rows, empty state, scoped pagination href, sales-role invisibility, edit link target, archive/restore flows with inline conflict alert.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, 286 unit tests.
+
+### 2026-08-24 — Product create/edit forms completed
 
 ### 2026-08-24 — Product create/edit forms completed
 
