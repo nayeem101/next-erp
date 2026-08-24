@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Stock-adjustment dialog done; next is cross-product Stock Movements page/grid
+- Status: Stock Movements page done; next is demo seed data through inventory services
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,16 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Stock Movements page completed (cross-product audit trail)
+
+- Added `app/(dashboard)/inventory/stock-movements/page.tsx`: inventory-gated server view parsing canonical movement query and loading one page plus active-product and active-user option lists in parallel.
+- Added `features/products/components/stock-movements-grid.tsx`: URL-backed filter bar — type segments with aria-current, product/actor searchable comboboxes, from/to date inputs navigating on change, and a debounced order-number input. All controls compose onto canonical hrefs.
+- Extended `StockMovementTable` with an optional product identity column (SKU link into the product detail page) and basePath override so the same append-only presentation serves both scopes; order numbers already link into `/sales/orders/[id]`.
+- Component tests (6): type segment hrefs/current marker, product-scope navigation via combobox, immediate date navigation, debounced single-fire order-number navigation, cross-product identity links, pagination within filtered scope.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, 296 unit + 23 product integration tests.
+
+### 2026-08-24 — Stock adjustment dialog completed
 
 ### 2026-08-24 — Stock adjustment dialog completed
 

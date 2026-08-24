@@ -37,15 +37,45 @@ export function StockMovementTable({
   productId,
   page,
   urlValues,
+  showProductColumn = false,
+  basePathOverride,
 }: {
   productId: string;
   page: StockMovementPage;
   urlValues: CanonicalValues;
+  /** Cross-product views add a product identity column. */
+  showProductColumn?: boolean;
+  /** Defaults to the product detail scope. */
+  basePathOverride?: string;
 }) {
-  const basePath = `/inventory/products/${productId}`;
+  const basePath = basePathOverride ?? `/inventory/products/${productId}`;
   const defaults: CanonicalDefaults = { page: 1, pageSize: 20 };
 
   const columns = [
+    ...(showProductColumn
+      ? [
+          columnHelper.accessor("productSku", {
+            header: "Product",
+            cell: (cell) => {
+              const rowData = cell.row.original;
+
+              return (
+                <div className="flex flex-col">
+                  <Link
+                    className="font-mono text-xs underline-offset-2 hover:underline"
+                    href={`/inventory/products/${rowData.productId}`}
+                  >
+                    {rowData.productSku}
+                  </Link>
+                  <span className="text-xs text-muted-foreground">
+                    {rowData.productName}
+                  </span>
+                </div>
+              );
+            },
+          }),
+        ]
+      : []),
     columnHelper.accessor("type", {
       header: "Type",
       cell: (cell) => {
@@ -96,7 +126,7 @@ export function StockMovementTable({
       },
     }),
     columnHelper.accessor("reason", {
-      header: () => <span>Reason</span>,
+      header: "Reason",
       cell: (cell) => (
         <span className="line-clamp-1 max-w-xs text-sm text-muted-foreground">
           {cell.getValue()}
@@ -124,6 +154,7 @@ export function StockMovementTable({
         ariaLabel="Stock movements"
         columns={columnHelper.columns(columns)}
         rows={page.rows}
+        emptyState={undefined}
       />
 
       <DataTablePagination
