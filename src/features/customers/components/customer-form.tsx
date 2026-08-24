@@ -8,7 +8,7 @@ import { z } from "zod";
 
 import { ActionErrorAlert } from "@/components/shared/action-error-alert";
 import { SubmitButton } from "@/components/shared/form-controls";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -628,9 +628,12 @@ export function CustomerForm({
         <SubmitButton pending={form.state.isSubmitting}>
           {mode === "create" ? "Create customer" : "Save changes"}
         </SubmitButton>
-        <Button variant="ghost">
-          <Link href="/customers">Cancel</Link>
-        </Button>
+        <Link
+          className={buttonVariants({ variant: "ghost" })}
+          href="/customers"
+        >
+          Cancel
+        </Link>
       </div>
     </form>
   );

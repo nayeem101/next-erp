@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: PHASE 2 COMPLETE. Next: Phase 3 customer schemas
+- Status: PHASE 3 COMPLETE. Next: Phase 4 order domain schemas
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,17 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-25 — Phase 3 gate PASSED (Customers complete)
+
+- **UI**: URL-bound Customers grid (order count + confirmed sales columns, lifecycle segments, role-gated archive); grouped-field CustomerForm (identity/contact/address/notes) with duplicate-email conflict mapping and archived-state copy; create/edit pages (`connection()` on the no-dynamic-API route); detail page with KPI cards, contact/billing summary, confirmed status actions, and paginated order history linking to `/sales/orders/:id`.
+- **Demo seed**: five fixed demo customers through `createCustomer` — idempotent reruns, subset absorption (pre-existing row untouched).
+- **Accessibility**: jest-axe scans over the form in both modes exposed a real violation — Cancel rendered a `<Button><Link/></Button>` nested-interactive; replaced with `buttonVariants()` on the Link. Zero violations now.
+- **Full battery**: Prettier clean; ESLint zero warnings; strict typecheck clean; 339 unit/component/a11y tests passing; 43 customer integration tests passing; production build compiles with all customers routes Partial-Prerendered.
+
+Phase 3 (Customers) is complete. Phase 4 (Sales order drafts and wizard) is next.
+
+### 2026-08-25 — Customers schemas, queries, and write services completed
 
 ### 2026-08-25 — Customers schemas, queries, and write services completed
 

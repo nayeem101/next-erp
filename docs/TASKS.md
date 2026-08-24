@@ -144,7 +144,7 @@ Phase 2 gate:
 
 Phase 3 gate:
 
-- [ ] Run format, lint, typecheck, customer unit/component/integration tests, build, and customer-form accessibility checks.
+- [x] Run format, lint, typecheck, customer unit/component/integration tests, build, and customer-form accessibility checks.
 
 ## Phase 4 — Sales order drafts and wizard
 
