@@ -101,7 +101,7 @@ describe("createCustomerSchema", () => {
       "postalCode",
       "countryCode",
     ] as const) {
-      const payload = { ...validCreate };
+      const payload: Record<string, unknown> = { ...validCreate };
       payload[key] = undefined;
 
       expect(createCustomerSchema.safeParse(payload).success).toBe(false);
