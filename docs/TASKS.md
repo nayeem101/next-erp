@@ -109,13 +109,13 @@ Phase 1 gate:
 
 ### Products
 
-- [ ] Implement product Zod schemas, uppercase SKU/money/quantity normalization, and boundary tests.
-- [ ] Implement product list/detail queries with category/status/low-stock/search filters, allowlisted sorting, and integration tests.
+- [x] Implement product Zod schemas, uppercase SKU/money/quantity normalization, and boundary tests.
+- [x] Implement product list/detail queries with category/status/low-stock/search filters, allowlisted sorting, and integration tests.
 - [ ] Implement stock movement list queries with product/type/actor/date/order filters and integration tests.
-- [ ] Implement `createProduct` with active-category validation, optional opening movement, audit event, revalidation, and transaction tests.
+- [x] Implement `createProduct` with active-category validation, optional opening movement, audit event, revalidation, and transaction tests.
 - [ ] Implement `updateProduct` without stock mutation, including SKU conflicts, inactive-category handling, audit diff, and tests.
-- [ ] Implement `setProductActive` with category restore rules, audit events, revalidation, and tests.
-- [ ] Implement `adjustStock` with conditional non-negative update, append-only movement/audit records, cache invalidation, and rollback tests.
+- [x] Implement `setProductActive` with category restore rules, audit events, revalidation, and tests.
+- [x] Implement `adjustStock` with conditional non-negative update, append-only movement/audit records, cache invalidation, and rollback tests.
 - [ ] Build Products page and TanStack grid with stock/low-stock presentation, URL controls, row actions, and component tests.
 - [ ] Build Product create/edit forms with active-category options, currency/quantity fields, prerequisite state, and component tests.
 - [ ] Build Product detail page with summary, status actions, and paginated movement table.

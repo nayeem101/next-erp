@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Product schemas done; next is product list queries with stock projections
+- Status: Product write services done; next is stock movement list queries
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,15 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Product write services completed (create/update/setActive/adjust)
+
+- Added `features/products/service.ts`: `createProduct` validates an active category (`NOT_FOUND`/`CONFLICT`), inserts the product with normalized SKU and bigint cents, writes the spec-mandated `Opening balance` movement when `openingStock > 0`, and appends `product.created`; `updateProduct` performs a full-field diff audit without touching stock and rejects inactive target categories; `setProductActive` gates restore on an active category and is idempotent no-op when state matches; `adjustStock` uses a single guarded atomic SQL update (`stock_on_hand + delta` between 0 and 1M) so concurrent adjustments cannot lose writes — negative results fail with `INSUFFICIENT_STOCK`, archived products with `CONFLICT` — then appends the adjustment movement row plus `product.stock_adjusted` audit in one transaction. Audit metadata serializes cents as strings (JSONB cannot carry BigInt).
+- Added `features/products/actions.ts`: five server actions with Admin/Inventory guards, schema validation, and products/audit-log tag invalidation.
+- Integration tests (9): opening movement + audit trail, zero-stock no-movement, case-insensitive SKU conflicts, missing/inactive category errors, sales-role rejection without writes, positive/negative adjustments with movement rows, insufficient-stock rollback isolation, archived-product conflict, restore-blocked-by-inactive-category with recovery.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, 263 unit tests.
+
+### 2026-08-24 — Category form dialog completed (Categories section finished)
 
 ### 2026-08-24 — Product schemas completed
 

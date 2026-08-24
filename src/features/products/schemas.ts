@@ -103,6 +103,7 @@ export const adjustStockSchema = z
 export type CreateProductInput = z.infer<typeof createProductSchema>;
 export type CreateProductArgs = z.input<typeof createProductSchema>;
 export type UpdateProductArgs = z.input<typeof updateProductSchema>;
+export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 export type SetProductActiveArgs = z.input<typeof setProductActiveSchema>;
 export type AdjustStockArgs = z.input<typeof adjustStockSchema>;
 
@@ -145,8 +146,8 @@ export const listProductsQuerySchema = z.object({
 
 export type ListProductsQuery = z.infer<typeof listProductsQuerySchema>;
 export type ListProductsQueryInput = z.input<typeof listProductsQuerySchema>;
+export type ListProductsQueryOutput = z.output<typeof listProductsQuerySchema>;
 
-/** Serialized grid row; money stays in integer cents. */
 export interface ProductListRow {
   id: string;
   categoryId: string;
@@ -172,3 +173,20 @@ export interface ProductListPage {
 export interface CreateProductResult {
   productId: string;
 }
+
+export interface UpdateProductResult {
+  productId: string;
+}
+
+export interface SetProductActiveResult {
+  productId: string;
+  isActive: boolean;
+}
+
+export interface AdjustStockResult {
+  productId: string;
+  stockOnHand: number;
+}
+
+export type AdjustStockInput = z.infer<typeof adjustStockSchema>;
+export type SetProductActiveInput = z.input<typeof setProductActiveSchema>;
