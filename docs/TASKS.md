@@ -135,7 +135,7 @@ Phase 2 gate:
 - [x] Implement `createCustomer` with uniqueness mapping, audit event, revalidation, and role/action tests.
 - [x] Implement `updateCustomer` with changed-field audit metadata, uniqueness/conflict handling, revalidation, and tests.
 - [x] Implement `setCustomerActive` archive/restore behavior, audit events, and tests.
-- [ ] Build Customers page and TanStack grid with order count, confirmed sales, URL state, and empty/error/loading states.
+- [x] Build Customers page and TanStack grid with order count, confirmed sales, URL state, and empty/error/loading states.
 - [ ] Build reusable Customer form for create/edit with grouped fields, duplicate email mapping, accessibility, and component tests.
 - [ ] Build Customer create and edit pages with success navigation and archived-state copy.
 - [ ] Build Customer detail page with contact/address summary, KPIs, archive controls, and order-history grid.
