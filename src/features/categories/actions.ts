@@ -14,16 +14,19 @@ import { mapActionError } from "@/lib/errors/map-action-error";
 import { listCategories } from "./queries";
 import {
   createCategorySchema,
+  setCategoryActiveSchema,
   updateCategorySchema,
   listCategoriesQuerySchema,
   type CategoryListPage,
   type CreateCategoryArgs,
   type CreateCategoryResult,
+  type SetCategoryActiveArgs,
+  type SetCategoryActiveResult,
   type UpdateCategoryArgs,
   type UpdateCategoryResult,
   type ListCategoriesQueryInput,
 } from "./schemas";
-import { createCategory, updateCategory } from "./service";
+import { createCategory, setCategoryActive, updateCategory } from "./service";
 
 /**
  * Paginated category directory for the inventory grid. Admin and Inventory
@@ -102,6 +105,37 @@ export async function updateCategoryAction(
 
   try {
     const result = await updateCategory(
+      parsed.data,
+      context.user.id,
+      context.correlationId,
+    );
+
+    invalidateTags(CACHE_TAGS.categories, CACHE_TAGS.auditLog);
+
+    return actionSuccess(result);
+  } catch (error) {
+    return mapActionError(error, context.correlationId);
+  }
+}
+
+/** Admin/Inventory archive/restore with active-product protection. */
+export async function setCategoryActiveAction(
+  input: SetCategoryActiveArgs,
+): Promise<ActionResult<SetCategoryActiveResult>> {
+  const parsed = setCategoryActiveSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return validationFailure(parsed.error);
+  }
+
+  const context = await getActionContext(MODULE_ROLE_REQUIREMENTS.inventory);
+
+  if (!context.ok) {
+    return context;
+  }
+
+  try {
+    const result = await setCategoryActive(
       parsed.data,
       context.user.id,
       context.correlationId,

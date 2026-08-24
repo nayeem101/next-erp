@@ -70,7 +70,10 @@ export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
 
 /** Raw caller input; optional fields may be omitted entirely. */
 export type UpdateCategoryArgs = z.input<typeof updateCategorySchema>;
+/** Parsed output consumed by the service layer. */
 export type SetCategoryActiveInput = z.infer<typeof setCategoryActiveSchema>;
+
+export type SetCategoryActiveArgs = z.input<typeof setCategoryActiveSchema>;
 
 export interface CreateCategoryResult {
   categoryId: string;

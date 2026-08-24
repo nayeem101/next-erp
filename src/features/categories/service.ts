@@ -1,14 +1,16 @@
 import "server-only";
 
-import { and, eq, ilike, ne, or, sql } from "drizzle-orm";
+import { and, count, eq, ilike, ne, or, sql } from "drizzle-orm";
 
 import { getDb } from "@/db";
-import { categories } from "@/db/schema";
+import { categories, products } from "@/db/schema";
 import { slugify } from "@/features/categories/schemas";
 import { writeAuditEvent } from "@/lib/audit/writer";
 import { DomainError } from "@/lib/errors/action-result";
 
 import type {
+  SetCategoryActiveInput,
+  SetCategoryActiveResult,
   CreateCategoryInput,
   CreateCategoryResult,
   UpdateCategoryInput,
@@ -221,4 +223,70 @@ export async function updateCategory(
 
     throw error;
   }
+}
+
+/**
+ * Archive/restore workflow.
+ *
+ * Archival is blocked while active products reference the category — the
+ * catalog must never orphan sellable products under a hidden category.
+ */
+export async function setCategoryActive(
+  input: SetCategoryActiveInput,
+  actorUserId: string,
+  correlationId: string,
+): Promise<SetCategoryActiveResult> {
+  const db = getDb();
+
+  const targetRows = await db
+    .select({ id: categories.id, isActive: categories.isActive })
+    .from(categories)
+    .where(eq(categories.id, input.categoryId))
+    .limit(1);
+
+  const target = targetRows[0];
+
+  if (!target) {
+    throw new DomainError("NOT_FOUND", "That category no longer exists.");
+  }
+
+  if (!input.isActive) {
+    const activeProducts = await db
+      .select({ value: count() })
+      .from(products)
+      .where(
+        and(
+          eq(products.categoryId, input.categoryId),
+          eq(products.isActive, true),
+        ),
+      );
+
+    if ((activeProducts[0]?.value ?? 0) > 0) {
+      throw new DomainError(
+        "CONFLICT",
+        "Move or archive this category's active products before archiving it.",
+      );
+    }
+  }
+
+  await db.transaction(async (tx) => {
+    await tx
+      .update(categories)
+      .set({ isActive: input.isActive, updatedBy: actorUserId })
+      .where(eq(categories.id, input.categoryId));
+
+    await writeAuditEvent(tx, {
+      actorUserId,
+      action: input.isActive ? "category.restored" : "category.archived",
+      entityType: "category",
+      entityId: input.categoryId,
+      metadata: {
+        before: { isActive: target.isActive },
+        after: { isActive: input.isActive },
+      },
+      correlationId,
+    });
+  });
+
+  return { categoryId: input.categoryId, isActive: input.isActive };
 }

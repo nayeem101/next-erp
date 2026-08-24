@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: updateCategory done; next is setCategoryActive with active-product conflict
+- Status: setCategoryActive done; next is the Categories page and grid UI
 - Active task: None
-- Next eligible task: Implement setCategoryActive with active-product conflict, restore behavior, audit events, and tests
+- Next eligible task: Build Categories page and TanStack grid with URL state, empty/loading/error states, and role-aware actions
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,13 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — setCategoryActive completed
+
+- Extended the service with `setCategoryActive`: NOT_FOUND on miss; archival counts only ACTIVE products (archived ones never block) and rejects with CONFLICT explaining the prerequisite, leaving state and audit untouched; restore flips back freely. Both directions write `category.archived`/`category.restored` with before/after isActive metadata and restamp updatedBy.
+- Added `setCategoryActiveAction` with Admin/Inventory guard and tag invalidation on success.
+- Integration tests (6): archive empty + audit payload, active-product CONFLICT without residue, archived-products-don't-block, restore audit, NOT_FOUND, sales FORBIDDEN.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck.
 
 ### 2026-08-24 — updateCategory completed
 
