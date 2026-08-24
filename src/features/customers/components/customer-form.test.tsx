@@ -145,7 +145,7 @@ describe("CustomerForm create mode", () => {
     expect(alert).toHaveTextContent(/already exists/i);
 
     // The draft survives so the user can correct the email only.
-    expect(screen.getByLabelText(/name/i).value).toBe("New Buyer");
+    expect(screen.getByLabelText(/name/i)).toHaveValue("New Buyer");
   });
 });
 
@@ -160,8 +160,8 @@ describe("CustomerForm edit mode", () => {
 
     render(<CustomerForm mode="edit" customer={editCustomer()} />);
 
-    expect(screen.getByLabelText(/^name$/i).value).toBe("Acme Retail");
-    expect(screen.getByLabelText(/company/i).value).toBe("Acme Corp");
+    expect(screen.getByLabelText(/^name$/i)).toHaveValue("Acme Retail");
+    expect(screen.getByLabelText(/company/i)).toHaveValue("Acme Corp");
 
     await user.click(screen.getByRole("button", { name: /save changes/i }));
 
