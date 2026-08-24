@@ -139,7 +139,7 @@ Phase 2 gate:
 - [x] Build reusable Customer form for create/edit with grouped fields, duplicate email mapping, accessibility, and component tests.
 - [x] Build Customer create and edit pages with success navigation and archived-state copy.
 - [x] Build Customer detail page with contact/address summary, KPIs, archive controls, and order-history grid.
-- [ ] Add idempotent demo customer seed data through the completed customer services.
+- [x] Add idempotent demo customer seed data through the completed customer services.
 - [x] Add RBAC integration tests proving Inventory cannot browse customer administration or invoke customer actions.
 
 Phase 3 gate:
