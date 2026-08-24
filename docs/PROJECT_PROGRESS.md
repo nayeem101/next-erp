@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Product write services done; next is stock movement list queries
+- Status: Stock movement list query done; next is Products page and TanStack grid
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,14 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Stock movement list query completed
+
+- Added `features/products/stock-movement-schemas.ts` and `stock-movement-queries.ts`: `listStockMovements` serves both the product-detail history and the cross-product audit trail. Filters compose additively — product scope, movement type enum, actor, inclusive `YYYY-MM-DD` date window (`>= from::date`, `< to+1day`), and exact case-insensitive order-number match through a left join on orders (non-order movements stay visible). Sort allowlist: newest (id tiebreak), oldest, delta asc/desc; rows join products/users/orders for SKU/name/actor/order-number display.
+- Integration tests (7): newest-first ordering with joined display names, type isolation, actor scoping across products, inclusive two-sided date windows, case-insensitive order-number lookup via sale movement, delta sort coverage, deterministic pagination at the pageSize floor.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, 263 unit + 23 product integration tests.
+
+### 2026-08-24 — Product write services completed (create/update/setActive/adjust)
 
 ### 2026-08-24 — Product write services completed (create/update/setActive/adjust)
 

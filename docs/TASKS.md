@@ -111,7 +111,7 @@ Phase 1 gate:
 
 - [x] Implement product Zod schemas, uppercase SKU/money/quantity normalization, and boundary tests.
 - [x] Implement product list/detail queries with category/status/low-stock/search filters, allowlisted sorting, and integration tests.
-- [ ] Implement stock movement list queries with product/type/actor/date/order filters and integration tests.
+- [x] Implement stock movement list queries with product/type/actor/date/order filters and integration tests.
 - [x] Implement `createProduct` with active-category validation, optional opening movement, audit event, revalidation, and transaction tests.
 - [ ] Implement `updateProduct` without stock mutation, including SKU conflicts, inactive-category handling, audit diff, and tests.
 - [x] Implement `setProductActive` with category restore rules, audit events, revalidation, and tests.
