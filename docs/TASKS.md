@@ -130,11 +130,11 @@ Phase 2 gate:
 
 ## Phase 3 — Customers
 
-- [ ] Implement customer Zod schemas with normalized email/country/contact/address boundaries and tests.
-- [ ] Implement customer list/detail/order-history queries with search/status/sort/pagination and integration tests.
-- [ ] Implement `createCustomer` with uniqueness mapping, audit event, revalidation, and role/action tests.
-- [ ] Implement `updateCustomer` with changed-field audit metadata, uniqueness/conflict handling, revalidation, and tests.
-- [ ] Implement `setCustomerActive` archive/restore behavior, audit events, and tests.
+- [x] Implement customer Zod schemas with normalized email/country/contact/address boundaries and tests.
+- [x] Implement customer list/detail/order-history queries with search/status/sort/pagination and integration tests.
+- [x] Implement `createCustomer` with uniqueness mapping, audit event, revalidation, and role/action tests.
+- [x] Implement `updateCustomer` with changed-field audit metadata, uniqueness/conflict handling, revalidation, and tests.
+- [x] Implement `setCustomerActive` archive/restore behavior, audit events, and tests.
 - [ ] Build Customers page and TanStack grid with order count, confirmed sales, URL state, and empty/error/loading states.
 - [ ] Build reusable Customer form for create/edit with grouped fields, duplicate email mapping, accessibility, and component tests.
 - [ ] Build Customer create and edit pages with success navigation and archived-state copy.
