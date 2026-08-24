@@ -27,6 +27,31 @@ export const userListQuerySchema = z.object({
 
 export type UserListQuery = z.infer<typeof userListQuerySchema>;
 
+export const roleKeySchema = z.enum(ROLE_KEYS);
+
+export const setUserRolesSchema = z
+  .object({
+    userId: z.uuid(),
+    roles: z.array(roleKeySchema).min(1).max(3),
+  })
+  .strict()
+  .superRefine((value, ctx) => {
+    if (new Set(value.roles).size !== value.roles.length) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["roles"],
+        message: "Roles must be unique",
+      });
+    }
+  });
+
+export type SetUserRolesInput = z.infer<typeof setUserRolesSchema>;
+
+export interface SetUserRolesResult {
+  userId: string;
+  roles: RoleKey[];
+}
+
 /** Serialized list row; dates are ISO strings for client components. */
 export interface UserListRow {
   id: string;

@@ -17,8 +17,12 @@ export default defineConfig({
     },
   },
   test: {
+    // Role administration asserts global invariants (exactly one active
+    // Admin, audit trails), so integration files run against the shared
+    // disposable database one at a time.
     clearMocks: true,
     environment: "node",
+    fileParallelism: false,
     include: ["src/**/*.integration.test.{ts,tsx}"],
     passWithNoTests: true,
     restoreMocks: true,

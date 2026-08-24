@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: User list query complete; next is setUserRoles service/action with last-Admin protection
+- Status: setUserRoles complete; next is setUserActive service/action with last-Admin protection
 - Active task: None
-- Next eligible task: Implement setUserRoles service/action with transactional last-Admin protection, audit event, and concurrency tests
+- Next eligible task: Implement setUserActive service/action with last-Admin protection, audit event, and tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,15 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — setUserRoles service/action completed
+
+- Extended `features/users/schemas.ts` with `setUserRolesSchema` per the API spec: strict object, uuid id (z.uuid()), role array min 1 max 3 with a uniqueness superRefine.
+- Added `features/users/service.ts`: `setUserRoles` runs in one transaction guarded by `pg_advisory_xact_lock` on a dedicated role-administration key; loads current memberships, canonicalizes before/after key order, rejects removing the last ACTIVE Admin (`LAST_ADMIN`) by counting other active administrators, replaces memberships with `assigned_by` stamped to the acting admin, and writes `user.roles_changed` with `{before:{roles}, after:{roles}}` metadata.
+- Added `setUserRolesAction` (Admin-only guard, validation before authorization) returning `{ userId, roles }`.
+- Integration suite `set-user-roles.integration.test.ts` (8 tests): membership replacement + assigned_by + audit before/after, NOT_FOUND for unknown users, LAST_ADMIN on sole-admin demotion with state left untouched, inactive admins excluded from the survivor count, demotion allowed when another active admin exists, and a concurrent double-demotion proving exactly one succeeds via the advisory lock; plus action-level FORBIDDEN-without-mutation and success paths.
+- Test-infra change: integration files now run with `fileParallelism: false` because role administration asserts global invariants against the shared disposable database; this also eliminates cross-file truncation races. The set-user-roles suite truncates identity tables per test to guarantee a clean universe.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (156 passing), integration tests (111 passing).
 
 ### 2026-08-24 — Admin user-list query completed
 
@@ -311,6 +320,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-24: setUserRoles suites green: 156 unit, 111 integration; lint, strict typecheck, format pass.
 - 2026-08-24: Users feature suites green: 152 unit, 103 integration; lint, strict typecheck, format, and Partial-Prerender build all pass.
 - 2026-08-22: Live Playwright run against the configured Supabase project: 8 passed, 8 skipped (no seeded admin); format, lint, strict typecheck, 146 unit and 92 integration tests green.
 - 2026-08-22: Login form component suite passed (146 unit, 92 integration total) with format, lint, strict typecheck, and Partial-Prerender build green.

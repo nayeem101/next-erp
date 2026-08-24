@@ -10,10 +10,14 @@ import { mapActionError } from "@/lib/errors/map-action-error";
 
 import { listUsers } from "./queries";
 import {
+  setUserRolesSchema,
   userListQuerySchema,
+  type SetUserRolesInput,
+  type SetUserRolesResult,
   type UserListPage,
   type UserListQuery,
 } from "./schemas";
+import { setUserRoles } from "./service";
 
 /** Admin-only paginated user directory backing the Users grid. */
 export async function listUsersAction(
@@ -35,6 +39,35 @@ export async function listUsersAction(
     const page = await listUsers(parsed.data);
 
     return actionSuccess(page);
+  } catch (error) {
+    return mapActionError(error, context.correlationId);
+  }
+}
+
+/** Admin-only role replacement with last-active-Admin protection. */
+export async function setUserRolesAction(
+  input: SetUserRolesInput,
+): Promise<ActionResult<SetUserRolesResult>> {
+  const parsed = setUserRolesSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return validationFailure(parsed.error);
+  }
+
+  const context = await getActionContext(["admin"]);
+
+  if (!context.ok) {
+    return context;
+  }
+
+  try {
+    const result = await setUserRoles(
+      parsed.data,
+      context.user.id,
+      context.correlationId,
+    );
+
+    return actionSuccess(result);
   } catch (error) {
     return mapActionError(error, context.correlationId);
   }
