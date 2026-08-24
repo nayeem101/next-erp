@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: setUserActive complete; next is the Admin Users grid UI
+- Status: Authentication and user administration section COMPLETE; next is Shared UI infrastructure (typed URL list-query parsing)
 - Active task: None
-- Next eligible task: Build Admin Users TanStack grid, role dialog, enable/disable confirmation, and component tests
+- Next eligible task: Build typed URL list-query parsing, canonical parameter helpers, escaped search helpers, and unit tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,15 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Admin Users grid completed (auth section finished)
+
+- Installed `@tanstack/react-table` v9 and adopted its new `createTableHook` API: a module-level hook registers `coreFeatures` plus the core row model once; columns are declared through the typed app column helper (`columnHelper.columns([...])` preserves per-column value types) and rendered with standalone `flexRender`.
+- Added UI primitives: Base UI `dialog.tsx` (portal/overlay/popup with close affordance), `checkbox.tsx`, `badge.tsx`, and plain `table.tsx` wrappers.
+- Built `/admin/users`: server page guards Admin via layout+page context, feeds one server page (pageSize 50) into `UsersTable`; empty state explains Supabase provisioning; own row labelled "(you)"; roles render as badges; status as success/destructive badges; last sign-in formatted in UTC or "Never".
+- Added `RoleAssignmentDialog` (three labeled checkboxes with role descriptions initialized from persisted state each mount, save through `setUserRolesAction`) and `ConfirmUserActiveDialog` (enable/disable copy, destructive disable warning); both surface failures inline via `ActionErrorAlert` so LAST_ADMIN rejections explain themselves without closing, close + `router.refresh()` on success. Submit handlers avoid deprecated React.FormEvent by using React.SubmitEvent + voided async submit.
+- Component tests (7): column/identity rendering, "(you)" labelling, empty state, role dialog open->toggle->save payload + refresh + auto-close, LAST_ADMIN inline alert keeping dialog open without refresh, enable/disable confirmation flows hitting `setUserActiveAction` with correct target states.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (163 passing), integration tests (121 passing), production build.
 
 ### 2026-08-24 — setUserActive service/action completed
 
@@ -328,6 +337,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-24: Admin Users grid suites green: 163 unit, 121 integration; lint, strict typecheck, format, build pass.
 - 2026-08-24: setUserActive suites green: 156 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: setUserRoles suites green: 156 unit, 111 integration; lint, strict typecheck, format pass.
 - 2026-08-24: Users feature suites green: 152 unit, 103 integration; lint, strict typecheck, format, and Partial-Prerender build all pass.

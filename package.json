@@ -37,6 +37,7 @@
     "@supabase/supabase-js": "2.112.3",
     "@tanstack/react-form": "^1.33.5",
     "@tanstack/react-store": "^0.11.1",
+    "@tanstack/react-table": "^9.1.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.2",
