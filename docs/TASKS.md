@@ -82,7 +82,7 @@ Approval gate: explicit approval of all seven documents is required before Phase
 
 ### Shared UI infrastructure
 
-- [ ] Build typed URL list-query parsing, canonical parameter helpers, escaped search helpers, and unit tests.
+- [x] Build typed URL list-query parsing, canonical parameter helpers, escaped search helpers, and unit tests.
 - [ ] Build reusable TanStack `DataTable`, toolbar, sorting, visibility, and server-pagination controls with accessibility tests.
 - [ ] Build shared table skeleton, unfiltered/filtered empty states, status badge, local date, and money display components.
 - [ ] Build shared form error summary, action error alert, submit button, confirmation dialog, currency input, and quantity input.

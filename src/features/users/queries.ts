@@ -15,6 +15,7 @@ import {
 import { getDb } from "@/db";
 import { roles, userRoles, users } from "@/db/schema";
 import { ROLE_KEYS, type RoleKey } from "@/lib/auth/roles";
+import { ilikeContainsPattern } from "@/lib/list-query/escape";
 
 import type { UserListPage, UserListQuery, UserListRow } from "./schemas";
 
@@ -26,16 +27,11 @@ import type { UserListPage, UserListQuery, UserListRow } from "./schemas";
  * memberships for exactly those rows, grouped in memory.
  */
 
-/** Escapes LIKE metacharacters so user input matches literally. */
-function escapeLikePattern(value: string): string {
-  return value.replace(/[\\%_]/g, (character) => `\\${character}`);
-}
-
 function buildConditions(query: UserListQuery): SQL | undefined {
   const conditions: SQL[] = [];
 
   if (query.search !== undefined) {
-    const pattern = `%${escapeLikePattern(query.search)}%`;
+    const pattern = ilikeContainsPattern(query.search);
 
     const textMatch = or(
       ilike(users.email, pattern),

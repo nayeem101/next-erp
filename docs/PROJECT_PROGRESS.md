@@ -4,9 +4,9 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Authentication and user administration section COMPLETE; next is Shared UI infrastructure (typed URL list-query parsing)
+- Status: List-query infrastructure complete; next is the reusable TanStack DataTable
 - Active task: None
-- Next eligible task: Build typed URL list-query parsing, canonical parameter helpers, escaped search helpers, and unit tests
+- Next eligible task: Build reusable TanStack DataTable, toolbar, sorting, visibility, and server-pagination controls with accessibility tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
 
 `docs/TASKS.md` is the authoritative task checklist. This file summarizes execution status and evidence; it does not replace the task plan.
@@ -35,6 +35,14 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-24 — Shared list-query infrastructure completed
+
+- Added `lib/list-query/parse.ts`: `parseListQuery` flattens URLSearchParams or Next.js search-param records with last-value-wins, parses against an object schema (coercion + defaults), ignores unknown keys silently, and on validation failure drops invalid keys individually before re-parsing so hostile URLs degrade to defaults; reports `recovered` so callers can rewrite sanitized URLs.
+- Added `lib/list-query/canonical.ts`: `canonicalSearchParams` sorts keys alphabetically, drops undefined/null/empty values and default-equal values while keeping meaningful falsy values (false/0); `listQueryHref` merges a patch over current values (undefined deletes) for pagination/filter links.
+- Added `lib/list-query/escape.ts`: `escapeLikePattern`, `ilikeContainsPattern`, `ilikeStartsWithPattern`; refactored the users query to consume the shared helper instead of its private copy.
+- Unit tests (18): flattening/coercion/recovery semantics, strict-schema noise tolerance, canonical ordering/default omission/falsy retention/href merge-delete/round-trip, and LIKE escaping of %/_/backslash.
+- Checks passed: Prettier, ESLint (zero warnings), strict typecheck, unit tests (181 passing), integration tests (121 passing).
 
 ### 2026-08-24 — Admin Users grid completed (auth section finished)
 
@@ -337,6 +345,7 @@ After every completed task from `docs/TASKS.md`:
 
 ## Verification history
 
+- 2026-08-24: list-query suites green: 181 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: Admin Users grid suites green: 163 unit, 121 integration; lint, strict typecheck, format, build pass.
 - 2026-08-24: setUserActive suites green: 156 unit, 121 integration; lint, strict typecheck, format pass.
 - 2026-08-24: setUserRoles suites green: 156 unit, 111 integration; lint, strict typecheck, format pass.
