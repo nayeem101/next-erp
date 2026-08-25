@@ -11,10 +11,10 @@ function customer(
   return {
     id: "c1",
     name: "Buyer Co",
-    companyName: null,
+    companyName: "Buyer Holdings",
     email: "buyer@example.com",
     phone: null,
-    city: null,
+    city: "Springfield",
     region: null,
     countryCode: "US",
     ...overrides,
@@ -40,7 +40,7 @@ function line(overrides: Partial<WizardLine> = {}): WizardLine {
     productId: "p1",
     sku: "SKU-1",
     name: "Drill",
-    unitPriceCents: 1299n,
+    unitPriceCents: 1299,
     quantity: 2,
     ...overrides,
   };
@@ -158,7 +158,7 @@ describe("order wizard store", () => {
         line({
           productId: "p7",
           sku: "SKU-7",
-          unitPriceCents: 450n,
+          unitPriceCents: 450,
           quantity: 3,
         }),
       ],
@@ -181,7 +181,7 @@ describe("order wizard store", () => {
 
     // Stale local rows are replaced, not merged.
     expect(hydrated.productId).toBe("p7");
-    expect(hydrated.unitPriceCents).toBe(450n);
+    expect(hydrated.unitPriceCents).toBe(450);
     expect(hydrated.key).toBeTruthy();
   });
 
@@ -209,8 +209,8 @@ describe("order wizard store", () => {
   test("wizardTotalCents sums exact bigint line math", () => {
     expect(
       wizardTotalCents([
-        line({ unitPriceCents: 1299n, quantity: 3 }),
-        line({ key: "k2", productId: "p2", unitPriceCents: 455n, quantity: 2 }),
+        line({ unitPriceCents: 1299, quantity: 3 }),
+        line({ key: "k2", productId: "p2", unitPriceCents: 455, quantity: 2 }),
       ]),
     ).toBe(4807n);
     expect(wizardTotalCents([])).toBe(0n);

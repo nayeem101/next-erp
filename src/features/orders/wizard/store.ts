@@ -21,7 +21,7 @@ export interface WizardLine {
   productId: string;
   sku: string;
   name: string;
-  unitPriceCents: bigint;
+  unitPriceCents: number;
   quantity: number;
 }
 
@@ -32,7 +32,7 @@ export interface HydratableDraft {
     productId: string;
     sku: string;
     name: string;
-    unitPriceCents: bigint;
+    unitPriceCents: number;
     quantity: number;
   }[];
   notes: string;
@@ -201,7 +201,8 @@ export type OrderWizardStore = ReturnType<typeof createOrderWizardStore>;
 /** Exact bigint total across wizard lines; mirrors server math. */
 export function wizardTotalCents(lines: WizardLine[]): bigint {
   return lines.reduce(
-    (total, line) => total + BigInt(line.quantity) * line.unitPriceCents,
+    (total, line) =>
+      total + BigInt(line.quantity) * BigInt(line.unitPriceCents),
     0n,
   );
 }
