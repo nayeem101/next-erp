@@ -20,10 +20,16 @@ const columnHelper = createDataTableColumnHelper<InvoiceListRow>();
 
 interface InvoiceGridValues {
   status: string;
+  customerId?: string | undefined;
   dateFrom?: string | undefined;
   dateTo?: string | undefined;
   page: number;
   pageSize: number;
+}
+
+export interface InvoiceCustomerOption {
+  id: string;
+  name: string;
 }
 
 const DEFAULTS = {
@@ -63,11 +69,34 @@ function hrefFor(
 export function InvoicesGrid({
   page,
   urlValues,
+  customerOptions,
 }: {
   page: InvoiceListPage;
   urlValues: InvoiceGridValues;
+  customerOptions: InvoiceCustomerOption[];
 }) {
   const router = useRouter();
+
+  const [customerInput, setCustomerInput] = React.useState(
+    urlValues.customerId ?? "",
+  );
+  const [dateFromInput, setDateFromInput] = React.useState(
+    urlValues.dateFrom ?? "",
+  );
+  const [dateToInput, setDateToInput] = React.useState(urlValues.dateTo ?? "");
+
+  function applyFilters(event: React.SyntheticEvent<HTMLFormElement>): void {
+    event.preventDefault();
+
+    router.push(
+      hrefFor(urlValues, {
+        customerId: customerInput === "" ? undefined : customerInput,
+        dateFrom: dateFromInput === "" ? undefined : dateFromInput,
+        dateTo: dateToInput === "" ? undefined : dateToInput,
+        page: DEFAULTS.page,
+      }),
+    );
+  }
 
   function handleSortChange(sort: DataTableSort | null): void {
     if (!sort?.id || !sort.desc || sort.id !== "issuedAt") {
@@ -152,35 +181,117 @@ export function InvoicesGrid({
   const isEmpty = page.rows.length === 0;
   const hasFilters =
     urlValues.status !== DEFAULTS.status ||
+    urlValues.customerId !== undefined ||
     urlValues.dateFrom !== undefined ||
     urlValues.dateTo !== undefined ||
     urlValues.page !== DEFAULTS.page;
 
   return (
     <>
-      <nav
-        aria-label="Filter by invoice status"
-        className="flex rounded-md border"
-      >
-        {(["issued", "void", "all"] as const).map((status) => {
-          const isCurrent = urlValues.status === status;
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <nav
+          aria-label="Filter by invoice status"
+          className="flex rounded-md border"
+        >
+          {(["issued", "void", "all"] as const).map((status) => {
+            const isCurrent = urlValues.status === status;
 
-          return (
+            return (
+              <Link
+                key={status}
+                aria-current={isCurrent ? "page" : undefined}
+                className={
+                  isCurrent
+                    ? "bg-primary px-3 py-1.5 text-sm text-primary-foreground first:rounded-l-md last:rounded-r-md"
+                    : "px-3 py-1.5 text-sm first:rounded-l-md last:rounded-r-md hover:bg-muted"
+                }
+                href={hrefFor(urlValues, { status, page: DEFAULTS.page })}
+              >
+                {status === "all"
+                  ? "All"
+                  : status === "void"
+                    ? "Void"
+                    : "Issued"}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <form
+          className="flex flex-wrap items-center gap-2"
+          onSubmit={applyFilters}
+        >
+          <label htmlFor="invoice-customer-filter" className="sr-only">
+            Filter by customer
+          </label>
+          <select
+            id="invoice-customer-filter"
+            value={customerInput}
+            onChange={(event) => {
+              setCustomerInput(event.target.value);
+            }}
+            className="h-9 rounded-md border border-input bg-background px-2 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          >
+            <option value="">All customers</option>
+            {customerOptions.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+
+          <label htmlFor="invoice-date-from" className="sr-only">
+            Issued from
+          </label>
+          <input
+            id="invoice-date-from"
+            type="date"
+            value={dateFromInput}
+            max={dateToInput === "" ? undefined : dateToInput}
+            onChange={(event) => {
+              setDateFromInput(event.target.value);
+            }}
+            className="h-9 rounded-md border border-input bg-background px-2 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          />
+          <span aria-hidden={true} className="text-sm text-muted-foreground">
+            –
+          </span>
+          <label htmlFor="invoice-date-to" className="sr-only">
+            Issued to
+          </label>
+          <input
+            id="invoice-date-to"
+            type="date"
+            value={dateToInput}
+            min={dateFromInput === "" ? undefined : dateFromInput}
+            onChange={(event) => {
+              setDateToInput(event.target.value);
+            }}
+            className="h-9 rounded-md border border-input bg-background px-2 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          />
+
+          <button
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+            type="submit"
+          >
+            Apply
+          </button>
+
+          {hasFilters && urlValues.customerId !== undefined ? (
             <Link
-              key={status}
-              aria-current={isCurrent ? "page" : undefined}
-              className={
-                isCurrent
-                  ? "bg-primary px-3 py-1.5 text-sm text-primary-foreground first:rounded-l-md last:rounded-r-md"
-                  : "px-3 py-1.5 text-sm first:rounded-l-md last:rounded-r-md hover:bg-muted"
-              }
-              href={hrefFor(urlValues, { status, page: DEFAULTS.page })}
+              className={buttonVariants({ variant: "ghost", size: "sm" })}
+              href={hrefFor(urlValues, {
+                customerId: undefined,
+                dateFrom: undefined,
+                dateTo: undefined,
+                page: DEFAULTS.page,
+              })}
             >
-              {status === "all" ? "All" : status === "void" ? "Void" : "Issued"}
+              Clear filters
             </Link>
-          );
-        })}
-      </nav>
+          ) : null}
+        </form>
+      </div>
 
       {isEmpty && !hasFilters ? (
         <EmptyState

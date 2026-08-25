@@ -4,6 +4,7 @@ import { DataTableSkeleton } from "@/components/shared/data-table-skeleton";
 import { InvoicesGrid } from "@/features/invoices/components/invoices-grid";
 import { listInvoices } from "@/features/invoices/queries";
 import { listInvoicesQuerySchema } from "@/features/invoices/schemas";
+import { listActiveCustomerOptions } from "@/features/orders/selectors";
 import { parseListQuery } from "@/lib/list-query/parse";
 
 import type { Metadata } from "next";
@@ -21,13 +22,18 @@ async function InvoicesTable({ searchParams }: PageProps) {
 
   // Hostile or malformed URLs degrade to defaults and rewrite nothing here.
   const { query: rawQuery } = parseListQuery(raw, listInvoicesQuerySchema);
-  const page = await listInvoices(rawQuery);
+  const [page, customerOptions] = await Promise.all([
+    listInvoices(rawQuery),
+    listActiveCustomerOptions(),
+  ]);
 
   return (
     <InvoicesGrid
       page={page}
+      customerOptions={customerOptions}
       urlValues={{
         status: rawQuery.status,
+        customerId: rawQuery.customerId,
         dateFrom: rawQuery.dateFrom,
         dateTo: rawQuery.dateTo,
         page: rawQuery.page,
