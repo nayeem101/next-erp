@@ -221,19 +221,19 @@ Phase 5 gate:
 
 ## Phase 6 — Streamed dashboard
 
-- [ ] Implement role-aware dashboard date-range schema and canonical URL handling with tests.
-- [ ] Implement net revenue-over-time from Sales Revenue postings with daily/monthly buckets, role-safe cache variant/tag, and integration tests.
-- [ ] Implement top-products by positive net sale/reversal units with revenue projection for Admin/Sales, unit-only projection for Inventory, and role-safe caching.
-- [ ] Implement low-stock aggregate query/cache tag with Admin/Inventory authorization and tests.
-- [ ] Implement recent-orders aggregate with separate sales/operations cache keys, common invalidation tag, role-specific fields, and tests.
-- [ ] Build dashboard shell/date-range selector with URL state and role-aware widget composition.
-- [ ] Build Revenue Recharts client renderer with serialized data, tooltip, text summary, responsive sizing, and component tests.
-- [ ] Build Top Products chart/list with role-safe labels, empty state, text summary, and tests.
-- [ ] Build Low Stock widget with product links and role-appropriate empty state.
-- [ ] Build Recent Orders widget with role-safe fields, status badges, and links.
-- [ ] Wrap every widget in independent Suspense fallback and local error boundary; test one failed widget does not block siblings.
-- [ ] Verify confirm/cancel/adjust mutations invalidate only the documented dashboard tags and paths.
-- [ ] Add dashboard axe checks and a slow-query streaming smoke test.
+- [x] Implement role-aware dashboard date-range schema and canonical URL handling with tests.
+- [x] Implement net revenue-over-time from Sales Revenue postings with daily/monthly buckets, role-safe cache variant/tag, and integration tests.
+- [x] Implement top-products by positive net sale/reversal units with revenue projection for Admin/Sales, unit-only projection for Inventory, and role-safe caching.
+- [x] Implement low-stock aggregate query/cache tag with Admin/Inventory authorization and tests.
+- [x] Implement recent-orders aggregate with separate sales/operations cache keys, common invalidation tag, role-specific fields, and tests.
+- [x] Build dashboard shell/date-range selector with URL state and role-aware widget composition.
+- [x] Build Revenue Recharts client renderer with serialized data, tooltip, text summary, responsive sizing, and component tests.
+- [x] Build Top Products chart/list with role-safe labels, empty state, text summary, and tests.
+- [x] Build Low Stock widget with product links and role-appropriate empty state.
+- [x] Build Recent Orders widget with role-safe fields, status badges, and links.
+- [x] Wrap every widget in independent Suspense fallback and local error boundary; test one failed widget does not block siblings.
+- [x] Verify confirm/cancel/adjust mutations invalidate only the documented dashboard tags and paths.
+- [x] Add dashboard axe checks and a slow-query streaming smoke test.
 
 Phase 6 gate:
 
