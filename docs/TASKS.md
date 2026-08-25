@@ -169,7 +169,7 @@ Phase 3 gate:
 - [x] Build Edit Draft page that hydrates wizard state, submits ID/version, and preserves local input on concurrency conflict.
 - [x] Build role-projected Orders page/grid with URL filters, status badges, totals hidden for Inventory, and component tests.
 - [x] Build Order detail page with snapshot lines, totals, actors, timeline, role-aware action slots, and inaccessible/not-found states.
-- [ ] Add component/accessibility tests for keyboard-only wizard completion and insufficient/stale-state error presentation.
+- [x] Add component/accessibility tests for keyboard-only wizard completion and insufficient/stale-state error presentation.
 
 Phase 4 gate:
 
