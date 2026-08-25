@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: PHASE 3 COMPLETE. Next: Phase 4 order domain schemas
+- Status: Phase 4 domain/reads complete. Next: wizard store + Order UI
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,17 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-25 — Order domain and reads completed (Phase 4 first half)
+
+- Schemas (17 tests): strict line/draft/transition/cancel contracts — positive integer quantities ≤1M coerced from strings, 1-100 lines, superRefine adds one `lines` issue on duplicate products, version coerce-positive, cancel requires trimmed reason ≤500; list query with status/customer/creator filters, inclusive ISO date bounds, newest/oldest/total sorts.
+- Pure domain (`domain.ts`, 11 exhaustive tests): `buildLineSnapshots` maps requests to immutable sku/name/price snapshots with bigint line totals (`MissingProductError` on gaps); `computeOrderTotalCents` exact sum; transition graph draft→confirmed/cancelled, confirmed→fulfilled/cancelled with terminal states; cancellation kinds clean-draft vs reverse-sale vs not-cancellable; per-action role matrix (create/update/confirm/cancel admin+sales, fulfill admin+inventory) and financial visibility excluding inventory.
+- Queries (4 integration tests): role-projected `listOrders`/`getOrder(orderId, {includeTotals})` — Inventory's read path nulls every total while keeping snapshot line prices; joins customer identity plus creator/confirmer/fulfiller/canceller display names via aliased user joins; escaped date-range/status/customer/creator filters.
+- Selectors (2 integration tests): active-only customer/product options with minimal serialized fields (contact preview; price+stock context).
+- Draft services + actions (5 integration tests): createDraftOrder verifies active customer/products in bulk, snapshots current master data server-side inside the transaction, computes exact bigint totals, writes v1 order + immutable lines + single `order.draft_created`; updateDraftOrder enforces draft-only + optimistic version (conditional update re-checks inside tx), replaces lines with REFRESHED snapshots (price changes flow into saved drafts), bumps version, appends `order.draft_updated`. Proofs included that draft writes leave stock_on_hand, stock_movements, invoices, and ledger_entries untouched.
+  - Gotchas: postgres.js lowercases unquoted SQL aliases (`lineTotal` → `linetotal`) — quote aliases in test selects; DB triggers enforce line immutability once an order leaves draft AND the PRD transition graph, so seeds must insert lines as draft then walk legal status steps; line storage order is not contractual (assert by SKU).
+
+### 2026-08-25 — Phase 3 gate PASSED (Customers complete)
 
 ### 2026-08-25 — Phase 3 gate PASSED (Customers complete)
 
