@@ -28,7 +28,8 @@
     "db:test:start": "docker compose up -d --wait postgres-test",
     "db:test:stop": "docker compose down -v --remove-orphans",
     "db:test:bootstrap": "node scripts/bootstrap-test-db.mjs",
-    "db:seed": "node src/db/seed.mts"
+    "db:seed": "node src/db/seed.mts",
+    "db:demo": "node scripts/demo-seed.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

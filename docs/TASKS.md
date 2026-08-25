@@ -243,12 +243,12 @@ Phase 6 gate:
 
 ### Audit log
 
-- [ ] Centralize fixed audit event names, metadata redaction, correlation handling, and unit tests.
-- [ ] Audit every implemented mutation against the API event vocabulary and add missing transaction-level assertions.
-- [ ] Implement Admin-only audit list query with actor/action/entity/date filters, pagination, sanitized metadata, and tests.
-- [ ] Build Audit Log TanStack grid with URL filters, entity links, actor/timestamp, and append-only empty/error/loading states.
-- [ ] Build accessible Audit Details sheet for sanitized before/after/context metadata.
-- [ ] Add tests proving audit rows reject application/database update/delete and non-Admins cannot query/view them.
+- [x] Centralize fixed audit event names, metadata redaction, correlation handling, and unit tests.
+- [x] Audit every implemented mutation against the API event vocabulary and add missing transaction-level assertions.
+- [x] Implement Admin-only audit list query with actor/action/entity/date filters, pagination, sanitized metadata, and tests.
+- [x] Build Audit Log TanStack grid with URL filters, entity links, actor/timestamp, and append-only empty/error/loading states.
+- [x] Build accessible Audit Details sheet for sanitized before/after/context metadata.
+- [x] Add tests proving audit rows reject application/database update/delete and non-Admins cannot query/view them.
 
 ### Production readiness
 
