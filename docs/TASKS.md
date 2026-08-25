@@ -165,7 +165,7 @@ Phase 3 gate:
 - [x] Build customer step with active-customer combobox, contact preview, prerequisite/empty states, and tests.
 - [x] Build line-items step with product picker, unique rows, quantity editing, availability display, totals, and tests.
 - [x] Build review step with notes, snapshot warnings, save-draft action, error recovery, and tests.
-- [ ] Build New Order page that creates a draft, resets transient state only on success, and links to edit/detail.
+- [x] Build New Order page that creates a draft, resets transient state only on success, and links to edit/detail.
 - [ ] Build Edit Draft page that hydrates wizard state, submits ID/version, and preserves local input on concurrency conflict.
 - [ ] Build role-projected Orders page/grid with URL filters, status badges, totals hidden for Inventory, and component tests.
 - [ ] Build Order detail page with snapshot lines, totals, actors, timeline, role-aware action slots, and inaccessible/not-found states.

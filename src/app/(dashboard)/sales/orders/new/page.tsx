@@ -1,24 +1,61 @@
-import { ForbiddenAccess } from "@/components/shared/forbidden-access";
-import { getActionContext } from "@/lib/auth/guards";
-import { MODULE_ROLE_REQUIREMENTS } from "@/lib/auth/roles";
+import Link from "next/link";
+import { connection } from "next/server";
+import { Suspense } from "react";
 
-/** Authoring a draft is an Admin/Sales activity; Inventory reaches this
- * route only through the read-only operations queue. */
-export default async function NewOrderPage() {
-  const context = await getActionContext(
-    MODULE_ROLE_REQUIREMENTS.orderAuthoring,
-  );
+import { buttonVariants } from "@/components/ui/button";
+import {
+  listActiveCustomerOptions,
+  listActiveProductOptions,
+} from "@/features/orders/selectors";
+import { NewOrderWizard } from "@/features/orders/wizard/new-order-wizard";
 
-  if (!context.ok) {
-    return <ForbiddenAccess />;
-  }
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "New order | NextERP",
+};
+
+async function OrderWizardOptions() {
+  // No dynamic APIs are read on this route; opt into request time so the
+  // static shell prerenders without a database.
+  await connection();
+
+  const [customerOptions, productOptions] = await Promise.all([
+    listActiveCustomerOptions(),
+    listActiveProductOptions(),
+  ]);
 
   return (
-    <section>
-      <h1 className="text-xl font-semibold">New order</h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        The order wizard arrives with the sales order feature phase.
-      </p>
-    </section>
+    <NewOrderWizard
+      customerOptions={customerOptions}
+      productOptions={productOptions}
+    />
+  );
+}
+
+export default function NewOrderPage() {
+  return (
+    <div className="flex flex-col gap-4">
+      <header className="flex flex-col gap-1">
+        <h1 className="font-heading text-xl font-semibold">New order</h1>
+        <p className="text-sm text-muted-foreground">
+          Pick a customer, add products, and save the draft. Nothing is billed
+          until the order is confirmed.
+        </p>
+      </header>
+
+      <Suspense
+        fallback={<p className="text-sm text-muted-foreground">Loading…</p>}
+      >
+        <OrderWizardOptions />
+      </Suspense>
+
+      <Link
+        className={buttonVariants({ variant: "ghost", size: "sm" })}
+        href="/sales/orders"
+      >
+        Back to orders
+      </Link>
+    </div>
   );
 }
