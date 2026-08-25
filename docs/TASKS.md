@@ -196,9 +196,9 @@ Phase 4 gate:
 - [x] Implement invoice list/detail view-model queries with Admin/Sales authorization, filters, serialization, and tests.
 - [ ] Build Invoice register TanStack grid with status/customer/date filters, void state, links, and download action.
 - [ ] Build server-rendered Invoice detail page with snapshot lines, bill-to data, totals, order link, and VOID treatment.
-- [ ] Build shared invoice document view model and `@react-pdf/renderer` document with deterministic content tests.
-- [ ] Implement authenticated `GET /api/invoices/[invoiceId]/pdf` streaming handler with safe filename/headers/statuses and tests.
-- [ ] Add tests proving Inventory and unauthenticated users cannot read invoice pages/data or download PDFs.
+- [x] Build shared invoice document view model and `@react-pdf/renderer` document with deterministic content tests.
+- [x] Implement authenticated `GET /api/invoices/[invoiceId]/pdf` streaming handler with safe filename/headers/statuses and tests.
+- [x] Add tests proving Inventory and unauthenticated users cannot read invoice pages/data or download PDFs.
 
 ### Ledger
 
