@@ -182,10 +182,10 @@ Phase 4 gate:
 - [x] Implement internal invoice creation and voiding repositories with one-per-order and immutable amount tests.
 - [x] Implement internal balanced sale/reversal journal writer with deferred-constraint and append-only tests.
 - [x] Implement confirm-order product locking/conditional deduction helper with deterministic lock order and concurrency tests.
-- [ ] Implement `confirmOrder` transaction across status, stock movements, invoice, sale journal, and audit events.
-- [ ] Test successful multi-line confirmation totals, snapshots, resulting balances, invoice uniqueness, journal balance, version, and audits.
-- [ ] Test insufficient-stock confirmation rolls back every order, stock, movement, invoice, ledger, and audit side effect.
-- [ ] Test competing confirmations cannot oversell and produce one valid atomic outcome for limited stock.
+- [x] Implement `confirmOrder` transaction across status, stock movements, invoice, sale journal, and audit events.
+- [x] Test successful multi-line confirmation totals, snapshots, resulting balances, invoice uniqueness, journal balance, version, and audits.
+- [x] Test insufficient-stock confirmation rolls back every order, stock, movement, invoice, ledger, and audit side effect.
+- [x] Test competing confirmations cannot oversell and produce one valid atomic outcome for limited stock.
 - [ ] Implement `fulfillOrder` confirmed-only versioned transition with actor/time, audit event, revalidation, and tests.
 - [ ] Implement draft and confirmed branches of `cancelOrder`, including restock, movements, invoice void, reversal journal, audit events, and tests.
 - [ ] Test fulfilled/cancelled terminal transitions and stale lifecycle submissions fail without partial writes.
