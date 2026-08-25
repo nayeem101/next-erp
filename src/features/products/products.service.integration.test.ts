@@ -370,6 +370,28 @@ d("adjustStockAction", () => {
     expect(movements[1]?.delta).toBe(5);
     expect(movements[1]?.resulting).toBe(55);
     expect(movements[1]?.reason).toBe("Cycle count correction");
+
+    // The adjustment lands with a same-transaction audit event.
+    const audits = (await sql`
+      select action, entity_type as "entityType", entity_id as "entityId",
+             metadata
+      from public.audit_log where entity_id = ${productId}::uuid
+      order by created_at
+    `) as {
+      action: string;
+      entityType: string;
+      entityId: string;
+      metadata: Record<string, unknown>;
+    }[];
+
+    expect(audits.at(-1)?.action).toBe("product.stock_adjusted");
+    expect(audits.at(-1)?.metadata).toMatchObject({
+      context: {
+        quantityDelta: 5,
+        resultingStock: 55,
+        reason: "Cycle count correction",
+      },
+    });
   });
 
   test("negative adjustment below zero fails with INSUFFICIENT_STOCK and writes nothing", async () => {
