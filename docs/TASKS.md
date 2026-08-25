@@ -209,11 +209,11 @@ Phase 4 gate:
 
 ### Critical browser flow
 
-- [ ] Add Playwright flow: Sales creates/selects customer, builds multi-line order, saves/confirms, sees stock-safe success, and opens invoice.
-- [ ] Extend Playwright flow to assert authenticated PDF response and meaningful invoice content/headers.
-- [ ] Add Playwright flow: Inventory sees confirmed operational order and fulfills it without revenue/invoice visibility.
-- [ ] Add Playwright RBAC smoke test for forbidden invoice/ledger route and direct unauthorized action submission.
-- [ ] Add idempotent lifecycle-varied demo order seed data through completed order services, producing coherent invoices, movements, journals, and audits.
+- [x] Add Playwright flow: Sales creates/selects customer, builds multi-line order, saves/confirms, sees stock-safe success, and opens invoice.
+- [x] Extend Playwright flow to assert authenticated PDF response and meaningful invoice content/headers.
+- [x] Add Playwright flow: Inventory sees confirmed operational order and fulfills it without revenue/invoice visibility.
+- [x] Add Playwright RBAC smoke test for forbidden invoice/ledger route and direct unauthorized action submission.
+- [x] Add idempotent lifecycle-varied demo order seed data through completed order services, producing coherent invoices, movements, journals, and audits.
 
 Phase 5 gate:
 

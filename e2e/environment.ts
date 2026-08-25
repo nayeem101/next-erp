@@ -7,6 +7,8 @@ export interface E2EAdminAccount {
 
 export interface E2ETestEnvironment {
   admin?: E2EAdminAccount | undefined;
+  inventory?: E2EAdminAccount | undefined;
+  sales?: E2EAdminAccount | undefined;
   baseURL: string;
   externalServer: boolean;
   port: number;
@@ -92,6 +94,14 @@ export function readE2ETestEnvironment(
     admin: readAdminAccount(
       environment.E2E_ADMIN_EMAIL,
       environment.E2E_ADMIN_PASSWORD,
+    ),
+    sales: readAdminAccount(
+      environment.E2E_SALES_EMAIL,
+      environment.E2E_SALES_PASSWORD,
+    ),
+    inventory: readAdminAccount(
+      environment.E2E_INVENTORY_EMAIL,
+      environment.E2E_INVENTORY_PASSWORD,
     ),
     baseURL: externalBaseURL ?? `http://127.0.0.1:${String(port)}`,
     externalServer: externalBaseURL !== undefined,
