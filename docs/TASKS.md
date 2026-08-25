@@ -167,7 +167,7 @@ Phase 3 gate:
 - [x] Build review step with notes, snapshot warnings, save-draft action, error recovery, and tests.
 - [x] Build New Order page that creates a draft, resets transient state only on success, and links to edit/detail.
 - [x] Build Edit Draft page that hydrates wizard state, submits ID/version, and preserves local input on concurrency conflict.
-- [ ] Build role-projected Orders page/grid with URL filters, status badges, totals hidden for Inventory, and component tests.
+- [x] Build role-projected Orders page/grid with URL filters, status badges, totals hidden for Inventory, and component tests.
 - [ ] Build Order detail page with snapshot lines, totals, actors, timeline, role-aware action slots, and inaccessible/not-found states.
 - [ ] Add component/accessibility tests for keyboard-only wizard completion and insufficient/stale-state error presentation.
 
