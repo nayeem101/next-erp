@@ -4,6 +4,7 @@ import { eq, inArray } from "drizzle-orm";
 
 import { getDb } from "@/db";
 import { customers, orderLineItems, orders, products } from "@/db/schema";
+import { AUDIT_ACTIONS } from "@/lib/audit/events";
 import { writeAuditEvent } from "@/lib/audit/writer";
 import { DomainError } from "@/lib/errors/action-result";
 
@@ -178,7 +179,7 @@ export async function createDraftOrder(
 
     await writeAuditEvent(tx, {
       actorUserId,
-      action: "order.draft_created",
+      action: AUDIT_ACTIONS.orderDraftCreated,
       entityType: "order",
       entityId: order.id,
       metadata: {
@@ -291,7 +292,7 @@ export async function updateDraftOrder(
 
     await writeAuditEvent(tx, {
       actorUserId,
-      action: "order.draft_updated",
+      action: AUDIT_ACTIONS.orderDraftUpdated,
       entityType: "order",
       entityId: input.orderId,
       metadata: {

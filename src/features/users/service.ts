@@ -4,6 +4,7 @@ import { and, eq, inArray, ne, sql } from "drizzle-orm";
 
 import { getDb } from "@/db";
 import { roles, userRoles, users } from "@/db/schema";
+import { AUDIT_ACTIONS } from "@/lib/audit/events";
 import { writeAuditEvent } from "@/lib/audit/writer";
 import { ROLE_KEYS, type RoleKey } from "@/lib/auth/roles";
 import { DomainError } from "@/lib/errors/action-result";
@@ -103,7 +104,7 @@ export async function setUserRoles(
 
     await writeAuditEvent(tx, {
       actorUserId,
-      action: "user.roles_changed",
+      action: AUDIT_ACTIONS.userRolesChanged,
       entityType: "user",
       entityId: input.userId,
       metadata: {
@@ -184,7 +185,9 @@ export async function setUserActive(
 
     await writeAuditEvent(tx, {
       actorUserId,
-      action: input.isActive ? "user.enabled" : "user.disabled",
+      action: input.isActive
+        ? AUDIT_ACTIONS.userEnabled
+        : AUDIT_ACTIONS.userDisabled,
       entityType: "user",
       entityId: input.userId,
       metadata: {

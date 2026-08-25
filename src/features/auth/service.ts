@@ -5,6 +5,7 @@ import { eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { roles, userRoles, users } from "@/db/schema";
 import type { SignInData } from "@/features/auth/schemas";
+import { AUDIT_ACTIONS } from "@/lib/audit/events";
 import { writeAuditEvent } from "@/lib/audit/writer";
 import { sanitizeRedirectPath } from "@/lib/auth/safe-redirect";
 import { DomainError } from "@/lib/errors/action-result";
@@ -87,7 +88,7 @@ export async function signInUser(
 
       await writeAuditEvent(tx, {
         actorUserId: userId,
-        action: "auth.signed_in",
+        action: AUDIT_ACTIONS.authSignedIn,
         entityType: "user",
         entityId: userId,
         metadata: {},

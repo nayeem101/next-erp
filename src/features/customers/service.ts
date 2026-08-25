@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 
 import { getDb } from "@/db";
 import { customers } from "@/db/schema";
+import { AUDIT_ACTIONS } from "@/lib/audit/events";
 import { writeAuditEvent } from "@/lib/audit/writer";
 import { DomainError } from "@/lib/errors/action-result";
 
@@ -81,7 +82,7 @@ export async function createCustomer(
 
       await writeAuditEvent(tx, {
         actorUserId,
-        action: "customer.created",
+        action: AUDIT_ACTIONS.customerCreated,
         entityType: "customer",
         entityId: row.id,
         metadata: {
@@ -190,7 +191,7 @@ export async function updateCustomer(
 
       await writeAuditEvent(tx, {
         actorUserId,
-        action: "customer.updated",
+        action: AUDIT_ACTIONS.customerUpdated,
         entityType: "customer",
         entityId: existing.id,
         metadata: { before, after },
@@ -243,7 +244,9 @@ export async function setCustomerActive(
 
     await writeAuditEvent(tx, {
       actorUserId,
-      action: input.isActive ? "customer.restored" : "customer.archived",
+      action: input.isActive
+        ? AUDIT_ACTIONS.customerRestored
+        : AUDIT_ACTIONS.customerArchived,
       entityType: "customer",
       entityId: input.customerId,
       metadata: {

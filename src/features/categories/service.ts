@@ -5,6 +5,7 @@ import { and, count, eq, ilike, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { categories, products } from "@/db/schema";
 import { slugify } from "@/features/categories/schemas";
+import { AUDIT_ACTIONS } from "@/lib/audit/events";
 import { writeAuditEvent } from "@/lib/audit/writer";
 import { DomainError } from "@/lib/errors/action-result";
 
@@ -78,7 +79,7 @@ export async function createCategory(
 
       await writeAuditEvent(tx, {
         actorUserId,
-        action: "category.created",
+        action: AUDIT_ACTIONS.categoryCreated,
         entityType: "category",
         entityId: categoryId,
         metadata: {
@@ -199,7 +200,7 @@ export async function updateCategory(
 
       await writeAuditEvent(tx, {
         actorUserId,
-        action: "category.updated",
+        action: AUDIT_ACTIONS.categoryUpdated,
         entityType: "category",
         entityId: input.categoryId,
         metadata: { before, after },
@@ -277,7 +278,9 @@ export async function setCategoryActive(
 
     await writeAuditEvent(tx, {
       actorUserId,
-      action: input.isActive ? "category.restored" : "category.archived",
+      action: input.isActive
+        ? AUDIT_ACTIONS.categoryRestored
+        : AUDIT_ACTIONS.categoryArchived,
       entityType: "category",
       entityId: input.categoryId,
       metadata: {

@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 
 import { getDb } from "@/db";
 import { orderLineItems, orders } from "@/db/schema";
+import { AUDIT_ACTIONS } from "@/lib/audit/events";
 import { writeAuditEvent } from "@/lib/audit/writer";
 import { DomainError } from "@/lib/errors/action-result";
 
@@ -84,7 +85,7 @@ export async function fulfillOrder(
 
     await writeAuditEvent(tx, {
       actorUserId,
-      action: "order.fulfilled",
+      action: AUDIT_ACTIONS.orderFulfilled,
       entityType: "order",
       entityId: order.id,
       metadata: {
@@ -177,7 +178,7 @@ export async function cancelOrder(
 
       await writeAuditEvent(tx, {
         actorUserId,
-        action: "invoice.voided",
+        action: AUDIT_ACTIONS.invoiceVoided,
         entityType: "invoice",
         entityId: invoice.invoiceId,
         metadata: {
@@ -188,7 +189,7 @@ export async function cancelOrder(
 
       await writeAuditEvent(tx, {
         actorUserId,
-        action: "ledger.sale_reversed",
+        action: AUDIT_ACTIONS.ledgerSaleReversed,
         entityType: "ledger_journal",
         entityId: journal.journalId,
         metadata: {
@@ -217,7 +218,7 @@ export async function cancelOrder(
 
     await writeAuditEvent(tx, {
       actorUserId,
-      action: "order.cancelled",
+      action: AUDIT_ACTIONS.orderCancelled,
       entityType: "order",
       entityId: order.id,
       metadata: {

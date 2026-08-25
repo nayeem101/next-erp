@@ -9,6 +9,7 @@ import {
   orders,
   type BillToSnapshot,
 } from "@/db/schema";
+import { AUDIT_ACTIONS } from "@/lib/audit/events";
 import { writeAuditEvent } from "@/lib/audit/writer";
 import { DomainError } from "@/lib/errors/action-result";
 
@@ -187,7 +188,7 @@ export async function confirmOrder(
 
     await writeAuditEvent(tx, {
       actorUserId,
-      action: "order.confirmed",
+      action: AUDIT_ACTIONS.orderConfirmed,
       entityType: "order",
       entityId: order.id,
       metadata: {
@@ -203,7 +204,7 @@ export async function confirmOrder(
 
     await writeAuditEvent(tx, {
       actorUserId,
-      action: "invoice.issued",
+      action: AUDIT_ACTIONS.invoiceIssued,
       entityType: "invoice",
       entityId: invoice.invoiceId,
       metadata: {
@@ -218,7 +219,7 @@ export async function confirmOrder(
 
     await writeAuditEvent(tx, {
       actorUserId,
-      action: "ledger.sale_posted",
+      action: AUDIT_ACTIONS.ledgerSalePosted,
       entityType: "ledger_journal",
       entityId: journal.journalId,
       metadata: {

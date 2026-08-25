@@ -4,6 +4,7 @@ import { and, eq, gte, lte, sql } from "drizzle-orm";
 
 import { getDb } from "@/db";
 import { categories, products, stockMovements } from "@/db/schema";
+import { AUDIT_ACTIONS } from "@/lib/audit/events";
 import { writeAuditEvent } from "@/lib/audit/writer";
 import { DomainError } from "@/lib/errors/action-result";
 import { parseMoneyToCents } from "@/lib/money";
@@ -112,7 +113,7 @@ export async function createProduct(
 
       await writeAuditEvent(tx, {
         actorUserId,
-        action: "product.created",
+        action: AUDIT_ACTIONS.productCreated,
         entityType: "product",
         entityId: productId,
         metadata: {
@@ -221,7 +222,7 @@ export async function updateProduct(
       if (Object.keys(before).length > 0) {
         await writeAuditEvent(tx, {
           actorUserId,
-          action: "product.updated",
+          action: AUDIT_ACTIONS.productUpdated,
           entityType: "product",
           entityId: input.productId,
           metadata: { before, after },
@@ -296,7 +297,9 @@ export async function setProductActive(
 
     await writeAuditEvent(tx, {
       actorUserId,
-      action: input.isActive ? "product.restored" : "product.archived",
+      action: input.isActive
+        ? AUDIT_ACTIONS.productRestored
+        : AUDIT_ACTIONS.productArchived,
       entityType: "product",
       entityId: input.productId,
       metadata: {
@@ -392,7 +395,7 @@ export async function adjustStock(
 
     await writeAuditEvent(tx, {
       actorUserId,
-      action: "product.stock_adjusted",
+      action: AUDIT_ACTIONS.productStockAdjusted,
       entityType: "product",
       entityId: input.productId,
       metadata: {
