@@ -88,7 +88,11 @@ export async function createProductAction(
       context.correlationId,
     );
 
-    invalidateTags(CACHE_TAGS.products, CACHE_TAGS.auditLog);
+    invalidateTags(
+      CACHE_TAGS.products,
+      CACHE_TAGS.dashboard.lowStock,
+      CACHE_TAGS.auditLog,
+    );
 
     return actionSuccess(result);
   } catch (error) {
@@ -119,7 +123,11 @@ export async function updateProductAction(
       context.correlationId,
     );
 
-    invalidateTags(CACHE_TAGS.products, CACHE_TAGS.auditLog);
+    invalidateTags(
+      CACHE_TAGS.products,
+      CACHE_TAGS.dashboard.lowStock,
+      CACHE_TAGS.auditLog,
+    );
 
     return actionSuccess(result);
   } catch (error) {
@@ -150,7 +158,11 @@ export async function setProductActiveAction(
       context.correlationId,
     );
 
-    invalidateTags(CACHE_TAGS.products, CACHE_TAGS.auditLog);
+    invalidateTags(
+      CACHE_TAGS.products,
+      CACHE_TAGS.dashboard.lowStock,
+      CACHE_TAGS.auditLog,
+    );
 
     return actionSuccess(result);
   } catch (error) {
@@ -181,7 +193,11 @@ export async function adjustStockAction(
       context.correlationId,
     );
 
-    invalidateTags(CACHE_TAGS.products, CACHE_TAGS.auditLog);
+    invalidateTags(
+      CACHE_TAGS.products,
+      CACHE_TAGS.dashboard.lowStock,
+      CACHE_TAGS.auditLog,
+    );
 
     return actionSuccess(result);
   } catch (error) {

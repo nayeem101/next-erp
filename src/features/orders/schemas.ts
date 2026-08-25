@@ -232,12 +232,14 @@ export interface UpdateDraftOrderResult {
 
 export interface TransitionOrderResult {
   orderId: string;
+  customerId: string;
   version: number;
   status: "confirmed" | "fulfilled" | "cancelled";
 }
 
 export interface CancelOrderResult {
   orderId: string;
+  customerId: string;
   version: number;
   status: "cancelled";
   reversed: boolean;

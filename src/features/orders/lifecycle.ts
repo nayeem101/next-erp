@@ -46,6 +46,7 @@ export async function fulfillOrder(
         id: orders.id,
         status: orders.status,
         version: orders.version,
+        customerId: orders.customerId,
       })
       .from(orders)
       .where(eq(orders.id, input.orderId))
@@ -93,7 +94,12 @@ export async function fulfillOrder(
     });
 
     // No stock or ledger movement: those happened at confirmation.
-    return { orderId: order.id, version: nextVersion, status: "fulfilled" };
+    return {
+      orderId: order.id,
+      customerId: order.customerId,
+      version: nextVersion,
+      status: "fulfilled",
+    };
   });
 }
 
@@ -227,6 +233,7 @@ export async function cancelOrder(
 
     return {
       orderId: order.id,
+      customerId: order.customerId,
       version: nextVersion,
       status: "cancelled",
       reversed,

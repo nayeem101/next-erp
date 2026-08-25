@@ -22,6 +22,7 @@ import type { TransitionOrderInput } from "./schemas";
 export interface ConfirmOrderResult {
   orderId: string;
   orderNumber: string;
+  customerId: string;
   version: number;
   invoiceId: string;
   invoiceNumber: string;
@@ -233,6 +234,7 @@ export async function confirmOrder(
     return {
       orderId: order.id,
       orderNumber: order.orderNumber,
+      customerId: order.customerId,
       version: nextVersion,
       invoiceId: invoice.invoiceId,
       invoiceNumber: invoice.invoiceNumber,

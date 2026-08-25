@@ -3,7 +3,7 @@
 import { getActionContext } from "@/lib/auth/guards";
 import { MODULE_ROLE_REQUIREMENTS } from "@/lib/auth/roles";
 import { invalidateTags } from "@/lib/cache/invalidate";
-import { CACHE_TAGS } from "@/lib/cache/tags";
+import { entityTag, CACHE_TAGS } from "@/lib/cache/tags";
 import {
   actionSuccess,
   type ActionResult,
@@ -58,7 +58,11 @@ export async function createDraftOrderAction(
       context.correlationId,
     );
 
-    invalidateTags(CACHE_TAGS.orders, CACHE_TAGS.auditLog);
+    invalidateTags(
+      CACHE_TAGS.orders,
+      CACHE_TAGS.dashboard.recentOrders,
+      CACHE_TAGS.auditLog,
+    );
 
     return actionSuccess(result);
   } catch (error) {
@@ -91,7 +95,11 @@ export async function updateDraftOrderAction(
       context.correlationId,
     );
 
-    invalidateTags(CACHE_TAGS.orders, CACHE_TAGS.auditLog);
+    invalidateTags(
+      CACHE_TAGS.orders,
+      CACHE_TAGS.dashboard.recentOrders,
+      CACHE_TAGS.auditLog,
+    );
 
     return actionSuccess(result);
   } catch (error) {
@@ -124,7 +132,21 @@ export async function confirmOrderAction(
       context.correlationId,
     );
 
-    invalidateTags(CACHE_TAGS.orders, CACHE_TAGS.auditLog);
+    // Confirmation touches stock, invoice, ledger, customer snapshot, and
+    // every dashboard aggregate, so invalidate the full documented set.
+    invalidateTags(
+      CACHE_TAGS.orders,
+      entityTag(CACHE_TAGS.orders, result.orderId),
+      entityTag(CACHE_TAGS.customers, result.customerId),
+      CACHE_TAGS.products,
+      CACHE_TAGS.invoices,
+      CACHE_TAGS.ledger,
+      CACHE_TAGS.dashboard.revenue,
+      CACHE_TAGS.dashboard.topProducts,
+      CACHE_TAGS.dashboard.lowStock,
+      CACHE_TAGS.dashboard.recentOrders,
+      CACHE_TAGS.auditLog,
+    );
 
     return actionSuccess(result);
   } catch (error) {
@@ -157,7 +179,12 @@ export async function fulfillOrderAction(
       context.correlationId,
     );
 
-    invalidateTags(CACHE_TAGS.orders, CACHE_TAGS.auditLog);
+    invalidateTags(
+      CACHE_TAGS.orders,
+      entityTag(CACHE_TAGS.orders, result.orderId),
+      CACHE_TAGS.dashboard.recentOrders,
+      CACHE_TAGS.auditLog,
+    );
 
     return actionSuccess(result);
   } catch (error) {
@@ -190,7 +217,30 @@ export async function cancelOrderAction(
       context.correlationId,
     );
 
-    invalidateTags(CACHE_TAGS.orders, CACHE_TAGS.auditLog);
+    if (result.reversed) {
+      // Cancelling a confirmed order matches confirmation's breadth.
+      invalidateTags(
+        CACHE_TAGS.orders,
+        entityTag(CACHE_TAGS.orders, result.orderId),
+        entityTag(CACHE_TAGS.customers, result.customerId),
+        CACHE_TAGS.products,
+        CACHE_TAGS.invoices,
+        CACHE_TAGS.ledger,
+        CACHE_TAGS.dashboard.revenue,
+        CACHE_TAGS.dashboard.topProducts,
+        CACHE_TAGS.dashboard.lowStock,
+        CACHE_TAGS.dashboard.recentOrders,
+        CACHE_TAGS.auditLog,
+      );
+    } else {
+      invalidateTags(
+        CACHE_TAGS.orders,
+        entityTag(CACHE_TAGS.orders, result.orderId),
+        entityTag(CACHE_TAGS.customers, result.customerId),
+        CACHE_TAGS.dashboard.recentOrders,
+        CACHE_TAGS.auditLog,
+      );
+    }
 
     return actionSuccess(result);
   } catch (error) {
