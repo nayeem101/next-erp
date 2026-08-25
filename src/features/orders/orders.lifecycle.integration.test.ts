@@ -215,6 +215,7 @@ d("fulfillOrder", () => {
 
     expect(result).toEqual({
       orderId: seeded.orderId,
+      customerId,
       version: seeded.version + 1,
       status: "fulfilled",
     });
@@ -291,6 +292,7 @@ d("cancelOrder", () => {
 
     expect(result).toEqual({
       orderId: draft.orderId,
+      customerId,
       version: draft.version + 1,
       status: "cancelled",
       reversed: false,

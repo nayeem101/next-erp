@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: PHASE 5 COMPLETE. Next: Phase 6 or remaining phases per TASKS.md
+- Status: PHASE 6 COMPLETE. Next: Phase 7 audit UI, release hardening, deployment
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,19 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-26 — Phase 6 complete: streamed role-aware dashboard
+
+- Range contract: `30d|90d|12m` zod enum, default `30d`; hostile/duplicate params degrade to default; canonical hrefs omit the default (`/dashboard?range=12m` otherwise). Unit-tested.
+- Cached aggregates (`"use cache"` + `cacheLife` operationalLists/volatile): revenue-over-time from net Sales Revenue ledger postings via generate_series bucket fill (daily 30d/90d, monthly 12m); top products by positive net sale/reversal units joined to line-item prices (sales variant adds revenue; units variant carries null money); low stock worst-first by deficit; recent orders newest five. Every function takes only serializable range/variant args — never browser roles.
+- Role-safe variants: server-derived `dashboardVariantForRoles` (admin/sales → sales; inventory-only → operations); cache entries keyed per variant under family tags `dashboard:revenue`, `dashboard:top-products`, `dashboard:low-stock`, `dashboard:recent-orders`. CACHE_TAGS vocabulary gained the namespaced dashboard group plus missing `ledger`; vocabulary test flattens groups.
+- Invalidation matrix implemented and pinned by tests: draft create/update → recent-orders only; confirm/cancelled-cancel → all four dashboard tags + orders/customer entity tags + products/invoices/ledger; fulfill → recent-orders without revenue tags; product mutations/stock adjustments → dashboard:low-stock. Confirm/lifecycle results now carry customerId for entity-scoped invalidation.
+- UI: URL-state range selector (aria-current, pending state), role-aware composition (Revenue admin/sales only; Top Products all roles with units-only note for inventory; Low Stock admin/inventory; Recent Orders all roles), per-widget Suspense skeleton + local WidgetErrorBoundary with retry.
+- Recharts client renderer receives serialized points, USD tooltip/ticks, sr-only text summary, visible net-total line. Component tests cover projections, empty states ("No sales in this period," "No low-stock products," "No orders yet"), status badges, product links.
+- Isolation proof: boundary test shows one failing widget renders a local alert while siblings keep rendering; streaming smoke uses renderToReadableStream to prove shell + fast sibling flush before a delayed aggregate resolves.
+- A11y: jest-axe clean across range select, both top-product projections, low stock, recent orders.
+
+### 2026-08-26 — Phase 5 complete: confirmation, invoicing, ledger, fulfillment
 
 ### 2026-08-26 — Phase 5 complete: confirmation, invoicing, ledger, fulfillment
 

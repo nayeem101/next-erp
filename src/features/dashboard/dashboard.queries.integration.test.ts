@@ -247,8 +247,9 @@ d("dashboard aggregates", () => {
   test("low stock surfaces active products at or below reorder level", async () => {
     const healthy = await seedProduct(50, 5);
     void healthy;
-    const low = await seedProduct(3, 5);
-    const critical = await seedProduct(0, 2);
+    // Distinct deficits keep the worst-first assertion deterministic.
+    const low = await seedProduct(4, 5);
+    const critical = await seedProduct(0, 5);
 
     const { getLowStock } = await import("./queries");
 

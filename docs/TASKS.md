@@ -237,7 +237,7 @@ Phase 5 gate:
 
 Phase 6 gate:
 
-- [ ] Run format, lint, typecheck, dashboard unit/component/integration tests, build, and dashboard accessibility/streaming checks.
+- [x] Run format, lint, typecheck, dashboard unit/component/integration tests, build, and dashboard accessibility/streaming checks.
 
 ## Phase 7 — Audit UI, release hardening, and deployment
 
