@@ -186,9 +186,9 @@ Phase 4 gate:
 - [x] Test successful multi-line confirmation totals, snapshots, resulting balances, invoice uniqueness, journal balance, version, and audits.
 - [x] Test insufficient-stock confirmation rolls back every order, stock, movement, invoice, ledger, and audit side effect.
 - [x] Test competing confirmations cannot oversell and produce one valid atomic outcome for limited stock.
-- [ ] Implement `fulfillOrder` confirmed-only versioned transition with actor/time, audit event, revalidation, and tests.
-- [ ] Implement draft and confirmed branches of `cancelOrder`, including restock, movements, invoice void, reversal journal, audit events, and tests.
-- [ ] Test fulfilled/cancelled terminal transitions and stale lifecycle submissions fail without partial writes.
+- [x] Implement `fulfillOrder` confirmed-only versioned transition with actor/time, audit event, revalidation, and tests.
+- [x] Implement draft and confirmed branches of `cancelOrder`, including restock, movements, invoice void, reversal journal, audit events, and tests.
+- [x] Test fulfilled/cancelled terminal transitions and stale lifecycle submissions fail without partial writes.
 - [ ] Wire order detail/wizard Confirm, Fulfill, and Cancel controls with explicit side-effect dialogs and typed conflict recovery.
 
 ### Invoices and PDF
