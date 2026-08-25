@@ -51,6 +51,15 @@ const EXPECTED_ACCESS_TABLE: Record<string, readonly string[]> = {
     "sales+inventory",
     "all",
   ],
+  // Fulfillment is Admin+Inventory; Sales alone cannot fulfill.
+  orderFulfillment: [
+    "admin",
+    "inventory",
+    "admin+sales",
+    "admin+inventory",
+    "sales+inventory",
+    "all",
+  ],
   invoices: [
     "admin",
     "sales",

@@ -217,7 +217,7 @@ Phase 4 gate:
 
 Phase 5 gate:
 
-- [ ] Run format, lint, typecheck, all unit/component/integration tests, build, critical Playwright flows, PDF tests, and invoice/order accessibility checks.
+- [x] Run format, lint, typecheck, all unit/component/integration tests, build, critical Playwright flows, PDF tests, and invoice/order accessibility checks.
 
 ## Phase 6 — Streamed dashboard
 

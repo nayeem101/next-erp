@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: PHASE 4 COMPLETE. Next: Phase 5 confirmation/invoicing/ledger/fulfillment services
+- Status: PHASE 5 COMPLETE. Next: Phase 6 or remaining phases per TASKS.md
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,21 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-26 — Phase 5 complete: confirmation, invoicing, ledger, fulfillment
+
+- Internal invoice repository: `createIssuedInvoice` (one-per-order guard via existing-row check inside tx, seller snapshot from validated env identity, total==subtotal by design) and `voidIssuedInvoice` (issued-only conditional update; double-void conflicts; amounts immutable). Integration-proven.
+- Ledger writer: `postSaleJournal` / `postSaleReversalJournal` append exactly two legs per fresh journal ID (AR debit/revenue credit, mirrored on reversal); DB trigger enforces balance per statement; read-side `assertJournalsBalanced` catches corrupted books (tested by disabling the append-only trigger to land an orphan leg).
+- Stock mechanics: `deductSaleStock` uses one conditional `stock_on_hand >= qty` UPDATE per product in stable product-ID order (deadlock-safe), typed `InsufficientStockError` with safe per-product availability details; `restoreSaleStock` mirrors with positive sale_reversal movements; both write movements with the fixed order-number reason.
+- `confirmOrder`: single transaction locking draft+customer FOR UPDATE, version check, active-customer/archived-product guards, deduction, status flip with actor/time, bill-to snapshot from current customer data, one issued invoice, balanced journal, three audits (order.confirmed, invoice.issued, ledger.sale_posted). Tests cover multi-line totals/snapshots/balances/audit order, full rollback on insufficient stock (zero side effects anywhere), and competing confirmations producing exactly one winner at zero remaining stock.
+- `fulfillOrder` (confirmed-only, actor/time, no stock/ledger changes) and `cancelOrder` (draft branch = clean cancel; confirmed branch = restock + void invoice + reversal journal + invoice/ledger audits; fulfilled/cancelled are terminal; stale versions fail without partial writes).
+- Order detail action wiring: Confirm/Fulfill/Cancel controls gated by domain role matrix (new `orderFulfillment` admin+inventory key), explicit dialogs naming side effects, mandatory cancellation reason, typed CONFLICT recovery keeping the dialog operable.
+- Invoice module: Admin/Sales queries (status/customer/date filters, newest-first pagination, snapshot parties); URL-bound register grid with VOID badges, order links, download actions; server-rendered detail page with VOID alert treatment; shared deterministic view model (UTC dates) feeding an @react-pdf/renderer document; authenticated GET /api/invoices/[id]/pdf returning real %PDF bytes with attachment filename from the sequence number, 403 for Inventory/anonymous, 404 for malformed/unknown ids.
+- Ledger module: Admin-only grouped journal reads (type/date/account/reference filters, pagination, debit/credit columns, balance indicator); unbalanced journals throw + log `[ledger-invariant]`; account-filtered partial groups are exempted from balance checks by design.
+- Demo seed: idempotent lifecycle-varied orders (draft/confirmed/fulfilled/cancelled-confirmed) through production services with coherent invoices, movements, balanced books, and full audit vocabulary; dev-only POST /api/demo-seed bootstraps everything for e2e.
+- Playwright flows (skip-pattern like auth.spec): sales customer->two-line wizard->confirm->invoice->PDF headers/body assertions; inventory fulfill-without-money visibility plus forbidden-route and direct PDF 403 smoke; environment gained E2E_SALES__/E2E_INVENTORY__ pairs.
+
+### 2026-08-25 — Phase 4 complete: wizard UI, orders grid, detail page
 
 ### 2026-08-25 — Phase 4 complete: wizard UI, orders grid, detail page
 
