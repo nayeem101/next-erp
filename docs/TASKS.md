@@ -202,10 +202,10 @@ Phase 4 gate:
 
 ### Ledger
 
-- [ ] Implement Admin-only ledger list query with journal/date/account/reference filters, pagination, balance projection, and tests.
-- [ ] Build read-only Ledger TanStack grid with grouped journals, debit/credit columns, links, and balance indicator.
-- [ ] Add invariant-error UI/logging for any unbalanced journal returned by a read.
-- [ ] Add tests proving non-Admin roles cannot query ledger data or access the ledger route.
+- [x] Implement Admin-only ledger list query with journal/date/account/reference filters, pagination, balance projection, and tests.
+- [x] Build read-only Ledger TanStack grid with grouped journals, debit/credit columns, links, and balance indicator.
+- [x] Add invariant-error UI/logging for any unbalanced journal returned by a read.
+- [x] Add tests proving non-Admin roles cannot query ledger data or access the ledger route.
 
 ### Critical browser flow
 

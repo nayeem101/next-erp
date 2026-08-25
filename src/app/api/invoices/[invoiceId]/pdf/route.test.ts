@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { GET } from "./route";
 
+import type { NextRequest } from "next/server";
+
 const mocks = vi.hoisted(() => ({
   actionContext: vi.fn(),
   getInvoice: vi.fn(),
@@ -88,7 +90,7 @@ describe("invoice pdf route", () => {
     mocks.getInvoice.mockResolvedValue(invoiceFixture);
     mocks.getInvoiceLines.mockResolvedValue([]);
 
-    const response = await GET(new Request("https://x"), {
+    const response = await GET(new Request("https://x") as NextRequest, {
       params: Promise.resolve({ invoiceId: invoiceFixture.id }),
     });
 
@@ -116,7 +118,7 @@ describe("invoice pdf route", () => {
       correlationId: "corr-2",
     });
 
-    const response = await GET(new Request("https://x"), {
+    const response = await GET(new Request("https://x") as NextRequest, {
       params: Promise.resolve({ invoiceId: invoiceFixture.id }),
     });
 
@@ -128,12 +130,12 @@ describe("invoice pdf route", () => {
     mocks.getInvoice.mockResolvedValue(null);
     mocks.getInvoiceLines.mockResolvedValue([]);
 
-    const malformed = await GET(new Request("https://x"), {
+    const malformed = await GET(new Request("https://x") as NextRequest, {
       params: Promise.resolve({ invoiceId: "../../etc/passwd" }),
     });
     expect(malformed.status).toBe(404);
 
-    const missing = await GET(new Request("https://x"), {
+    const missing = await GET(new Request("https://x") as NextRequest, {
       params: Promise.resolve({
         invoiceId: "00000000-0000-4000-8000-00000000dead",
       }),
