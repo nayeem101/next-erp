@@ -23,15 +23,25 @@ vi.mock("next/cache", () => ({
   updateTag: mocks.updateTag,
 }));
 
+/** Flattens the vocabulary, descending into grouped namespaces. */
+function flattenTags(values: readonly unknown[]): string[] {
+  return values.flatMap((value) =>
+    typeof value === "string"
+      ? [value]
+      : flattenTags(Object.values(value as Record<string, unknown>)),
+  );
+}
+
 describe("cache tag vocabulary", () => {
   test("uses lowercase kebab-case tags", () => {
-    for (const tag of Object.values(CACHE_TAGS)) {
-      expect(tag).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+    for (const tag of flattenTags(Object.values(CACHE_TAGS))) {
+      // Namespaced family tags use a `group:` prefix.
+      expect(tag).toMatch(/^[a-z0-9]+(:[a-z0-9]+)*(-[a-z0-9]+)*$/);
     }
   });
 
   test("tags are unique", () => {
-    const values = Object.values(CACHE_TAGS);
+    const values = flattenTags(Object.values(CACHE_TAGS));
 
     expect(new Set(values).size).toBe(values.length);
   });

@@ -10,13 +10,27 @@ export const CACHE_TAGS = {
   auditLog: "audit-log",
   categories: "categories",
   customers: "customers",
+  dashboard: {
+    lowStock: "dashboard:low-stock",
+    recentOrders: "dashboard:recent-orders",
+    revenue: "dashboard:revenue",
+    topProducts: "dashboard:top-products",
+  },
   invoices: "invoices",
+  ledger: "ledger",
   orders: "orders",
   products: "products",
   users: "users",
 } as const;
 
-export type CacheTag = (typeof CACHE_TAGS)[keyof typeof CACHE_TAGS];
+/**
+ * Union of every leaf tag string, including namespaced groups.
+ * Keeps `entityTag` and invalidation helpers string-only even when the
+ * vocabulary gains grouped namespaces such as `dashboard`.
+ */
+type TagLeaves<T> = T extends string ? T : T[keyof T];
+
+export type CacheTag = TagLeaves<(typeof CACHE_TAGS)[keyof typeof CACHE_TAGS]>;
 
 /** Entity-composite tag, e.g. `user:<id>`, invalidated alongside the base tag. */
 export function entityTag(base: CacheTag, id: string): string {
