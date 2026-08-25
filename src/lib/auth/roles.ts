@@ -22,6 +22,7 @@ export const MODULE_ROLE_REQUIREMENTS = {
   customers: ["admin", "sales"],
   orders: ["admin", "sales", "inventory"],
   orderAuthoring: ["admin", "sales"],
+  orderFulfillment: ["admin", "inventory"],
   invoices: ["admin", "sales"],
   ledger: ["admin"],
   administration: ["admin"],

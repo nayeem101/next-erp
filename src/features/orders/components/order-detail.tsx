@@ -6,6 +6,7 @@ import { Money } from "@/components/shared/display";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { OrderStatusActions } from "@/features/orders/components/order-status-actions";
 import { hasAnyRole } from "@/lib/auth/roles";
 import type { RoleKey } from "@/lib/auth/roles";
 
@@ -87,6 +88,12 @@ export function OrderDetail({
               Edit draft
             </Link>
           ) : null}
+          <OrderStatusActions
+            orderId={order.id}
+            status={order.status}
+            version={order.version}
+            currentRoles={currentRoles}
+          />
         </div>
       </div>
 

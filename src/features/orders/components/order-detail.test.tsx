@@ -1,9 +1,13 @@
 import { render, screen, within } from "@testing-library/react";
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { OrderDetail } from "./order-detail";
 
 import type { OrderDetailView } from "../schemas";
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn(), push: vi.fn() }),
+}));
 
 const baseOrder: OrderDetailView = {
   id: "00000000-0000-4000-8000-000000000009",

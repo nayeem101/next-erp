@@ -11,12 +11,24 @@ import {
 } from "@/lib/errors/action-result";
 import { mapActionError } from "@/lib/errors/map-action-error";
 
-import { createDraftOrderSchema, updateDraftOrderSchema } from "./schemas";
+import { confirmOrder } from "./confirm";
+import { cancelOrder, fulfillOrder } from "./lifecycle";
+import {
+  cancelOrderSchema,
+  createDraftOrderSchema,
+  transitionOrderSchema,
+  updateDraftOrderSchema,
+} from "./schemas";
 import { createDraftOrder, updateDraftOrder } from "./service";
 
+import type { ConfirmOrderResult } from "./confirm";
 import type {
+  CancelOrderArgs,
+  CancelOrderResult,
   CreateDraftOrderArgs,
   CreateDraftOrderResult,
+  TransitionOrderArgs,
+  TransitionOrderResult,
   UpdateDraftOrderArgs,
   UpdateDraftOrderResult,
 } from "./schemas";
@@ -74,6 +86,105 @@ export async function updateDraftOrderAction(
 
   try {
     const result = await updateDraftOrder(
+      parsed.data,
+      context.user.id,
+      context.correlationId,
+    );
+
+    invalidateTags(CACHE_TAGS.orders, CACHE_TAGS.auditLog);
+
+    return actionSuccess(result);
+  } catch (error) {
+    return mapActionError(error, context.correlationId);
+  }
+}
+
+/** Admin/Sales confirmation: stock deduction, invoice, and journal. */
+export async function confirmOrderAction(
+  input: TransitionOrderArgs,
+): Promise<ActionResult<ConfirmOrderResult>> {
+  const parsed = transitionOrderSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return validationFailure(parsed.error);
+  }
+
+  const context = await getActionContext(
+    MODULE_ROLE_REQUIREMENTS.orderAuthoring,
+  );
+
+  if (!context.ok) {
+    return context;
+  }
+
+  try {
+    const result = await confirmOrder(
+      parsed.data,
+      context.user.id,
+      context.correlationId,
+    );
+
+    invalidateTags(CACHE_TAGS.orders, CACHE_TAGS.auditLog);
+
+    return actionSuccess(result);
+  } catch (error) {
+    return mapActionError(error, context.correlationId);
+  }
+}
+
+/** Admin/Inventory fulfillment of a confirmed order. */
+export async function fulfillOrderAction(
+  input: TransitionOrderArgs,
+): Promise<ActionResult<TransitionOrderResult>> {
+  const parsed = transitionOrderSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return validationFailure(parsed.error);
+  }
+
+  const context = await getActionContext(
+    MODULE_ROLE_REQUIREMENTS.orderFulfillment,
+  );
+
+  if (!context.ok) {
+    return context;
+  }
+
+  try {
+    const result = await fulfillOrder(
+      parsed.data,
+      context.user.id,
+      context.correlationId,
+    );
+
+    invalidateTags(CACHE_TAGS.orders, CACHE_TAGS.auditLog);
+
+    return actionSuccess(result);
+  } catch (error) {
+    return mapActionError(error, context.correlationId);
+  }
+}
+
+/** Admin/Sales cancellation with reversal side effects when confirmed. */
+export async function cancelOrderAction(
+  input: CancelOrderArgs,
+): Promise<ActionResult<CancelOrderResult>> {
+  const parsed = cancelOrderSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return validationFailure(parsed.error);
+  }
+
+  const context = await getActionContext(
+    MODULE_ROLE_REQUIREMENTS.orderAuthoring,
+  );
+
+  if (!context.ok) {
+    return context;
+  }
+
+  try {
+    const result = await cancelOrder(
       parsed.data,
       context.user.id,
       context.correlationId,
