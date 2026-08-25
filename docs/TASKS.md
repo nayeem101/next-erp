@@ -160,7 +160,7 @@ Phase 3 gate:
 
 ### Order UI
 
-- [ ] Build per-instance Zustand order-wizard store with reset/hydration behavior and store tests.
+- [x] Build per-instance Zustand order-wizard store with reset/hydration behavior and store tests.
 - [ ] Build wizard shell/progress/navigation with step validation, focus management, live announcements, and component tests.
 - [ ] Build customer step with active-customer combobox, contact preview, prerequisite/empty states, and tests.
 - [ ] Build line-items step with product picker, unique rows, quantity editing, availability display, totals, and tests.
