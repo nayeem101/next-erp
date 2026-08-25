@@ -152,6 +152,68 @@ export type ListOrdersQuery = z.infer<typeof listOrdersQuerySchema>;
 export type ListOrdersQueryInput = z.input<typeof listOrdersQuerySchema>;
 
 // ---------------------------------------------------------------------------
+// Read models
+// ---------------------------------------------------------------------------
+
+/** One line of an immutable snapshot. Cents are numbers at the boundary. */
+export interface OrderLineView {
+  id: string;
+  productId: string;
+  productSku: string;
+  productName: string;
+  quantity: number;
+  unitPriceCents: number;
+  lineTotalCents: number;
+}
+
+export interface OrderListRow {
+  id: string;
+  orderNumber: string;
+  status: "draft" | "confirmed" | "fulfilled" | "cancelled";
+  version: number;
+  customerName: string;
+  customerCompanyName: string | null;
+  creatorName: string | null;
+  /** Null when the viewer lacks the financial projection (Inventory). */
+  totalCents: number | null;
+  createdAt: string;
+  confirmedAt: string | null;
+}
+
+export interface OrderListPage {
+  rows: OrderListRow[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+export interface OrderDetailView {
+  id: string;
+  orderNumber: string;
+  status: "draft" | "confirmed" | "fulfilled" | "cancelled";
+  version: number;
+  customerId: string;
+  customerName: string;
+  customerCompanyName: string | null;
+  customerEmail: string;
+  /** Null when the viewer lacks the financial projection (Inventory). */
+  totalCents: number | null;
+  currencyCode: string;
+  notes: string | null;
+  cancellationReason: string | null;
+  lines: OrderLineView[];
+  creatorName: string | null;
+  confirmedByName: string | null;
+  fulfilledByName: string | null;
+  cancelledByName: string | null;
+  createdAt: string;
+  confirmedAt: string | null;
+  fulfilledAt: string | null;
+  cancelledAt: string | null;
+}
+
+// ---------------------------------------------------------------------------
 // Result shapes
 // ---------------------------------------------------------------------------
 
