@@ -179,9 +179,9 @@ Phase 4 gate:
 
 ### Cross-module workflows
 
-- [ ] Implement internal invoice creation and voiding repositories with one-per-order and immutable amount tests.
-- [ ] Implement internal balanced sale/reversal journal writer with deferred-constraint and append-only tests.
-- [ ] Implement confirm-order product locking/conditional deduction helper with deterministic lock order and concurrency tests.
+- [x] Implement internal invoice creation and voiding repositories with one-per-order and immutable amount tests.
+- [x] Implement internal balanced sale/reversal journal writer with deferred-constraint and append-only tests.
+- [x] Implement confirm-order product locking/conditional deduction helper with deterministic lock order and concurrency tests.
 - [ ] Implement `confirmOrder` transaction across status, stock movements, invoice, sale journal, and audit events.
 - [ ] Test successful multi-line confirmation totals, snapshots, resulting balances, invoice uniqueness, journal balance, version, and audits.
 - [ ] Test insufficient-stock confirmation rolls back every order, stock, movement, invoice, ledger, and audit side effect.
