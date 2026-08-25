@@ -585,3 +585,19 @@ ledger.sale_reversed
 The fixed `entity_type` vocabulary is `auth_session`, `user`, `category`, `product`, `customer`, `order`, `invoice`, and `ledger_journal`. `entity_id` is the relevant UUID (the journal ID for `ledger_journal`); sign-in events may use the user UUID with `auth_session`.
 
 Sensitive values are excluded. Metadata records IDs, business numbers, changed field names, safe before/after values, totals, reasons, and correlation context.
+
+Writers reference the centralized `AUDIT_ACTIONS` constants (`src/lib/audit/events.ts`); the writer redacts credential-shaped keys (password/token/secret/authorization/cookie/credential) at any depth and caps oversized strings before insert. The audit detail endpoint re-sanitizes on read as defense in depth.
+
+## Operational route handlers
+
+### `GET /api/audit-log/[id]`
+
+Admin-only sanitized metadata payload for the audit details sheet. Malformed ids and unknown events return 404; non-admin sessions receive 403 without touching the query layer. Responses are `Cache-Control: no-store`.
+
+### `POST /api/demo-seed`
+
+Dev/preview-only idempotent bootstrap of demo customers, catalog, and lifecycle-varied orders through the production services. Disabled in production builds (404); otherwise requires an Admin/Sales session.
+
+### `GET /api/health`
+
+Unauthenticated health smoke returning per-check statuses (`env`, `database`, optional `pdf`) with 503 on failure. The deep PDF probe requires `?deep=1` plus the `x-probe-token` header matching `HEALTH_PROBE_TOKEN`.
