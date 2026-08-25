@@ -38,7 +38,7 @@ export interface HydratableDraft {
   notes: string;
 }
 
-interface OrderWizardState {
+export interface OrderWizardState {
   stepIndex: number;
   customerId: string | null;
   customerName: string | null;
