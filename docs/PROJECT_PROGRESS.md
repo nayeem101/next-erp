@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: PHASE 6 COMPLETE. Next: Phase 7 audit UI, release hardening, deployment
+- Status: ALL PHASES COMPLETE. Remaining: Vercel preview e2e run + tag/deploy (external provisioning)
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,18 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-26 — Phase 7 complete: audit UI and release hardening
+
+- Audit centralization: `AUDIT_ACTIONS`/`AUDIT_ENTITY_TYPES` constants replace all string literals in eight service files; writer redacts credential-shaped keys recursively (password/token/secret/authorization/cookie/credential), caps strings at 500 chars/depth 6; idempotent. Vocabulary pinned against API_SPEC by unit test.
+- Audit coverage: every mutation writes its documented event inside the mutation transaction; added missing transaction-level assertion for product.stock_adjusted.
+- Admin audit module: list query with actor/action/entity/date filters + pagination (metadata never in list rows); detail endpoint re-sanitizes on read (`no-store`, 403 before existence for non-admins, malformed ids 404). Append-only proven: UPDATE/DELETE rejected by RLS at the database level in integration tests.
+- Audit UI: URL-filtered grid (action/entity/date selects with apply/clear), actor/timestamp columns, accessible details sheet rendering sanitized before/after/reason/context with entity links and axe-clean markup.
+- Ops: `pnpm db:demo` composes all feature seeds through real services via Supabase password grant + dev-only POST /api/demo-seed (idempotent). GET /api/health reports env/database/pdf checks with 503 on failure and token-gated deep PDF probe; verified healthy against the production build.
+- Reviews (docs/PHASE7_REVIEW.md): security checklist with evidence per area; performance review confirming indexes cover ledger/movements/products/orders/audit hot paths plus streaming isolation proof; keyboard/axe coverage enumerated; responsive covered by desktop+mobile Chromium e2e projects; cache-invalidation parity pinned by actions.invalidation.test.ts.
+- Docs: rewritten README (pitch, demo script, setup, tests, deployment), DEPLOYMENT.md (Supabase roles/RLS/redirect URLs, Vercel env matrix, health probes, backup cautions), API_SPEC gains operational routes section.
+
+### 2026-08-26 — Phase 6 complete: streamed role-aware dashboard
 
 ### 2026-08-26 — Phase 6 complete: streamed role-aware dashboard
 

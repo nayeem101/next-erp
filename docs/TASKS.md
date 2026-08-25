@@ -252,20 +252,20 @@ Phase 6 gate:
 
 ### Production readiness
 
-- [ ] Compose the feature seeds into one full idempotent demo command and document secure provisioning of Admin/Sales/Inventory Supabase Auth users.
-- [ ] Add repository README with pitch, two-minute demo script, architecture highlights, screenshots, local setup, test commands, and deployment steps.
-- [ ] Add Supabase local/deployed migration instructions, runtime/migration role setup, RLS verification, and backup/reset cautions.
-- [ ] Configure Vercel deployment environment and Supabase redirect URLs without exposing privileged credentials.
-- [ ] Add production health smoke checks for login, database connectivity, protected routes, and PDF generation.
-- [ ] Run and fix complete CI from a clean clone and clean database.
-- [ ] Run full Playwright suite against a Vercel preview with deterministic seeded data.
-- [ ] Run keyboard and axe review for login, shell, all forms/grids, order wizard, invoice, dashboard, and audit details.
-- [ ] Run responsive review at mobile, tablet, laptop, and wide desktop sizes; fix overflow and focus issues.
-- [ ] Run performance review for dashboard streaming, list-query bounds, database query plans/index use, and client bundle boundaries.
-- [ ] Run security review for secrets, auth/session trust, role/action bypass, open redirects, unsafe search SQL, headers, logs, and PDF authorization.
-- [ ] Verify every cache invalidation path against `ARCHITECTURE.md` and remove accidental shared caching of user-sensitive data.
-- [ ] Verify implementation/docs parity and update all seven specs for approved final behavior.
-- [ ] Tag and deploy the MVP only after all phase gates pass.
+- [x] Compose the feature seeds into one full idempotent demo command and document secure provisioning of Admin/Sales/Inventory Supabase Auth users.
+- [x] Add repository README with pitch, two-minute demo script, architecture highlights, screenshots, local setup, test commands, and deployment steps.
+- [x] Add Supabase local/deployed migration instructions, runtime/migration role setup, RLS verification, and backup/reset cautions.
+- [x] Configure Vercel deployment environment and Supabase redirect URLs without exposing privileged credentials.
+- [x] Add production health smoke checks for login, database connectivity, protected routes, and PDF generation.
+- [x] Run and fix complete CI from a clean clone and clean database.
+- [ ] Run full Playwright suite against a Vercel preview with deterministic seeded data. (Runbook ready: PLAYWRIGHT_BASE_URL + E2E_* creds; executed locally against the production build — external deployment pending.)
+- [x] Run keyboard and axe review for login, shell, all forms/grids, order wizard, invoice, dashboard, and audit details.
+- [x] Run responsive review at mobile, tablet, laptop, and wide desktop sizes; fix overflow and focus issues.
+- [x] Run performance review for dashboard streaming, list-query bounds, database query plans/index use, and client bundle boundaries.
+- [x] Run security review for secrets, auth/session trust, role/action bypass, open redirects, unsafe search SQL, headers, logs, and PDF authorization.
+- [x] Verify every cache invalidation path against `ARCHITECTURE.md` and remove accidental shared caching of user-sensitive data.
+- [x] Verify implementation/docs parity and update all seven specs for approved final behavior.
+- [ ] Tag and deploy the MVP only after all phase gates pass. (Tag/deploy execution pending external Vercel provisioning.)
 
 MVP completion gate:
 

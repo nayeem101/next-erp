@@ -24,7 +24,7 @@ const healthEnvSchema = z.object({
 export async function GET(request: NextRequest) {
   const checks = {
     env: "pass" as "pass" | "fail",
-    database: "pass" as "pass" | "fail",
+    database: "skip" as "pass" | "fail" | "skip",
     pdf: "skip" as "pass" | "fail" | "skip",
   };
 
@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
 
   if (!parsed.success) {
     checks.env = "fail";
+    checks.database = "fail";
 
     return Response.json({ status: "unhealthy", checks }, { status: 503 });
   }
@@ -45,6 +46,8 @@ export async function GET(request: NextRequest) {
       idle_timeout: 5,
     });
     await sql`select 1`;
+
+    checks.database = "pass";
   } catch {
     checks.database = "fail";
   } finally {
