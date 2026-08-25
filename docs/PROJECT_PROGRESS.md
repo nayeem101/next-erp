@@ -4,7 +4,7 @@
 
 - Last updated: 2026-08-22
 - Current phase: Phase 1 — Foundation, database, authentication, and RBAC
-- Status: Phase 4 domain/reads complete. Next: wizard store + Order UI
+- Status: PHASE 4 COMPLETE. Next: Phase 5 confirmation/invoicing/ledger/fulfillment services
 - Active task: None
 - Next eligible task: Implement paginated product queries with category/search/status/low-stock filters, sorting allowlist, and integration tests
 - Blocker: None — proceeding task-by-task with a commit per completed task
@@ -35,6 +35,21 @@ After every completed task from `docs/TASKS.md`:
 6. Do not mark a phase complete until its phase gate passes.
 
 ## Execution log
+
+### 2026-08-25 — Phase 4 complete: wizard UI, orders grid, detail page
+
+- Wizard store (9 tests): per-instance Zustand factory (`createOrderWizardStore`) so two wizards never share state; unique-per-product line rows with re-add bumping quantity, clamped quantity edits, bigint exact `wizardTotalCents`, step gating (customer then >=1 line), submitting lockout, hydrateDraft/reset.
+- Wizard shell (3 tests): semantic progress rail with aria-current="step", completed steps become jump-back buttons, focus moves to each step heading on change, polite live region announces "Step N of 3".
+- Customer step (5 tests): accessible combobox (aria-expanded/controls/listbox options), query filtering across name/company/email/city, ArrowUp/Down active option + Enter select, contact preview card, no-active-customers prerequisite state, no-match message.
+- Line-items step (3 tests): native-select product picker where Enter commits immediately, unique rows, draft-while-typing quantity cells committing on blur/Enter (render-time sync follows external bumps without fighting typing), stock context with over-stock warning, Money-formatted line and grand totals.
+- Review step (5 tests): summary dl, snapshot warning copy, notes into store, in-flight "Saving..." state, failed saves render ActionErrorAlert while preserving every input for retry; thrown errors degrade to generic alert.
+- New Order page (`/sales/orders/new`): server fetches selector options inside connection()+Suspense (PPR); client wizard resets transient state only after successful save, then navigates to detail (3 tests incl. failure keeps inputs).
+- Edit Draft page (`/sales/orders/[orderId]/edit`): hydrates once from server snapshots, submits orderId+version; version conflicts surface CONFLICT alert with all local edits preserved (3 tests). Non-draft orders show an explanatory notice linking to detail.
+- Orders grid (5 tests) + page: URL-bound status filter links (draft/confirmed/fulfilled/cancelled/all), newest/oldest/total sorts via DataTable header buttons, canonical href building that omits defaults; totals column disappears entirely when rows carry null totalCents (Inventory projection).
+- Order detail page + component (4 tests): immutable snapshot table, KPI cards, lifecycle timeline with actor attribution, cancellation reason callout, edit-draft slot only for admin/sales on drafts; Inventory sees quantities without any money ("Not visible").
+- Accessibility suite (5 tests): jest-axe clean on all three steps; full keyboard-only completion (combobox -> Enter -> Next -> select+Enter adds product -> save); stale-state conflict keeps alert role and operable retry/back controls.
+
+### 2026-08-25 — Order domain and reads completed (Phase 4 first half)
 
 ### 2026-08-25 — Order domain and reads completed (Phase 4 first half)
 

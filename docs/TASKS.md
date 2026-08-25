@@ -173,7 +173,7 @@ Phase 3 gate:
 
 Phase 4 gate:
 
-- [ ] Run format, lint, typecheck, order draft unit/component/integration tests, build, and wizard accessibility checks.
+- [x] Run format, lint, typecheck, order draft unit/component/integration tests, build, and wizard accessibility checks.
 
 ## Phase 5 — Confirmation, invoicing, ledger, and fulfillment
 
