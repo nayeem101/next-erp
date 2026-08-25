@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NextERP
 
-## Getting Started
+A production-shaped ERP demo built on Next.js (Cache Components), Supabase
+Auth, and Postgres via Drizzle. Role-scoped modules — Inventory, Customers,
+Sales Orders, Invoices, Ledger, and an Admin audit trail — share one
+transactional core: confirming a sale deducts stock, issues a snapshot
+invoice, posts a balanced double-entry journal, and appends an immutable
+audit record in a single commit.
 
-First, run the development server:
+## Why it is interesting
+
+- **Atomic cross-module workflows.** `confirmOrder` locks the draft and
+  customer rows, conditionally deducts stock, creates the invoice, writes
+  the journal, and audits everything together; insufficient stock rolls the
+  entire world back.
+- **Append-only books.** Ledger entries and audit records are insert-only at
+  the database level — updates and deletes are rejected by RLS, verified by
+  tests.
+- **Role-safe caching.** Dashboard aggregates are cached per server-derived
+  projection (`sales` / `operations` / `units`) under family tags, so
+  mutations invalidate every role's view without ever caching money where a
+  non-privileged role can read it.
+- **Streamed dashboard.** Each widget renders behind its own Suspense
+  boundary and local error boundary; one slow or failing aggregate never
+  blocks the shell or its siblings.
+
+## Two-minute demo script
+
+1. Sign in as the seeded Admin (`/login`).
+2. **Inventory** — create a category, add a product with opening stock,
+   adjust stock down to its reorder level and watch it appear on the
+   dashboard's Low Stock widget.
+3. **Customers** — add a customer with billing details.
+4. **New order** (`/sales/orders/new`) — pick two products, set quantities,
+   save the draft.
+5. **Confirm** on the order detail page — review the side-effect dialog
+   (stock deducted, invoice issued, journal posted), confirm.
+6. **Invoices** (`/accounting/invoices`) — open the invoice, download the
+   generated PDF.
+7. **Ledger** (`/accounting/ledger`) — see the balanced AR/Revenue journal;
+   cancel the confirmed order and watch the reversal journal appear.
+8. **Dashboard** — switch date ranges; revenue, top products, low stock, and
+   recent orders stream in independently. Repeat as an Inventory user to see
+   the money-free operational projection.
+
+## Architecture highlights
+
+| Doc                                                | Contents                                         |
+| -------------------------------------------------- | ------------------------------------------------ |
+| [docs/PRD.md](docs/PRD.md)                         | Product scope and acceptance flows               |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)       | Module map, transactional boundaries, cache tags |
+| [docs/API_SPEC.md](docs/API_SPEC.md)               | Server actions, route handlers, audit vocabulary |
+| [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md) | Tables, constraints, triggers, indexes           |
+| [docs/UI_SPEC.md](docs/UI_SPEC.md)                 | Screens, states, accessibility contract          |
+| [docs/TASKS.md](docs/TASKS.md)                     | Phase plan with gates                            |
+
+## Local setup
+
+Prerequisites: Node.js >= 22.6, pnpm, Docker (for the test database),
+and a Supabase project (local or hosted).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+cp .env.example .env.local        # fill in Supabase + DATABASE_URL values
+pnpm db:migrate                   # apply Drizzle migrations
+node src/db/migrations/rls.sql    # RLS hardening is applied by drizzle-kit as well
+pnpm db:seed                      # fixed role users from SEED_DEMO_* ids
+pnpm dev                          # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create the three demo identities in Supabase Auth (Admin, Sales,
+Inventory) whose UUIDs match `SEED_DEMO_ADMIN_ID`, `SEED_DEMO_SALES_ID`,
+and `SEED_DEMO_INVENTORY_ID` from `.env.local`, then run `pnpm db:seed`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Demo data
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+With the dev server running:
 
-## Learn More
+```bash
+DEMO_ADMIN_EMAIL=... DEMO_ADMIN_PASSWORD=... pnpm db:demo
+```
 
-To learn more about Next.js, take a look at the following resources:
+This signs in through Supabase Auth and drives the idempotent
+`POST /api/demo-seed` route, seeding customers, the product catalog, and
+lifecycle-varied orders (draft / confirmed / fulfilled / cancelled) through
+the real services. Safe to re-run any time.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Test commands
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+pnpm lint            # eslint, zero warnings allowed
+pnpm typecheck       # tsc --noEmit
+pnpm test            # unit + component tests (vitest)
+pnpm test:integration # requires INTEGRATION_DATABASE_URL (see db:test:start)
+pnpm build           # production build with Cache Components
+pnpm test:e2e        # Playwright; authenticated flows need E2E_* credentials
+```
 
-## Deploy on Vercel
+Integration tests use a disposable database created by
+`docker compose up -d --wait postgres-test` plus `pnpm db:test:bootstrap`,
+then `INTEGRATION_DATABASE_URL=postgresql://... pnpm test:integration`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for Vercel configuration,
+Supabase redirect URLs, migration/runtime roles, health probes, and backup
+cautions.
