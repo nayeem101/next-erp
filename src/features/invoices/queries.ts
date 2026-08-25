@@ -7,7 +7,7 @@ import { customers, invoices, orders } from "@/db/schema";
 
 import { listInvoicesQuerySchema } from "./schemas";
 
-import type { ListInvoicesQuery } from "./schemas";
+import type { ListInvoicesQuery, ListInvoicesQueryInput } from "./schemas";
 
 /**
  * Invoice read models for Admin/Sales. Invoices never exist without an
