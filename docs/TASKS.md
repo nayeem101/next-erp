@@ -154,9 +154,9 @@ Phase 3 gate:
 - [x] Implement pure order total/snapshot mapping and lifecycle permission helpers with exhaustive tests.
 - [x] Implement role-projected order list/detail queries with status/customer/date/creator filters and integration tests.
 - [x] Implement active customer/product selector queries that expose only required serialized fields.
-- [ ] Implement `createDraftOrder` with server price snapshots, exact totals, version 1, audit event, revalidation, and transaction tests.
-- [ ] Implement `updateDraftOrder` with version concurrency, draft-only line replacement, refreshed snapshots/totals, audit event, and tests.
-- [ ] Add tests proving draft create/update never changes product stock, invoices, or ledger entries.
+- [x] Implement `createDraftOrder` with server price snapshots, exact totals, version 1, audit event, revalidation, and transaction tests.
+- [x] Implement `updateDraftOrder` with version concurrency, draft-only line replacement, refreshed snapshots/totals, audit event, and tests.
+- [x] Add tests proving draft create/update never changes product stock, invoices, or ledger entries.
 
 ### Order UI
 
