@@ -35,13 +35,15 @@ export type CurrentUserResult =
   | { status: "inactive" }
   | { status: "unprovisioned"; authUserId: string };
 
-async function loadCurrentUser(): Promise<CurrentUserResult> {
+async function loadCurrentUser(
+  accessToken?: string,
+): Promise<CurrentUserResult> {
   const supabase = await createClient();
 
   const {
     data: { user: authUser },
     error,
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getUser(accessToken);
 
   if (error !== null || authUser === null) {
     return { status: "unauthenticated" };

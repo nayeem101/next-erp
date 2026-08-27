@@ -92,13 +92,36 @@ export async function setUserRoles(
         .where(inArray(roles.key, after));
 
       const idByKey = new Map(roleRows.map((row) => [row.key, row.id]));
+      const missingRoles = after.filter((key) => !idByKey.has(key));
+
+      if (missingRoles.length > 0) {
+        throw new DomainError(
+          "INTERNAL_ERROR",
+          "Role configuration is incomplete. Run pnpm db:seed and try again.",
+          { details: { missingRoles } },
+        );
+      }
 
       await tx.insert(userRoles).values(
-        after.map((key) => ({
-          userId: input.userId,
-          roleId: idByKey.get(key) ?? "",
-          assignedBy: actorUserId,
-        })),
+        after.map((key) => {
+          const roleId = idByKey.get(key);
+
+          // The missing-role check above guarantees this branch is not
+          // reached, while keeping the insert payload type-safe.
+          if (roleId === undefined) {
+            throw new DomainError(
+              "INTERNAL_ERROR",
+              "Role configuration is incomplete. Run pnpm db:seed and try again.",
+              { details: { missingRoles: [key] } },
+            );
+          }
+
+          return {
+            userId: input.userId,
+            roleId,
+            assignedBy: actorUserId,
+          };
+        }),
       );
     }
 

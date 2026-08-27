@@ -1,3 +1,5 @@
+import { headers } from "next/headers";
+
 import { seedDemoCustomers } from "@/features/customers/demo-seed";
 import { seedDemoOrders } from "@/features/orders/demo-seed";
 import { seedDemoInventoryCatalog } from "@/features/products/demo-seed";
@@ -15,8 +17,14 @@ export async function POST() {
     return Response.json({ error: "Not found" }, { status: 404 });
   }
 
+  const authorization = (await headers()).get("authorization");
+  const accessToken = authorization?.startsWith("Bearer ")
+    ? authorization.slice("Bearer ".length).trim()
+    : undefined;
+
   const context = await getActionContext(
     MODULE_ROLE_REQUIREMENTS.orderAuthoring,
+    accessToken,
   );
 
   if (!context.ok) {

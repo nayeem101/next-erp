@@ -1,5 +1,3 @@
-import { randomUUID } from "node:crypto";
-
 import { create } from "zustand";
 
 import type { ActiveCustomerOption, ActiveProductOption } from "../selectors";
@@ -62,6 +60,30 @@ export interface OrderWizardState {
 const MAX_QUANTITY = 1_000_000;
 const MAX_LINES = 100;
 
+function createClientKey(): string {
+  const cryptoApi = globalThis.crypto;
+
+  if (typeof cryptoApi.randomUUID === "function") {
+    return cryptoApi.randomUUID();
+  }
+
+  const bytes = new Uint8Array(16);
+  cryptoApi.getRandomValues(bytes);
+
+  bytes[6] = (bytes.at(6) ?? 0) & 0x0f;
+  bytes[6] = (bytes.at(6) ?? 0) | 0x40;
+  bytes[8] = (bytes.at(8) ?? 0) & 0x3f;
+  bytes[8] = (bytes.at(8) ?? 0) | 0x80;
+
+  return [...bytes]
+    .map((byte, index) =>
+      [4, 6, 8, 10].includes(index)
+        ? `-${byte.toString(16).padStart(2, "0")}`
+        : byte.toString(16).padStart(2, "0"),
+    )
+    .join("");
+}
+
 export function createOrderWizardStore() {
   return create<OrderWizardState>()((set, get) => ({
     stepIndex: 0,
@@ -104,7 +126,7 @@ export function createOrderWizardStore() {
         lines: [
           ...get().lines,
           {
-            key: randomUUID(),
+            key: createClientKey(),
             productId: product.id,
             sku: product.sku,
             name: product.name,
@@ -143,7 +165,7 @@ export function createOrderWizardStore() {
         customerName: draft.customerName,
         notes: draft.notes,
         submitting: false,
-        lines: draft.lines.map((line) => ({ ...line, key: randomUUID() })),
+        lines: draft.lines.map((line) => ({ ...line, key: createClientKey() })),
       });
     },
 

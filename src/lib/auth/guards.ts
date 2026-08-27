@@ -40,8 +40,10 @@ const UNAUTHENTICATED_MESSAGE = "Please sign in to continue.";
  * The verification touches request cookies first, which also licenses the
  * subsequent random-value generation under Cache Components.
  */
-export async function requireUser(): Promise<UserGuardResult> {
-  const result = await getCurrentUser();
+export async function requireUser(
+  accessToken?: string,
+): Promise<UserGuardResult> {
+  const result = await getCurrentUser(accessToken);
   const correlationId = newCorrelationId();
 
   switch (result.status) {
@@ -94,8 +96,9 @@ export function requireAnyRole(
 /** Convenience wrapper: verify the caller then apply a role requirement. */
 export async function getActionContext(
   allowed?: readonly RoleKey[],
+  accessToken?: string,
 ): Promise<AuthenticatedContext | (ActionFailureResult & { ok: false })> {
-  const guard = await requireUser();
+  const guard = await requireUser(accessToken);
 
   if (!guard.ok) {
     return guard;
